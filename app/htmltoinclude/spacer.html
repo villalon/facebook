@@ -1,12 +1,24 @@
 <div id="separador">
 	<br>
 </div>
-<div id="container2">
+<div id="container2" style="position: fixed; bottom: 0; height: 60px;">
 	<table width="100%">
 		<tr>
-			<td align="left"><img src="images/logo_webcursos_abajo.png"></td>
+			<td style="padding-left: 20px;"><a
+				href="<?php echo $messageurl; ?>" target=”_blank”
+				style="color: white; text-decoration: underline;"> <?php echo get_string('notificationsettings', 'local_facebook'); ?>
+			</a></td>
+			<td><a href="<?php echo $connecturl; ?>" target=”_blank”
+				style="color: white; text-decoration: underline;"> <?php echo get_string('connectheading', 'local_facebook'); ?>
+			</a></td>
+			<td><a href="<?php echo $tutorial_link; ?>" target=”_blank”
+				style="color: white; text-decoration: underline;"> <?php echo "Tutoriales WebC"; ?> <!-- $tutorial_name -->
+			</a></td>
+			<td align="right"><p align="center" style="color: white;">
+					<?php echo "Contacto: <br>webcursos@uai.cl"; ?> <!-- $app_email -->
+				</p></td>
+			<td align="right"><img src="images/logo_webcursos_abajo.png"></td>
 			<td align="right"><img src="images/logo_abajo.png"></td>
 		</tr>
 	</table>
-</div>
 </div>

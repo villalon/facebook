@@ -23,9 +23,9 @@ body{
 }
 #container2
 {
-	height:20%;
+	height:200px;
 	background-color:black;
-	width:100%
+	width:100%;
 }
 .clearfix:after {
     content: ".";
@@ -197,9 +197,12 @@ font-size:15px;
 	position: absolute;
 	top:28em;
 	width: 100%;
-	 
-	
-	
+}
+
+div.scroll {
+	max-height: 500px;
+	overflow-x: hidden;
+	overflow-y: scroll;
 }
 
 /* ---------------------------- popup -----------------------------*/
@@ -209,11 +212,11 @@ font-size:15px;
 	max-height:500px;
 	background:#FFF;
 	padding:10px;
-	position:absolute;
+	position:static;
 	top:50%;
 	left:50%;
 	margin-top:-215px;
-	margin-left:-410px;
+	margin-left:500px;
 	-moz-box-shadow: 0 0 30px #888;
 	-webkit-box-shadow: 0 0 30px #888;
 	box-shadow: 0 0 30px #888;

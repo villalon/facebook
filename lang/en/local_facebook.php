@@ -26,6 +26,7 @@
 $string['messageprovider:notification'] = 'Notification of resources (pdf, excel, word, url, etc)';
 $string['pluginname'] = 'Course updates';
 $string['connectheading'] = 'Account information';
+$string['contact'] = "Contact";
 $string['acountconnect'] = 'Connect account';
 $string['connectwith'] = 'You are logged in with:';
 $string['fbktablename'] = 'Name';
