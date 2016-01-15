@@ -132,13 +132,13 @@ if ($userfacebookinfo != false) {
 				<a class="inline link_curso" href="#'.$courseid.'">
 				<p class="name" style="color: black; font-weight:bold; text-decoration: none; font-size:15px;">
 				<img src="images/lista_curso.png">'.$fullname.'</p></a></div>';*/
-		echo '<div class="block"><button type="button" class="btn btn-info btn-lg" style="white-space: normal; width: 90%; max-height: 5em; border: 1px solid lightgray; background: linear-gradient(white, gainsboro);" courseid="'.$courseid.'" fullname="'.$fullname.'">';
+		echo '<div class="block"><button type="button" class="btn btn-info btn-lg" style="white-space: normal; width: 90%; max-height: 5em; border: 1px solid lightgray; background: linear-gradient(white, gainsboro);" courseid="'.$courseid.'" component="button">';
 		
 		// If there is something to notify, show the number of new things
 		if ($totals>0){
-			echo '<span class="badge" style="color: white; background-color: red; position: relative; right: -80px; top: -15px;" courseid="'.$courseid.'" fullname="'.$fullname.'">'.$totals.'</span>';
+			echo '<span class="badge" style="color: white; background-color: red; position: relative; right: -80px; top: -15px;" courseid="c'.$courseid.'" component="button">'.$totals.'</span>';
 		}
-		echo '<p class="name" style="color: black; font-weight:bold; text-decoration: none; font-size:13px; word-wrap: initial;" courseid="'.$courseid.'" fullname="'.$fullname.'">
+		echo '<p class="name" style="color: black; font-weight:bold; text-decoration: none; font-size:13px; word-wrap: initial;" courseid="'.$courseid.'" component="button">
 				'.$fullname.'</p></button></div>';
 		
 		
@@ -158,10 +158,9 @@ if ($userfacebookinfo != false) {
 		$courseid = $courses->id;
 		
 		?>
-      	<div style="display: none;" id="<?php echo $courseid ?>">
+      	<div style="display: none;" id="c<?php echo $courseid; ?>">
       		<p><?php echo $fullname; ?></p><br>
-			<table class="tablesorter" border="0" width="100%"
-				style="font-size: 13px">
+			<table class="tablesorter" border="0" width="100%" style="font-size: 13px">
 				<thead>
 					<tr>
 						<th width="8%"></th>
@@ -174,20 +173,48 @@ if ($userfacebookinfo != false) {
 			<?php 
 			//foreach that gives the corresponding image to the new and old items created(resource,post,forum), and its title, how upload it and its link
 			foreach($dataarray as $data){
-			if($data['course'] == $courseid){
-				$date = date("d/m/Y H:i", $data['date']);
-				echo '<tr><td><center>';
-				if($data['image'] == FACEBOOK_IMAGE_POST){
-					echo '<img src="images/post.png">';
-				}
-				elseif($data['image'] == FACEBOOK_IMAGE_RESOURCE){
-					echo '<img src="images/resource.png">';
-				}
-				elseif($data['image'] == FACEBOOK_IMAGE_LINK){
-					echo '<img src="images/link.png">';
-				}
-				echo '</center></td><td><a href="#" target="_blank"  data-toggle="modal" data-target="#modal'.$courseid.'">'.$data['title'].'</a>
-								</td><td style="font-size:11px"><b>'.$data ['from'].'</b></td><td>'.$date.'</td></tr>';
+				$discussionId = null;
+				if($data['course'] == $courseid){
+					$date = date("d/m/Y H:i", $data['date']);
+					echo '<tr><td><center>';
+					if($data['image'] == FACEBOOK_IMAGE_POST){
+						echo '<img src="images/post.png">';
+						$discussionId = $data['discussion'];
+					}
+					elseif($data['image'] == FACEBOOK_IMAGE_RESOURCE){
+						echo '<img src="images/resource.png">';
+					}
+					elseif($data['image'] == FACEBOOK_IMAGE_LINK){
+						echo '<img src="images/link.png">';
+					}
+					
+					if($discussionId != null) {
+						echo '</center></td><td><a href="#" discussionid="'.$discussionId.'" component="forum">'.$data['title'].'</a>
+									</td><td style="font-size:11px"><b>'.$data ['from'].'</b></td><td>'.$date.'</td></tr>';
+						?>
+						<!-- Modal -->
+						<div class="modal fade" id="m<?php echo $discussionId; ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+						  <div class="modal-dialog" role="document">
+						    <div class="modal-content">
+						      <div class="modal-header">
+						        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						        <h4 class="modal-title" id="myModalLabel"></h4>
+						      </div>
+						      <div class="modal-body">
+						        ...
+						      </div>
+						      <div class="modal-footer">
+						        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						        <button type="button" class="btn btn-primary">Save changes</button>
+						      </div>
+						    </div>
+						  </div>
+						</div>
+						<?php
+					} else {
+						echo '</center></td><td><a href="'.$data['link'].'" target="_blank">'.$data['title'].'</a>
+									</td><td style="font-size:11px"><b>'.$data ['from'].'</b></td><td>'.$date.'</td></tr>';
+					}
 				}
 			}
 		echo "</tbody></table></div>";
@@ -198,17 +225,21 @@ if ($userfacebookinfo != false) {
 	<!-- Display engine -->
 	<script type="text/javascript">
 	var courseId = null;
-	
+	var discussionId = null;
+
 	$("*", document.body).click(function(event) {
 		event.stopPropagation();
 
-		if(courseId != null) {
-			$('#' + courseId).fadeOut(300);
+		if($(this).attr('component') == "button") {
+			$('#c' + courseId).fadeOut(300);
+			courseId = $(this).attr('courseid');
+			$('#c' + courseId).delay(300).fadeIn(300);
 		}
-		
-		courseId = $(this).attr('courseid');
-		
-		$('#' + courseId).delay(300).fadeIn(300);
+
+		else if($(this).attr('component') == "forum") {
+			discussionId = $(this).attr('discussionid');
+			$('#m' + discussionId).modal('show');
+		}
 	});
 	</script>
 	
