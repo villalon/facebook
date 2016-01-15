@@ -89,7 +89,7 @@ $userfacebookinfo = $DB->get_record('facebook_user',array('moodleid'=>2,'status'
 
 // if the user exist then show the app, if not tell him to connect his facebook account
 if ($userfacebookinfo != false) {
-	$moodleid = 3;
+	$moodleid = 2;
 	$lastvisit = $userfacebookinfo->lasttimechecked;
 	$user_info = $DB->get_record('user', array(
 			'id'=>$moodleid
@@ -144,6 +144,7 @@ if ($userfacebookinfo != false) {
 		
 		//include "htmltoinclude/tableheaderindex.html";
 	}
+	echo "<p></p>";
 	echo "</div>";
 	include 'htmltoinclude/likebutton.html';
 	//include 'htmltoinclude/news.html';
@@ -159,14 +160,39 @@ if ($userfacebookinfo != false) {
 		
 		?>
       	<div style="display: none;" id="c<?php echo $courseid; ?>">
-      		<p><?php echo $fullname; ?></p><br>
+      		
+      		<div class="panel panel-default">
+      		
+			  	<div class="panel"><nav>
+				  <ul><p><b style="font-size: 15pt;color: #727272;"><?php echo $fullname; ?></b></p></ul>
+				  <ul class="pagination">
+    				<li>
+      					<a href="#" aria-label="Previous">
+        				<span aria-hidden="true">&laquo;</span>
+      					</a>
+    				</li>
+    				<li><a href="#">1</a></li>
+    				<li><a href="#">2</a></li>
+    				<li><a href="#">3</a></li>
+    				<li><a href="#">4</a></li>
+    				<li><a href="#">5</a></li>
+    				<li>
+      					<a href="#" aria-label="Next">
+        				<span aria-hidden="true">&raquo;</span>
+      					</a>
+    				</li>
+  				</ul>
+				</nav>
+  				</div>
+  				
 			<table class="tablesorter" border="0" width="100%" style="font-size: 13px">
 				<thead>
 					<tr>
-						<th width="8%"></th>
-						<th width="52%"><?php echo get_string('rowtittle', 'local_facebook'); ?></th>
-						<th width="20%"><?php echo get_string('rowfrom', 'local_facebook'); ?></th>
+						<th width="8%" style= "border: 0px  #212121;border-radius: 8px 0px 0px 0px"></th>
+						<th width="37%"><?php echo get_string('rowtittle', 'local_facebook'); ?></th>
 						<th width="20%"><?php echo get_string('rowdate', 'local_facebook'); ?></th>
+						<th width="20%"><?php echo get_string('rowfrom', 'local_facebook'); ?></th>
+						<th width="8%" 	style= "border: 0px  #212121;border-radius: 0px 8px 0px 0px">Share</th>						
 					</tr>
 				</thead>
 				<tbody>
@@ -181,11 +207,11 @@ if ($userfacebookinfo != false) {
 						echo '<img src="images/post.png">';
 						$discussionId = $data['discussion'];
 					}
-					elseif($data['image'] == FACEBOOK_IMAGE_RESOURCE){
-						echo '<img src="images/resource.png">';
-					}
 					elseif($data['image'] == FACEBOOK_IMAGE_LINK){
 						echo '<img src="images/link.png">';
+					}
+					elseif($data['image'] == FACEBOOK_IMAGE_RESOURCE){
+						echo '<img src="images/resource.png">';
 					}
 					
 					if($discussionId != null) {
@@ -244,7 +270,7 @@ if ($userfacebookinfo != false) {
 	</script>
 	
 	<?php
- 	echo "</div><br>";
+ 	echo "</div></div><br>";
 	include 'htmltoinclude/spacer.html';
 	echo '<div id="overlay"></div>';
 
