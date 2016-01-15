@@ -24,6 +24,7 @@
  * @copyright  2015 Xiu-Fong Lin (xlin@alumnos.uai.cl)
  * @copyright  2015 Mihail Pozarski (mipozarski@alumnos.uai.cl)
  * @copyright  2015 Hans Jeria (hansjeria@gmail.com)
+ * @copyright  2016 Mark Michaelsen (mmichaelsen678@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -35,6 +36,7 @@ include "config.php";
 use Facebook\FacebookResponse;
 use Facebook\FacebookRedirectLoginHelper;
 use Facebook\FacebookRequire;
+include "htmltoinclude/bootstrap.html";
 include "htmltoinclude/javascriptindex.html";
 
 //gets all facebook information needed
@@ -81,8 +83,8 @@ $connecturl= new moodle_url('/local/facebook/connect.php');
 
 //gets the UAI left side bar of the app
 include 'htmltoinclude/sidebar.html';
-//search for the user facebook information
 
+//search for the user facebook information
 $userfacebookinfo = $DB->get_record('facebook_user',array('facebookid'=>$facebook_id,'status'=>1));
 
 // if the user exist then show the app, if not tell him to connect his facebook account
@@ -93,7 +95,6 @@ if ($userfacebookinfo != false) {
 			'id'=>$moodleid
 	));
 	$usercourse = enrol_get_users_courses($moodleid);
-	echo '<div class="cuerpo"><h1>'.get_string('courses', 'local_facebook').'</h1><ul id="cursos">';
 
 	//generates an array with all the users courses
 	$courseidarray = array();
@@ -127,54 +128,154 @@ if ($userfacebookinfo != false) {
 		if (isset($totalpost[$courseid])){
 			$totals += intval($totalpost[$courseid]);
 		}
-		echo '<a class="inline link_curso" href="#'.$courseid.'"><li class="curso"><p class="nombre"><img src="images/lista_curso.png">'.$fullname.'</p>';
-		//if there is something to notify, then show the number of new things
+		/*echo '<div class="panel panel-default" style="padding-left: 5px; background: linear-gradient(white, gainsboro);">
+				<a class="inline link_curso" href="#'.$courseid.'">
+				<p class="name" style="color: black; font-weight:bold; text-decoration: none; font-size:15px;">
+				<img src="images/lista_curso.png">'.$fullname.'</p></a></div>';*/
+		echo '<div class="block"><button type="button" class="btn btn-info btn-lg" style="white-space: normal; width: 90%; max-height: 5em; border: 1px solid lightgray; background: linear-gradient(white, gainsboro);" courseid="'.$courseid.'" component="button">';
+		
+		// If there is something to notify, show the number of new things
 		if ($totals>0){
-			echo '<span class="numero_notificaciones">'.$totals.'</span>';
+			echo '<span class="badge" style="color: white; background-color: red; position: relative; right: -80px; top: -15px;" courseid="c'.$courseid.'" component="button">'.$totals.'</span>';
 		}
+		echo '<p class="name" style="color: black; font-weight:bold; text-decoration: none; font-size:13px; word-wrap: initial;" courseid="'.$courseid.'" component="button">
+				'.$fullname.'</p></button></div>';
+		
+		
 		//include "htmltoinclude/tableheaderindex.html";
-		?>
-				</li>
-			</a>
-		<div class="popup_curso" id="<?php echo $courseid ?>">
-			<a href="#" class="close"></a>
-			<div class="contenido_popup">
-				<?php echo get_string('tabletittle', 'local_facebook').$fullname; ?><br>
-				<table class="tablesorter" border="0" width="100%"
-					style="font-size: 13px">
-					<thead>
-						<tr>
-							<th width="8%"></th>
-							<th width="52%"><?php echo get_string('rowtittle', 'local_facebook'); ?></th>
-							<th width="20%"><?php echo get_string('rowfrom', 'local_facebook'); ?></th>
-							<th width="20%"><?php echo get_string('rowdate', 'local_facebook'); ?></th>
-						</tr>
-					</thead>
-					<tbody>
-		
-		
-		<?php 
-		//foreach that gives the corresponding image to the new and old items created(resource,post,forum), and its title, how upload it and its link
-		foreach($dataarray as $data){
-			if($data['course'] == $courseid){
-				$date = date("d/m/Y H:i", $data['date']);
-				echo '<tr><td><center>';
-				if($data['image'] == FACEBOOK_IMAGE_POST){
-					echo '<img src="images/post.png">';
-				}
-				elseif($data['image'] == FACEBOOK_IMAGE_RESOURCE){
-					echo '<img src="images/resource.png">';
-				}
-				elseif($data['image'] == FACEBOOK_IMAGE_LINK){
-					echo '<img src="images/link.png">';
-				}
-				echo '</center></td><td><a href="'.$data['link'].'" target="_blank">'.$data['title'].'</a>
-								</td><td style="font-size:11px"><b>'.$data ['from'].'</b></td><td>'.$date.'</td></tr>';
-			}
-		}
-		echo '</tbody></table></div></div>';
 	}
-	echo '</ul></tbody></div></div>';
+	echo "<p></p>";
+	echo "</div>";
+	include 'htmltoinclude/likebutton.html';
+	//include 'htmltoinclude/news.html';
+	echo "</div>";
+	
+	
+	echo "<div class='col-md-10 col-xs-12'>";
+	echo get_string('tabletittle', 'local_facebook').": ";
+	foreach($usercourse as $courses){
+			
+		$fullname = $courses->fullname;
+		$courseid = $courses->id;
+		
+		?>
+      	<div style="display: none;" id="c<?php echo $courseid; ?>">
+      		
+      		<div class="panel panel-default">
+      		
+			  	<div class="panel"><nav>
+				  <ul><p><b style="font-size: 15pt;color: #727272;"><?php echo $fullname; ?></b></p></ul>
+				  <ul class="pagination">
+    				<li>
+      					<a href="#" aria-label="Previous">
+        				<span aria-hidden="true">&laquo;</span>
+      					</a>
+    				</li>
+    				<li><a href="#">1</a></li>
+    				<li><a href="#">2</a></li>
+    				<li><a href="#">3</a></li>
+    				<li><a href="#">4</a></li>
+    				<li><a href="#">5</a></li>
+    				<li>
+      					<a href="#" aria-label="Next">
+        				<span aria-hidden="true">&raquo;</span>
+      					</a>
+    				</li>
+  				</ul>
+				</nav>
+  				</div>
+  				</div>
+  				
+			<table class="tablesorter" border="0" width="100%" style="font-size: 13px">
+				<thead>
+					<tr>
+						<th width="8%" style= "border: 0px  #212121;border-radius: 8px 0px 0px 0px"></th>
+						<th width="37%"><?php echo get_string('rowtittle', 'local_facebook'); ?></th>
+						<th width="20%"><?php echo get_string('rowfrom', 'local_facebook'); ?></th>
+						<th width="20%"><?php echo get_string('rowdate', 'local_facebook'); ?></th>
+						<th width="8%" 	style= "border: 0px  #212121;border-radius: 0px 8px 0px 0px">Share</th>						
+					</tr>
+				</thead>
+				<tbody>
+			<?php 
+			//foreach that gives the corresponding image to the new and old items created(resource,post,forum), and its title, how upload it and its link
+			foreach($dataarray as $data){
+				$discussionId = null;
+				if($data['course'] == $courseid){
+					$date = date("d/m/Y H:i", $data['date']);
+					echo '<tr><td><center>';
+					if($data['image'] == FACEBOOK_IMAGE_POST){
+						echo '<img src="images/post.png">';
+						$discussionId = $data['discussion'];
+					}
+					elseif($data['image'] == FACEBOOK_IMAGE_LINK){
+						echo '<img src="images/link.png">';
+					}
+					elseif($data['image'] == FACEBOOK_IMAGE_RESOURCE){
+						echo '<img src="images/resource.png">';
+					}
+					
+					if($discussionId != null) {
+						echo '</center></td><td><a href="#" discussionid="'.$discussionId.'" component="forum">'.$data['title'].'</a>
+									</td><td style="font-size:11px"><b>'.$data ['from'].'</b></td><td>'.$date.'</td></tr>';
+						
+						$postData = get_posts_from_discussion($discussionId);
+						?>
+						<!-- Modal -->
+						<div class="modal fade" id="m<?php echo $discussionId; ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+						  <div class="modal-dialog" role="document">
+						    <div class="modal-content">
+						      <div class="modal-body">
+						      <?php
+						        foreach($postData as $post) {
+						        	$date = $post['date'];
+						        	echo $post['message'];
+						        	echo "<div align='right'>".$post['user'].", ".date('l d-F-Y', $date)."</div><br>";
+						        }
+						      ?>
+						      </div>
+						      <div class="modal-footer">
+						        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						        <button type="button" class="btn btn-primary">Save changes</button>
+						      </div>
+						    </div>
+						  </div>
+						</div>
+						<?php
+					} else {
+						echo '</center></td><td><a href="'.$data['link'].'" target="_blank">'.$data['title'].'</a>
+									</td><td style="font-size:11px"><b>'.$data ['from'].'</b></td><td>'.$date.'</td></tr>';
+					}
+				}
+			}
+		echo "</tbody></table></div>";
+	}
+	
+	?>
+	
+	<!-- Display engine -->
+	<script type="text/javascript">
+	var courseId = null;
+	var discussionId = null;
+
+	$("*", document.body).click(function(event) {
+		event.stopPropagation();
+
+		if($(this).attr('component') == "button") {
+			$('#c' + courseId).fadeOut(300);
+			courseId = $(this).attr('courseid');
+			$('#c' + courseId).delay(300).fadeIn(300);
+		}
+
+		else if($(this).attr('component') == "forum") {
+			discussionId = $(this).attr('discussionid');
+			$('#m' + discussionId).modal('show');
+		}
+	});
+	</script>
+	
+	<?php
+ 	echo "</div></div><br>";
 	include 'htmltoinclude/spacer.html';
 	echo '<div id="overlay"></div>';
 
