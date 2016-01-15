@@ -85,7 +85,7 @@ $connecturl= new moodle_url('/local/facebook/connect.php');
 include 'htmltoinclude/sidebar.html';
 
 //search for the user facebook information
-$userfacebookinfo = $DB->get_record('facebook_user',array('moodleid'=>2,'status'=>1));
+$userfacebookinfo = $DB->get_record('facebook_user',array('facebookid'=>$facebook_id,'status'=>1));
 
 // if the user exist then show the app, if not tell him to connect his facebook account
 if ($userfacebookinfo != false) {
