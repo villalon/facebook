@@ -38,7 +38,7 @@ use Facebook\FacebookRedirectLoginHelper;
 use Facebook\FacebookRequire;
 include "htmltoinclude/bootstrap.html";
 include "htmltoinclude/javascriptindex.html";
-/*
+
 //gets all facebook information needed
 $appid = $CFG->fbkAppID;
 $secretid = $CFG->fbkScrID;
@@ -73,11 +73,11 @@ $facebookdata = $helper->getSignedRequest();
 $user_data = $fb->get("/me?fields=id",$accessToken);
 $user_profile = $user_data->getGraphUser();
 $facebook_id = $user_profile["id"];
-*/
-//$app_name= $CFG->fbkAppNAME;
-//$app_email= $CFG->fbkemail;
-//$tutorial_name=$CFG->fbktutorialsN;
-//$tutorial_link=$CFG->fbktutorialsL;
+
+$app_name= $CFG->fbkAppNAME;
+$app_email= $CFG->fbkemail;
+$tutorial_name=$CFG->fbktutorialsN;
+$tutorial_link=$CFG->fbktutorialsL;
 $messageurl= new moodle_url('/message/edit.php');
 $connecturl= new moodle_url('/local/facebook/connect.php');
 
@@ -89,7 +89,7 @@ $userfacebookinfo = $DB->get_record('facebook_user',array('moodleid'=>2,'status'
 
 // if the user exist then show the app, if not tell him to connect his facebook account
 if ($userfacebookinfo != false) {
-	$moodleid = 2;
+	$moodleid = $userfacebookinfo->moodleid;
 	$lastvisit = $userfacebookinfo->lasttimechecked;
 	$user_info = $DB->get_record('user', array(
 			'id'=>$moodleid
@@ -184,14 +184,15 @@ if ($userfacebookinfo != false) {
   				</ul>
 				</nav>
   				</div>
+  				</div>
   				
 			<table class="tablesorter" border="0" width="100%" style="font-size: 13px">
 				<thead>
 					<tr>
 						<th width="8%" style= "border: 0px  #212121;border-radius: 8px 0px 0px 0px"></th>
 						<th width="37%"><?php echo get_string('rowtittle', 'local_facebook'); ?></th>
-						<th width="20%"><?php echo get_string('rowdate', 'local_facebook'); ?></th>
 						<th width="20%"><?php echo get_string('rowfrom', 'local_facebook'); ?></th>
+						<th width="20%"><?php echo get_string('rowdate', 'local_facebook'); ?></th>
 						<th width="8%" 	style= "border: 0px  #212121;border-radius: 0px 8px 0px 0px">Share</th>						
 					</tr>
 				</thead>
@@ -217,17 +218,21 @@ if ($userfacebookinfo != false) {
 					if($discussionId != null) {
 						echo '</center></td><td><a href="#" discussionid="'.$discussionId.'" component="forum">'.$data['title'].'</a>
 									</td><td style="font-size:11px"><b>'.$data ['from'].'</b></td><td>'.$date.'</td></tr>';
+						
+						$postData = get_posts_from_discussion($discussionId);
 						?>
 						<!-- Modal -->
 						<div class="modal fade" id="m<?php echo $discussionId; ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 						  <div class="modal-dialog" role="document">
 						    <div class="modal-content">
-						      <div class="modal-header">
-						        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-						        <h4 class="modal-title" id="myModalLabel"></h4>
-						      </div>
 						      <div class="modal-body">
-						        ...
+						      <?php
+						        foreach($postData as $post) {
+						        	$date = $post['date'];
+						        	echo $post['message'];
+						        	echo "<div align='right'>".$post['user'].", ".date('l d-F-Y', $date)."</div><br>";
+						        }
+						      ?>
 						      </div>
 						      <div class="modal-footer">
 						        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

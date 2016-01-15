@@ -332,7 +332,7 @@ function facebook_connect_table_generator($facebook_id, $link, $first_name, $mid
 function get_posts_from_discussion($discussionId) {
 	global $DB;
 	
-	$sql = "SELECT fp.subject AS subject, fp.message AS message, fp.created AS date, fp.parent AS parent, 
+	$sql = "SELECT fp.id AS id, fp.subject AS subject, fp.message AS message, fp.created AS date, fp.parent AS parent, 
 			CONCAT(u.firstname, ' ', u.lastname) AS user 
 			FROM {forum_posts} AS fp 
 			INNER JOIN {user} AS u ON (fp.userid = u.id) 
@@ -341,7 +341,17 @@ function get_posts_from_discussion($discussionId) {
 	
 	$discussionData = $DB->get_records_sql($sql, array($discussionId));
 	
+	$data = array();
 	foreach($discussionData as $post) {
-		
+		$data[] = array(
+				'id' => $post->id,
+				'subject' => $post->subject,
+				'message' => $post->message,
+				'date' => $post->date,
+				'parent' => $post->parent,
+				'user' => $post->user
+		);
 	}
+	
+	return $data;
 }
