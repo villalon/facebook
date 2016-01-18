@@ -132,13 +132,13 @@ if ($userfacebookinfo != false) {
 				<a class="inline link_curso" href="#'.$courseid.'">
 				<p class="name" style="color: black; font-weight:bold; text-decoration: none; font-size:15px;">
 				<img src="images/lista_curso.png">'.$fullname.'</p></a></div>';*/
-		echo '<div class="block"><button type="button" class="btn btn-info btn-lg" style="white-space: normal; width: 90%; max-height: 5em; border: 1px solid lightgray; background: linear-gradient(white, gainsboro);" courseid="'.$courseid.'" component="button">';
+		echo '<div class="block" style="height: 4em;"><button type="button" class="btn btn-info btn-lg" style="white-space: normal; width: 90%; height: 90%; border: 1px solid lightgray; background: linear-gradient(white, gainsboro);" courseid="'.$courseid.'" fullname="'.$fullname.'" component="button">';
 		
 		// If there is something to notify, show the number of new things
 		if ($totals>0){
 			echo '<span class="badge" style="color: white; background-color: red; position: relative; right: -80px; top: -15px;" courseid="c'.$courseid.'" component="button">'.$totals.'</span>';
 		}
-		echo '<p class="name" style="color: black; font-weight:bold; text-decoration: none; font-size:13px; word-wrap: initial;" courseid="'.$courseid.'" component="button">
+		echo '<p class="name" style="height: 3em; overflow-y: hidden; color: black; font-weight: bold; text-decoration: none; font-size:13px; word-wrap: initial;" courseid="'.$courseid.'" component="button">
 				'.$fullname.'</p></button></div>';
 		
 		
@@ -151,8 +151,7 @@ if ($userfacebookinfo != false) {
 	echo "</div>";
 	
 	
-	echo "<div class='col-md-10 col-xs-12'>";
-	echo get_string('tabletittle', 'local_facebook').": ";
+	echo "<div class='col-md-10 col-sm-9 col-xs-12'>";
 	foreach($usercourse as $courses){
 			
 		$fullname = $courses->fullname;
@@ -164,8 +163,8 @@ if ($userfacebookinfo != false) {
       		<div class="panel panel-default">
       		
 			  	<div class="panel"><nav>
-				  <ul><p><b style="font-size: 15pt;color: #727272;"><?php echo $fullname; ?></b></p></ul>
-				  <ul class="pagination">
+				  <ul><p><b style="font-size: 100%; color: #727272;"><?php echo $fullname; ?></b></p></ul>
+				  <ul class="pagination pagination-sm">
     				<li>
       					<a href="#" aria-label="Previous">
         				<span aria-hidden="true">&laquo;</span>
@@ -184,15 +183,14 @@ if ($userfacebookinfo != false) {
   				</ul>
 				</nav>
   				</div>
-  				</div>
   				
 			<table class="tablesorter" border="0" width="100%" style="font-size: 13px">
 				<thead>
 					<tr>
 						<th width="8%" style= "border: 0px  #212121;border-radius: 8px 0px 0px 0px"></th>
 						<th width="37%"><?php echo get_string('rowtittle', 'local_facebook'); ?></th>
+						<th width="20%"><?php echo get_string('rowdate', 'local_facebook'); ?></th>						
 						<th width="20%"><?php echo get_string('rowfrom', 'local_facebook'); ?></th>
-						<th width="20%"><?php echo get_string('rowdate', 'local_facebook'); ?></th>
 						<th width="8%" 	style= "border: 0px  #212121;border-radius: 0px 8px 0px 0px">Share</th>						
 					</tr>
 				</thead>
@@ -208,35 +206,35 @@ if ($userfacebookinfo != false) {
 						echo '<img src="images/post.png">';
 						$discussionId = $data['discussion'];
 					}
+					elseif($data['image'] == FACEBOOK_IMAGE_RESOURCE){
+						echo '<img src="images/resource.png">';
+					}					
 					elseif($data['image'] == FACEBOOK_IMAGE_LINK){
 						echo '<img src="images/link.png">';
 					}
-					elseif($data['image'] == FACEBOOK_IMAGE_RESOURCE){
-						echo '<img src="images/resource.png">';
-					}
+
 					
 					if($discussionId != null) {
 						echo '</center></td><td><a href="#" discussionid="'.$discussionId.'" component="forum">'.$data['title'].'</a>
-									</td><td style="font-size:11px"><b>'.$data ['from'].'</b></td><td>'.$date.'</td></tr>';
+									</td><td>'.$date.'</td><td style="font-size:11px"><b>'.$data ['from'].'</b></td></tr>';
 						
 						$postData = get_posts_from_discussion($discussionId);
 						?>
 						<!-- Modal -->
-						<div class="modal fade" id="m<?php echo $discussionId; ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+						<div class="modal fade" id="m<?php echo $discussionId; ?>" tabindex="-1" role="dialog" aria-labelledby="modal">
 						  <div class="modal-dialog" role="document">
 						    <div class="modal-content">
 						      <div class="modal-body">
 						      <?php
 						        foreach($postData as $post) {
 						        	$date = $post['date'];
-						        	echo $post['message'];
+						        	echo "<div align='left'>".$post['message']."</div>";
 						        	echo "<div align='right'>".$post['user'].", ".date('l d-F-Y', $date)."</div><br>";
 						        }
 						      ?>
 						      </div>
 						      <div class="modal-footer">
-						        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						        <button type="button" class="btn btn-primary">Save changes</button>
+						        <button type="button" class="btn btn-default" data-dismiss="modal" component="close-modal" modalid="<?php echo $discussionId; ?>">Close</button>
 						      </div>
 						    </div>
 						  </div>
@@ -248,7 +246,7 @@ if ($userfacebookinfo != false) {
 					}
 				}
 			}
-		echo "</tbody></table></div>";
+		echo "</tbody></table></div></div>";
 	}
 	
 	?>
@@ -261,7 +259,7 @@ if ($userfacebookinfo != false) {
 	$("*", document.body).click(function(event) {
 		event.stopPropagation();
 
-		if($(this).attr('component') == "button") {
+		if(($(this).attr('component') == "button") && ($(this).attr('courseid') != courseId)) {
 			$('#c' + courseId).fadeOut(300);
 			courseId = $(this).attr('courseid');
 			$('#c' + courseId).delay(300).fadeIn(300);
@@ -271,6 +269,26 @@ if ($userfacebookinfo != false) {
 			discussionId = $(this).attr('discussionid');
 			$('#m' + discussionId).modal('show');
 		}
+
+		else if($(this).attr('component') == "close-modal") {
+			modalId = $(this).attr('modalid');
+			$('#m' + modalId).modal('hide');
+		}
+	});
+
+	$("#search").on('change keyup paste', function() {
+		var searchValue = $('#search').val();
+		$("button").each(function() {
+			var buttonId = $(this).attr('courseid');
+
+			if($(this).attr('fullname').toLowerCase().indexOf(searchValue) == -1) {
+				$(this).hide();
+				$(this).parent().css('height', '0');
+			} else {
+				$(this).show();
+				$(this).parent().css('height', '4em');
+			}
+		});
 	});
 	</script>
 	
