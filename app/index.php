@@ -40,6 +40,8 @@ use Facebook\FacebookRequire;
 include "htmltoinclude/bootstrap.html";
 include "htmltoinclude/javascriptindex.html";
 
+header('X-Frame-Options: GOFORIT');
+
 //gets all facebook information needed
 $appid = $CFG->fbkAppID;
 $secretid = $CFG->fbkScrID;
