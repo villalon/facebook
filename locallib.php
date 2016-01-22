@@ -35,6 +35,12 @@ define('FACEBOOK_MODULE_NOT_VISIBLE', 0);
 define('FACEBOOK_IMAGE_POST', 'post');
 define('FACEBOOK_IMAGE_RESOURCE', 'resource');
 define('FACEBOOK_IMAGE_LINK', 'link');
+define('FACEBOOK_IMAGE_EMARKING', 'emarking');
+define('FACEBOOK_IMAGE_ASSIGN', 'assign');
+
+define('MODULE_EMARKING', 23);
+define('MODULE_ASSIGN', 1);
+
 /**
  * This function gets al the notification pending since the last check.
  * @param $sqlin from get_in_or_equal used in "IN ('')" clause    
@@ -171,7 +177,7 @@ function record_sort($records, $field, $reverse = false){
  * @param $param from get_in_or_equal parameters      	
  * @return array
  */
-function get_data_post_resource_link($sqlin, $param){
+function get_data_post_resource_link($sqlin, $param, $moodleid){
 	global $DB;
 	
 	// Parameters for post query
@@ -239,21 +245,78 @@ function get_data_post_resource_link($sqlin, $param){
 	// Get the data from the above query
 	$datalink = $DB->get_records_sql($datalinksql, $paramslink);
 	
-	$datawithpostresourcesandlink = array();
+	// Query for getting eMarkings by course
+	$dataemarkingsql = "SELECT es.id AS id, 
+			e.id AS emarkingid, 
+			CONCAT(u.firstname, ' ', u.lastname) AS user, 
+			e.course AS course, 
+			e.name AS testname, 
+			es.grade AS grade, 
+			es.status AS status, 
+			es.timecreated AS date, 
+			es.status AS status, 
+			es.teacher AS teacherid, 
+			ed.id AS draft 
+			FROM {emarking_submission} AS es 
+			INNER JOIN {emarking} AS e ON (es.emarking = e.id) 
+			INNER JOIN {user} AS u ON (es.student = u.id) 
+			INNER JOIN {emarking_draft} AS ed ON (es.id = ed.submissionid) 
+			WHERE e.course $sqlin 
+			AND u.id = ? 
+			GROUP BY es.id";
+	
+	$emarkingparams = array_merge($param, $moodleid);
+	
+	// Get the data from the query
+	$dataemarking = $DB->get_records_sql($dataemarkingsql, $emarkingparams);
+	
+	$dataassignmentsql = "SELECT asub.id AS id, 
+			cm.id AS moduleid, 
+			a.course AS course, 
+			a.name AS name, 
+			a.intro AS intro, 
+			asub.timemodified AS date, 
+			a.duedate AS due, 
+			asub.status AS status, 
+			ag.grade AS grade 
+			FROM {course_modules} AS cm 
+			INNER JOIN {modules} AS m ON (cm.module = m.id) 
+	   		INNER JOIN {assign} AS a ON (a.course = cm.course) 
+    		INNER JOIN {assign_submission} AS asub ON ( asub.assignment = a.id) 
+    		INNER JOIN {user} AS u ON (u.id = asub.userid) 
+			INNER JOIN {assign_grades} AS ag ON (a.id = ag.assignment) 
+			WHERE a.course $sqlin 
+			AND m.id = ? 
+			AND cm.visible = ? 
+    		AND m.visible = ? 
+    		AND u.id = ? 
+			GROUP BY asub.id";
+	
+	$sqlparams = array(
+			MODULE_ASSIGN,
+			FACEBOOK_COURSE_MODULE_VISIBLE,
+			FACEBOOK_COURSE_MODULE_VISIBLE
+	);
+	
+	$assignparams = array_merge($param, $sqlparams, $moodleid);
+	
+	$dataassign = $DB->get_records_sql($dataassignmentsql, $assignparams);
+	
+	$totaldata = array();
 	// Foreach used to fill the array with the posts information
 	foreach($datapost as $post){
 		$posturl = new moodle_url('/mod/forum/discuss.php', array(
 				'd'=>$post->dis_id 
 		));
 		
-		$datawithpostresourcesandlink[] = array(
+		$totaldata[] = array(
 				'image'=>FACEBOOK_IMAGE_POST,
 				'discussion'=>$post->dis_id,
 				'link'=>$posturl,
 				'title'=>$post->subject,
 				'from'=>$post->firstname . ' ' . $post->lastname,
 				'date'=>$post->modified,
-				'course'=>$post->course 
+				'course'=>$post->course
 		);
 	}
 	
@@ -265,7 +328,7 @@ function get_data_post_resource_link($sqlin, $param){
 		));
 		
 		if($resource->visible == FACEBOOK_COURSE_MODULE_VISIBLE && $resource->visibleold == FACEBOOK_COURSE_MODULE_VISIBLE){
-			$datawithpostresourcesandlink[] = array (
+			$totaldata[] = array (
 					'image'=>FACEBOOK_IMAGE_RESOURCE,
 					'link'=>$resourceurl,
 					'title'=>$resource->resourcename,
@@ -280,7 +343,7 @@ function get_data_post_resource_link($sqlin, $param){
 		$date = date("d/m H:i", $link->timemodified);
 		
 		if($link->visible == FACEBOOK_COURSE_MODULE_VISIBLE && $link->visibleold == FACEBOOK_COURSE_MODULE_VISIBLE){
-			$datawithpostresourcesandlink[] = array(
+			$totaldata[] = array(
 					'image'=>FACEBOOK_IMAGE_LINK,
 					'link'=>$link->externalurl,
 					'title'=>$link->urlname,
@@ -291,8 +354,52 @@ function get_data_post_resource_link($sqlin, $param){
 		}
 	}
 	
+	foreach($dataemarking as $emarking){
+		$cm = $DB->get_record('course_modules', array(
+				'course' => $emarking->course,
+				'module' => MODULE_EMARKING,
+				'instance' => $emarking->emarkingid
+		));
+		
+		$emarkingurl = new moodle_url('/mod/emarking/view.php', array(
+				'id' => $cm->id
+		));
+		
+		$totaldata[] = array(
+				'image'=>FACEBOOK_IMAGE_EMARKING,
+				'link'=>$emarkingurl,
+				'title'=>$emarking->testname,
+				'from'=>$emarking->user,
+				'date'=>$emarking->date,
+				'course'=>$emarking->course,
+				'id'=>$emarking->id,
+				'grade'=>$emarking->grade,
+				'status'=>$emarking->status,
+				'teacherid'=>$emarking->teacherid
+		);
+	}
+	
+	foreach($dataassign as $assign){
+		$assignurl = new moodle_url('/mod/assign/view.php', array(
+				'id'=>$assign->moduleid
+		));
+	
+		$totaldata[] = array(
+				'image'=>FACEBOOK_IMAGE_ASSIGN,
+				'link'=>$assignurl,
+				'title'=>$assign->name,
+				'intro'=>$assign->intro,
+				'date'=>$assign->date,
+				'due'=>$assign->due,
+				'course'=>$assign->course,
+				'status'=>$assign->status,
+				'grade'=>$assign->grade,
+				'id'=>$assign->id
+		);
+	}
+	
 	// Returns the final array ordered by date to index.php
-	return record_sort($datawithpostresourcesandlink, 'date', 'true');
+	return record_sort($totaldata, 'date', 'true');
 }
 
 function facebook_connect_table_generator($facebook_id, $link, $first_name, $middle_name, $last_name, $appname) {

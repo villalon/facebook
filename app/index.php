@@ -25,13 +25,14 @@
  * @copyright  2015 Mihail Pozarski (mipozarski@alumnos.uai.cl)
  * @copyright  2015 Hans Jeria (hansjeria@gmail.com)
  * @copyright  2016 Mark Michaelsen (mmichaelsen678@gmail.com)
+ * @copyright  2016 Andrea Villarroel (avillarroel@alumnos.uai.cl)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once(dirname(dirname(dirname(dirname(__FILE__)))).'/config.php');
 require_once($CFG->dirroot.'/local/facebook/locallib.php');
 require_once ($CFG->dirroot."/local/facebook/app/Facebook/autoload.php");
-global $DB, $USER, $CFG;
+global $DB, $USER, $CFG, $OUTPUT;
 include "config.php";
 use Facebook\FacebookResponse;
 use Facebook\FacebookRedirectLoginHelper;
@@ -110,6 +111,7 @@ if ($userfacebookinfo != false) {
 	$dataarray = get_data_post_resource_link($sqlin, $param);
 
 	//foreach that generates each course square
+	echo '<div style="line-height: 4px"><br></div>';
 	foreach($usercourse as $courses){
 			
 		$fullname = $courses->fullname;
@@ -135,11 +137,14 @@ if ($userfacebookinfo != false) {
 		echo '<div class="block" style="height: 4em;"><button type="button" class="btn btn-info btn-lg" style="white-space: normal; width: 90%; height: 90%; border: 1px solid lightgray; background: linear-gradient(white, gainsboro);" courseid="'.$courseid.'" fullname="'.$fullname.'" component="button">';
 		
 		// If there is something to notify, show the number of new things
+		
+		echo '<p class="name" style="position: relative; height: 3em; overflow: hidden; color: black; font-weight: bold; text-decoration: none; font-size:13px; word-wrap: initial;" courseid="'.$courseid.'" component="button">
+				'.$fullname.'</p>';
 		if ($totals>0){
-			echo '<span class="badge" style="color: white; background-color: red; position: relative; right: -80px; top: -15px;" courseid="c'.$courseid.'" component="button">'.$totals.'</span>';
+			echo '<span class="badge" style="color: white; background-color: red; position: relative; right: -58%; top: -64px; margin-right:9%;" courseid="'.$courseid.'" component="button">'.$totals.'</span>';
 		}
-		echo '<p class="name" style="height: 3em; overflow-y: hidden; color: black; font-weight: bold; text-decoration: none; font-size:13px; word-wrap: initial;" courseid="'.$courseid.'" component="button">
-				'.$fullname.'</p></button></div>';
+		echo '</button></div>';
+		
 		
 		
 		//include "htmltoinclude/tableheaderindex.html";
@@ -163,7 +168,8 @@ if ($userfacebookinfo != false) {
       		<div class="panel panel-default">
       		
 			  	<div class="panel"><nav>
-				  <ul><p><b style="font-size: 100%; color: #727272;"><?php echo $fullname; ?></b></p></ul>
+				  <ul><p class="small;"></p><p><b style="font-size: 120%; color: #727272;"><?php echo $fullname; ?></b></p>
+				  </ul>
 				  <ul class="pagination pagination-sm">
     				<li>
       					<a href="#" aria-label="Previous">
@@ -199,9 +205,17 @@ if ($userfacebookinfo != false) {
 			//foreach that gives the corresponding image to the new and old items created(resource,post,forum), and its title, how upload it and its link
 			foreach($dataarray as $data){
 				$discussionId = null;
+				$markid = null;
+				$assignid = null;
 				if($data['course'] == $courseid){
 					$date = date("d/m/Y H:i", $data['date']);
-					echo '<tr><td><center>';
+					
+					echo '<tr><td ';
+					if ($data['date'] > $lastvisit) {
+						echo 'style="margin-left:10px; border-left:3px solid #2a2a2a;"';
+					}
+					echo '><center>';
+					
 					if($data['image'] == FACEBOOK_IMAGE_POST){
 						echo '<img src="images/post.png">';
 						$discussionId = $data['discussion'];
@@ -212,11 +226,31 @@ if ($userfacebookinfo != false) {
 					elseif($data['image'] == FACEBOOK_IMAGE_LINK){
 						echo '<img src="images/link.png">';
 					}
+					elseif($data['image'] == FACEBOOK_IMAGE_EMARKING) {
+						echo '<img src="images/emarking.png">';
+						$markid = $data['id'];
+					}
+					elseif($data['image'] == FACEBOOK_IMAGE_ASSIGN) {
+						echo '<img src="images/assign.png">';
+						$assignid = $data['id'];
+					}
 
 					
 					if($discussionId != null) {
-						echo '</center></td><td><a href="#" discussionid="'.$discussionId.'" component="forum">'.$data['title'].'</a>
-									</td><td>'.$date.'</td><td style="font-size:11px"><b>'.$data ['from'].'</b></td></tr>';
+						echo '</center></td><td>';
+						if($data['date'] > $lastvisit) {
+							echo '<b><a href="#" discussionid="'.$discussionId.'" component="forum">'.$data['title'].'</a>
+								</td><td><b>'.$date.'</td><td style="font-size:13px"><b>'.$data ['from'].'</td></b>
+								<td><button type="button" class="btn btn-primary btn-sm" style="color:#E5E3FB">
+								<img src="images/facebook_1.png" style="height: 70%; width: auto;"></img><b>| share
+								</b></button></td></tr>';
+						} else {
+ 							echo '<a href="#" discussionid="'.$discussionId.'" component="forum">'.$data['title'].'</a>
+								</td><td>'.$date.'</td><td style="font-size: 13px"><b>'.$data ['from'].'</b></td>
+								<td><button type="button" class="btn btn-default btn-sm" style="color:#909090">
+								<img src="images/facebook_2.png" style="height: 70%; width: auto;"></img><b>| share
+								</b></button></td></tr>';
+						}
 						
 						$postData = get_posts_from_discussion($discussionId);
 						?>
@@ -234,7 +268,132 @@ if ($userfacebookinfo != false) {
 						      ?>
 						      </div>
 						      <div class="modal-footer">
-						        <button type="button" class="btn btn-default" data-dismiss="modal" component="close-modal" modalid="<?php echo $discussionId; ?>">Close</button>
+						        <button type="button" class="btn btn-default" data-dismiss="modal" component="close-modal" modalid="m<?php echo $discussionId; ?>">Close</button>
+						      </div>
+						    </div>
+						  </div>
+						</div>
+						<?php
+					} elseif ($markid != null) {
+						echo '</center></td><td><a href="#" emarkingid="'.$markid.'" component="emarking">'.$data['title'].'</a>
+									</td><td>'.$date.'</td><td style="font-size:11px"><b>'.$data ['from'].'</b></td></tr>';
+						?>
+						<!-- Modal -->
+						<div class="modal fade" id="e<?php echo $markid; ?>" tabindex="-1" role="dialog" aria-labelledby="modal">
+						  <div class="modal-dialog" role="document">
+						    <div class="modal-content">
+							    <div class="modal-header">
+							    	<h4 class="modal-title"><?php $course = $DB->get_record('course', array('id' => $data['course'])); echo $course->fullname; ?></h4>
+							    	<?php echo $data['title']; ?>
+							    </div>
+						  		<div class="modal-body">
+						  			<div class="row">
+						  				<div class="col-md-4">
+						  					<b><?php echo get_string('name', 'local_facebook'); ?></b>
+						  					<br>
+						  					<?php echo $data['from']; ?>
+						  				</div>
+						  				<div class="col-md-2">
+						  					<b><?php echo get_string('grade', 'local_facebook'); ?></b>
+						  					<br>
+						  					<?php
+						  					if($data['status'] >= EMARKING_STATUS_PUBLISHED) {
+						  						echo $data['grade'];
+						  					} else {
+						  						echo "-";
+						  					}
+						  					?>
+						  				</div>
+						  				<div class="col-md-3">
+						  					<b><?php echo get_string('status', 'local_facebook'); ?></b>
+						  					<br>
+						  					<?php
+						  					if($data['status'] >= EMARKING_STATUS_PUBLISHED) {
+						  						echo get_string('published', 'local_facebook');
+						  					} else if($data['status'] >= EMARKING_STATUS_SUBMITTED) {
+						  						echo get_string('submitted', 'local_facebook');
+						  					} else {
+						  						echo get_string('absent', 'local_facebook');
+						  					}
+						  					?>
+						  				</div>
+						  				<div class="col-md-3">
+						  					<br>
+						  					<?php 
+						  						echo '<a href="'.$data['link'].'" target="_blank">'.get_string('viewexam', 'local_facebook').'</a>';
+						  					?>
+						  				</div>
+						  			</div>
+						      	</div>
+						      <div class="modal-footer">
+						        <button type="button" class="btn btn-default" data-dismiss="modal" component="close-modal" modalid="e<?php echo $markid; ?>">Close</button>
+						      </div>
+						    </div>
+						  </div>
+						</div>
+						<?php
+					} elseif($assignid != null) {
+						echo '</center></td><td><a href="#" assignid="'.$assignid.'" component="assign">'.$data['title'].'</a>
+									</td><td>'.$date.'</td></tr>';
+						
+						?>
+						<!-- Modal -->
+						<div class="modal fade" id="a<?php echo $assignid; ?>" tabindex="-1" role="dialog" aria-labelledby="modal">
+						  <div class="modal-dialog" role="document">
+						    <div class="modal-content">
+						    	<div class="modal-header">
+							    	<h4 class="modal-title"><?php echo $data['title']; ?></h4>
+							    	<?php echo $data['intro']; ?>
+							    </div>
+						      <div class="modal-body">
+						      	<div class="row">
+						      		<div class="col-md-6">
+						      			<b><?php echo get_string('submitstatus', 'local_facebook'); ?></b>
+						      			<br>
+						      			<b><?php echo get_string('gradestatus', 'local_facebook'); ?></b>
+						      			<br>
+						      			<b><?php echo get_string('duedate', 'local_facebook'); ?></b>
+						      			<br>
+						      			<b><?php echo get_string('timeleft', 'local_facebook'); ?></b>
+						      			<br>
+						      			<b><?php echo get_string('lastmodified', 'local_facebook'); ?></b>
+						      		</div>
+						      		<div class="col-md-6">
+						      			<?php
+				      					if($data['status'] == 'view') {
+				      						echo "No entregado<br>";
+				      					} else {
+				      						echo "Enviado para calificar<br>";
+				      					}
+				      					
+				      					if($data['grade'] != null) {
+				      						echo "Calificado<br>";
+				      					} else {
+				      						echo "Sin calificar<br>";
+				      					}
+				      					
+				      					$duedate = date('r', $data['due']);
+				      					echo $duedate."<br>";
+				      					
+				      					$interval = $data['due'] - time();
+				      					if($interval > 0) {
+				      						$timeleft = ceil($interval / (60 * 60 * 24));
+				      						echo $timeleft." días<br>";
+				      					} else {
+				      						echo "Se ha acabado el tiempo<br>";
+				      					}
+				      					
+				      					$lastmodified = date('r', $data['date']);
+				      					echo $lastmodified;
+						      			?>
+						      			</div>
+						      		</div>
+						      	</div>
+						      <div class="modal-footer">
+						      	<a href="<?php echo $data['link']; ?>"
+						      		<button type="button" class="btn btn-default">Ver en moodle</button>
+						      	</a>
+						        <button type="button" class="btn btn-default" data-dismiss="modal" component="close-modal" modalid="a<?php echo $assignid; ?>">Close</button>
 						      </div>
 						    </div>
 						  </div>
@@ -242,7 +401,7 @@ if ($userfacebookinfo != false) {
 						<?php
 					} else {
 						echo '</center></td><td><a href="'.$data['link'].'" target="_blank">'.$data['title'].'</a>
-									</td><td style="font-size:11px"><b>'.$data ['from'].'</b></td><td>'.$date.'</td></tr>';
+									</td><td>'.$date.'</td><td style="font-size:11px"><b>'.$data ['from'].'</b></td></tr>';
 					}
 				}
 			}
@@ -255,6 +414,8 @@ if ($userfacebookinfo != false) {
 	<script type="text/javascript">
 	var courseId = null;
 	var discussionId = null;
+	var emarkingId = null;
+	var assignId = null;
 
 	$("*", document.body).click(function(event) {
 		event.stopPropagation();
@@ -272,7 +433,17 @@ if ($userfacebookinfo != false) {
 
 		else if($(this).attr('component') == "close-modal") {
 			modalId = $(this).attr('modalid');
-			$('#m' + modalId).modal('hide');
+			$('#' + modalId).modal('hide');
+		}
+
+		else if($(this).attr('component') == "emarking") {
+			emarkingId = $(this).attr('emarkingid');
+			$('#e' + emarkingId).modal('show');
+		}
+
+		else if($(this).attr('component') == "assign") {
+			assignId = $(this).attr('assignid');
+			$('#a' + assignId).modal('show');
 		}
 	});
 
@@ -293,7 +464,7 @@ if ($userfacebookinfo != false) {
 	</script>
 	
 	<?php
- 	echo "</div></div><br>";
+ 	echo "</div></div><br><br><br><br><br><br><br><br><br><br><br><br><br>";
 	include 'htmltoinclude/spacer.html';
 	echo '<div id="overlay"></div>';
 
