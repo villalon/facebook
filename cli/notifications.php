@@ -108,13 +108,32 @@ $paramsresources = array(
 
 // Sql for resource information
 //TODO: agregar foros, revisar fecha que incluir mas notificaciones.
-$sqlresource = "SELECT r.course
-		FROM {course_modules} AS cm INNER JOIN {modules} AS m ON (cm.module = m.id)
-    	INNER JOIN {resource} AS r ON (r.course = cm.course)
+$sqlresource = "SELECT r.course 
+		FROM {course_modules} AS cm 
+		INNER JOIN {modules} AS m ON (cm.module = m.id) 
+    	INNER JOIN {resource} AS r ON (r.course = cm.course) 
 		WHERE m.name IN (?) AND cm.visible = ? AND m.visible = ? 
     	GROUP BY r.course";
 
 $dataresource = $DB->get_records_sql($sqlresource, $paramsresources);
+
+
+// Parameters for emarkings query
+$paramsemarking = array(
+		'emarking',
+		FACEBOOK_COURSE_MODULE_VISIBLE,
+		FACEBOOK_MODULE_VISIBLE,
+);
+
+// Sql for emarkings information
+$sqlemarking = "SELECT e.course 
+		FROM {course_modules} AS cm 
+		INNER JOIN {modules} AS m ON (cm.module = m.id) 
+    	INNER JOIN {emarking} AS e ON (e.course = cm.course) 
+		WHERE m.name IN (?) AND cm.visible = ? AND m.visible = ? 
+    	GROUP BY r.course";
+
+$dataemarking = $DB->get_records_sql($sqlemarking, $paramsemarking);
 
 $allnotifications = array();
 
@@ -125,10 +144,10 @@ foreach ($dataresource as $resources){
 	$record->time = time();
 	$record->status = 0;
 	$record->timemodified = 0;
-	$allnotifications[]=$record;
+	$allnotifications[] = $record;
 }
 
-// if clause that makes sure if there is something in the array , if there is its saves the array in the data base
+// if clause that makes sure if there is something in the array , if there is it saves the array in the data base
 if(count($allnotifications)>0){
 		$DB->insert_records('facebook_notifications', $allnotifications);
 }
@@ -205,14 +224,14 @@ foreach($arrayfacebookid as $userfacebookid){
 		$data = array(
 				"link" => "",
 				"message" => "",
-				"template" => "Tienes nuevas notificaciones en Webcursos."
+				"template" => "Tienes una notificación de eMarking."
 		);
 		
 		$fb->setDefaultAccessToken($appid.'|'.$secretid);
 		$response = $fb->post('/'.$userfacebookid->facebookid.'/notifications', $data);
 		$return = $response->getDecodedBody();
 		if($return['success'] == TRUE){		
-			// Echo that tells to who notifications were senta, ordered by id
+			// Echo that tells to who notifications were sent, ordered by id
 			echo $counttosend." ".$userfacebookid->facebookid." ok\n";
 			$counttosend++;
 		}else{
@@ -226,7 +245,7 @@ echo "ok\n";
 echo $counttosend." notificantions sent.\n";
 echo "Ending at ".date("F j, Y, G:i:s");
 $timenow = time();
-$execute = $time - $timenow;
+$execute = $timenow - $time;
 echo "\nExecute time ".$execute." sec";
 echo "\n";
 
