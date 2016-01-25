@@ -85,6 +85,11 @@ define('FACEBOOK_MODULE_NOT_VISIBLE', 0);
 define('FACEBOOK_NOTIFICATIONS_WANTED', 1);
 define('FACEBOOK_NOTIFICATIONS_UNWANTED', 0);
 
+define('MODULE_RESOURCE', 17);
+define('MODULE_ASSIGN', 1);
+define('MODULE_EMARKING', 23);
+define('MODULE_URL', 20);
+
 // Sql that brings the latest time modified from facebook_notifications
 $maxtimenotificationssql = "SELECT max(timemodified) AS maxtime	
 		FROM {facebook_notifications}
@@ -100,51 +105,41 @@ if($maxtimenotifications->maxtime == null){
 }
 
 // Parameters for resources query
-$paramsresources = array(
-		'resource',
+$params = array(
+		'resource', 
+		'emarking', 
+		'url', 
+		'assign',
 		FACEBOOK_COURSE_MODULE_VISIBLE,
 		FACEBOOK_MODULE_VISIBLE,
 );
 
 // Sql for resource information
 //TODO: agregar foros, revisar fecha que incluir mas notificaciones.
-$sqlresource = "SELECT r.course 
+$sql = "SELECT cm.course AS course, 
+		cm.module AS module, 
+		m.name AS name 
 		FROM {course_modules} AS cm 
-		INNER JOIN {modules} AS m ON (cm.module = m.id) 
-    	INNER JOIN {resource} AS r ON (r.course = cm.course) 
-		WHERE m.name IN (?) AND cm.visible = ? AND m.visible = ? 
-    	GROUP BY r.course";
+		INNER JOIN {modules} AS m ON 
+		(cm.module = m.id AND m.name IN (?, ?, ?, ?) AND m.visible = ?) 
+        WHERE cm.visible = ?";
 
-$dataresource = $DB->get_records_sql($sqlresource, $paramsresources);
-
-
-// Parameters for emarkings query
-$paramsemarking = array(
-		'emarking',
-		FACEBOOK_COURSE_MODULE_VISIBLE,
-		FACEBOOK_MODULE_VISIBLE,
-);
-
-// Sql for emarkings information
-$sqlemarking = "SELECT e.course AS course
-		FROM {course_modules} AS cm 
-		INNER JOIN {modules} AS m ON (cm.module = m.id) 
-    	INNER JOIN {emarking} AS e ON (e.course = cm.course) 
-		WHERE m.name IN (?) AND cm.visible = ? AND m.visible = ? 
-    	GROUP BY e.course";
-
-$dataemarking = $DB->get_records_sql($sqlemarking, $paramsemarking);
+$querydata = $DB->get_records_sql($sql, $params);
 
 $allnotifications = array();
+$courseidarray = array();
+$notificationsof = array();
 
 // foreach that get all the data from the resource query to an array
-foreach ($dataresource as $resources){
+foreach ($querydata as $log){
 	$record = new stdClass();
-	$record->courseid = $resources->course;
+	$record->courseid = $log->course;
 	$record->time = time();
 	$record->status = 0;
 	$record->timemodified = 0;
 	$allnotifications[] = $record;
+	
+	$courseidarray[] = $log->course;
 }
 
 // if clause that makes sure if there is something in the array , if there is it saves the array in the data base
@@ -184,12 +179,7 @@ $fb = new Facebook([
 ]);
 
 $counttosend = 0;
-$courseidarray = array();
 
-// Foreach that generates a array with all the user courses
-foreach($dataresource as $resources){
-	$courseidarray[] = $resources->course;
-}
 // User parameters for query
 $userparams = array(
 		FACEBOOK_NOTIFICATION_LOGGEDOFF,
@@ -203,14 +193,14 @@ list($sqlin, $courseparam) = $DB->get_in_or_equal($courseidarray);
 $paramsmerge = array_merge($courseparam,$userparams);
 
 // Sql that brings the facebook user id
-$sqlusers = "SELECT  facebookuser.facebookid AS facebookid
+$sqlusers = "SELECT  facebookuser.facebookid AS facebookid 
 	     FROM {user_enrolments} AS enrolments
 	     INNER JOIN  {enrol} AS enrol ON (enrolments.enrolid=enrol.id)
 	     INNER JOIN {user_preferences} AS preferences ON (preferences.userid=enrolments.userid)
 	     INNER JOIN {facebook_user} AS facebookuser ON (facebookuser.moodleid=enrolments.userid)
 	     WHERE enrol.courseid $sqlin
 	     AND preferences.name IN (?,?)
-	     AND preferences.value like  '%facebook%' AND facebookuser.status = ?
+	     AND preferences.value like '%facebook%' AND facebookuser.status = ?
 	     GROUP BY facebookuser.facebookid";
 
 
@@ -224,7 +214,7 @@ foreach($arrayfacebookid as $userfacebookid){
 		$data = array(
 				"link" => "",
 				"message" => "",
-				"template" => "Tienes una notificación de eMarking."
+				"template" => "Tienes nuevas notificaciones de WebCursos."
 		);
 		
 		$fb->setDefaultAccessToken($appid.'|'.$secretid);
