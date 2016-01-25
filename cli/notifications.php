@@ -126,12 +126,12 @@ $paramsemarking = array(
 );
 
 // Sql for emarkings information
-$sqlemarking = "SELECT e.course 
+$sqlemarking = "SELECT e.course AS course
 		FROM {course_modules} AS cm 
 		INNER JOIN {modules} AS m ON (cm.module = m.id) 
     	INNER JOIN {emarking} AS e ON (e.course = cm.course) 
 		WHERE m.name IN (?) AND cm.visible = ? AND m.visible = ? 
-    	GROUP BY r.course";
+    	GROUP BY e.course";
 
 $dataemarking = $DB->get_records_sql($sqlemarking, $paramsemarking);
 
