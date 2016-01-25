@@ -116,7 +116,8 @@ $params = array(
 
 // Sql for resource information
 //TODO: agregar foros, revisar fecha que incluir mas notificaciones.
-$sql = "SELECT cm.course AS course, 
+$sql = "SELECT cm.id, 
+		cm.course AS course, 
 		cm.module AS module, 
 		m.name AS name 
 		FROM {course_modules} AS cm 
