@@ -25,7 +25,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define('CLI_SCRIPT', true);
+//define('CLI_SCRIPT', true);
 
 require_once(dirname(dirname(dirname(dirname(__FILE__)))).'/config.php');
 require_once($CFG->dirroot."/local/facebook/app/Facebook/autoload.php");
@@ -42,7 +42,7 @@ use Facebook\FacebookRedirectLoginHelper;
 use Facebook\FacebookRequire;
 use Facebook\Facebook;
 use Facebook\Request;
-
+/*
 // now get cli options
 list($options, $unrecognized) = cli_get_params(array('help'=>false),
                                                array('h'=>'help'));
@@ -71,7 +71,7 @@ cli_heading('Facebook notifications'); // TODO: localize
 
 echo "\nSearching for new notifications\n";
 echo "\nStarting at ".date("F j, Y, G:i:s")."\n";
-
+*/
 // Define used lower in the querys
 define('FACEBOOK_NOTIFICATION_LOGGEDOFF','message_provider_local_facebook_notification_loggedoff');
 define('FACEBOOK_NOTIFICATION_LOGGEDIN','message_provider_local_facebook_notification_loggedin');
