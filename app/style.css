@@ -267,6 +267,13 @@ table.tablesorter {
 	width: 100%;
 	text-align: left;
 }
+table.tablesorter td:nth-of-type(6n+3){
+ 	overflow:hidden;
+ 	max-width:100px!important;
+ 	max-height: 3em!important;
+ 	word-wrap: break-word!important;
+ 	text-overflow: ellipsis; 	
+}
 
 table.tablesorter thead tr th, table.tablesorter tfoot tr th {
 	background-color: #2a2a2a;
@@ -289,6 +296,13 @@ table.tablesorter tbody td {
 	padding: 8px;
 	background-color: #FFFFFF;
 	vertical-align: middle;
+	max-height: 2em;
+ 	overflow:hidden!important;
+ 	word-wrap: break-word;
+}
+
+table.tablesorter tbody td:nth-of-type(6n+5) {
+ 	color: transparent;
 }
 
 table.tablesorter tbody tr.odd td {
@@ -313,6 +327,22 @@ a:link {
 }
 
 table.tablesorter tr:hover td{ 
+     background-color: #e4e4e4;
+}
+
+table.tablesorter tr:hover td:nth-of-type(6n+5){ 
+ 	color: #2a2a2a;
+}
+
+table.tablesorter button.btn{
+ opacity: 0.0;	
+}
+
+table.tablesorter tr:hover button.btn{
+ opacity: 1.0;	
+}
+
+table.tablesorter tr:hover td{ 
     background-color: #e4e4e4;
 }
 
@@ -320,6 +350,8 @@ table.tablesorter tr:hover td{
 .panel-default {
 	text-align: center;
 }
+
+/*--------------------scrollbar--------------------*/
 
 ::-webkit-scrollbar {
 	height: 10px;

@@ -27,11 +27,11 @@
 require_once ($CFG->dirroot . "/local/facebook/app/Facebook/autoload.php");
 define('FACEBOOK_STATUS_LINKED', 1);
 
-$appid = $CFG->fbkAppID;
-$secretid = $CFG->fbkScrID;
+//$appid = $CFG->fbkAppID;
+//$secretid = $CFG->fbkScrID;
 $config = array(
-		"app_id" => $appid,
-		"app_secret" => $secretid,
-		"default_graph_version" => "v2.5" 
+//		"app_id" => $appid,
+//		"app_secret" => $secretid,
+//		"default_graph_version" => "v2.5" 
 );
 

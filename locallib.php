@@ -38,7 +38,7 @@ define('FACEBOOK_IMAGE_LINK', 'link');
 define('FACEBOOK_IMAGE_EMARKING', 'emarking');
 define('FACEBOOK_IMAGE_ASSIGN', 'assign');
 
-define('MODULE_EMARKING', 23);
+define('MODULE_EMARKING', 24);
 define('MODULE_ASSIGN', 1);
 
 /**
@@ -178,7 +178,7 @@ function record_sort($records, $field, $reverse = false){
  * @return array
  */
 function get_data_post_resource_link($sqlin, $param, $moodleid){
-	global $DB;
+	global $DB,$USER;
 	
 	// Parameters for post query
 	$datapostparams = array(
@@ -246,30 +246,26 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 	$datalink = $DB->get_records_sql($datalinksql, $paramslink);
 	
 	// Query for getting eMarkings by course
-	$dataemarkingsql = "SELECT es.id AS id, 
+	$dataemarkingsql= "SELECT CONCAT(s.id,e.id,s.grade) as ids,
+			s.id AS id, 
 			e.id AS emarkingid, 
-			CONCAT(u.firstname, ' ', u.lastname) AS user, 
-			e.course AS course, 
-			e.name AS testname, 
-			es.grade AS grade, 
-			es.status AS status, 
-			es.timecreated AS date, 
-			es.status AS status, 
-			es.teacher AS teacherid, 
-			ed.id AS draft 
-			FROM {emarking_submission} AS es 
-			INNER JOIN {emarking} AS e ON (es.emarking = e.id) 
-			INNER JOIN {user} AS u ON (es.student = u.id) 
-			INNER JOIN {emarking_draft} AS ed ON (es.id = ed.submissionid) 
-			WHERE e.course $sqlin 
-			AND u.id = ? 
-			GROUP BY es.id";
+			e.course AS course,
+			e.name AS testname,
+			d.grade AS grade,
+			d.status AS status,
+			d.timemodified AS date,
+			s.teacher AS teacherid,
+			CONCAT(u.firstname,' ',u.lastname) AS user
+			FROM mdl_emarking_draft as d join mdl_emarking_submission as s on (d.submissionid = s.id and d.status in (20,30,35,40) and s.student = 3)
+			join mdl_emarking as e on (e.id = d.emarkingid and e.course in (2) and e.type in (1,5,0))
+			JOIN {user} AS u ON (u.id = s.student)";
 	
-	$emarkingparams = array_merge($param, $moodleid);
+	$emarkingparams = $param;
+	$emarkingparams[] = $moodleid;
 	
 	// Get the data from the query
 	$dataemarking = $DB->get_records_sql($dataemarkingsql, $emarkingparams);
-	
+
 	$dataassignmentsql = "SELECT asub.id AS id, 
 			cm.id AS moduleid, 
 			a.course AS course, 
@@ -298,8 +294,8 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 			FACEBOOK_COURSE_MODULE_VISIBLE
 	);
 	
-	$assignparams = array_merge($param, $sqlparams, $moodleid);
-	
+	$assignparams = array_merge($param, $sqlparams);
+	$assignparams[] = $moodleid;
 	$dataassign = $DB->get_records_sql($dataassignmentsql, $assignparams);
 	
 	$totaldata = array();

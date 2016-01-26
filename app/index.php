@@ -37,8 +37,9 @@ include "config.php";
 use Facebook\FacebookResponse;
 use Facebook\FacebookRedirectLoginHelper;
 use Facebook\FacebookRequire;
-include "htmltoinclude/bootstrap.html";
 
+include "htmltoinclude/bootstrap.html";
+/*
 ?>
 <script>
   window.fbAsyncInit = function() {
@@ -67,6 +68,7 @@ $config = array(
 		"app_secret" => $secretid,
 		"default_graph_version" => "v2.5"
 );
+/*
 $fb = new Facebook\Facebook($config);
 
 $helper = $fb->getCanvasHelper();
@@ -93,7 +95,7 @@ $facebookdata = $helper->getSignedRequest();
 $user_data = $fb->get("/me?fields=id",$accessToken);
 $user_profile = $user_data->getGraphUser();
 $facebook_id = $user_profile["id"];
-
+*/
 $app_name= $CFG->fbkAppNAME;
 $app_email= $CFG->fbkemail;
 $tutorial_name=$CFG->fbktutorialsN;
@@ -105,11 +107,11 @@ $connecturl= new moodle_url('/local/facebook/connect.php');
 include 'htmltoinclude/sidebar.html';
 
 //search for the user facebook information
-$userfacebookinfo = $DB->get_record('facebook_user',array('facebookid'=>$facebook_id,'status'=>1));
+$userfacebookinfo = $DB->get_record('facebook_user',array('moodleid'=>3,'status'=>1));
 
 // if the user exist then show the app, if not tell him to connect his facebook account
 if ($userfacebookinfo != false) {
-	$moodleid = $userfacebookinfo->moodleid;
+	$moodleid = 2;
 	$lastvisit = $userfacebookinfo->lasttimechecked;
 	$user_info = $DB->get_record('user', array(
 			'id'=>$moodleid
@@ -127,7 +129,7 @@ if ($userfacebookinfo != false) {
 
 	// list the 3 arrays returned from the funtion
 	list($totalresource, $totalurl, $totalpost) = get_total_notification($sqlin, $param, $lastvisit);
-	$dataarray = get_data_post_resource_link($sqlin, $param);
+	$dataarray = get_data_post_resource_link($sqlin, $param,$moodleid);
 
 	//foreach that generates each course square
 	echo '<div style="line-height: 4px"><br></div>';
@@ -153,16 +155,17 @@ if ($userfacebookinfo != false) {
 				<a class="inline link_curso" href="#'.$courseid.'">
 				<p class="name" style="color: black; font-weight:bold; text-decoration: none; font-size:15px;">
 				<img src="images/lista_curso.png">'.$fullname.'</p></a></div>';*/
+	
 		echo '<div class="block" style="height: 4em;"><button type="button" class="btn btn-info btn-lg" style="white-space: normal; width: 90%; height: 90%; border: 1px solid lightgray; background: linear-gradient(white, gainsboro);" courseid="'.$courseid.'" fullname="'.$fullname.'" component="button">';
-		
-		// If there is something to notify, show the number of new things
-		
-		echo '<p class="name" style="position: relative; height: 3em; overflow: hidden; color: black; font-weight: bold; text-decoration: none; font-size:13px; word-wrap: initial;" courseid="'.$courseid.'" component="button">
-				'.$fullname.'</p>';
 		if ($totals>0){
-			echo '<span class="badge" style="color: white; background-color: red; position: relative; right: -58%; top: -64px; margin-right:9%;" courseid="'.$courseid.'" component="button">'.$totals.'</span>';
-		}
-		echo '</button></div>';
+ 			echo '<p class="name" style="position: relative; height: 3em; overflow: hidden; color: black; font-weight: bold; text-decoration: none; font-size:13px; word-wrap: initial;" courseid="'.$courseid.'" component="button">
+ 				'.$fullname.'</p><span class="badge" style="color: white; background-color: red; position: relative; right: -58%; top: -64px; margin-right:9%;" courseid="'.$courseid.'" component="button">'.$totals.'</span></button></div>';
+ 		}
+ 		else {
+ 			echo '<p class="name" style="position: relative; height: 3em; overflow: hidden; color: black; font-weight: bold; text-decoration: none; font-size:13px; word-wrap: initial;" courseid="'.$courseid.'" component="button">
+ 				'.$fullname.'</p></button></div>';	
+  		}
+
 		
 		
 		
@@ -212,66 +215,72 @@ if ($userfacebookinfo != false) {
 			<table class="tablesorter" border="0" width="100%" style="font-size: 13px">
 				<thead>
 					<tr>
-						<th width="8%" style= "border: 0px  #212121;border-radius: 8px 0px 0px 0px"></th>
-						<th width="37%"><?php echo get_string('rowtittle', 'local_facebook'); ?></th>
-						<th width="20%"><?php echo get_string('rowdate', 'local_facebook'); ?></th>						
-						<th width="20%"><?php echo get_string('rowfrom', 'local_facebook'); ?></th>
-						<th width="8%" 	style= "border: 0px  #212121;border-radius: 0px 8px 0px 0px">Share</th>						
+						<th width="1%" style= "border-top-left-radius: 8px;"></th>
+ 						<th width="5%"></th>
+ 						<th width="33%"><?php echo get_string('rowtittle', 'local_facebook'); ?></th>
+ 						<th width="30%"><?php echo get_string('rowfrom', 'local_facebook'); ?></th>
+  						<th width="20%"><?php echo get_string('rowdate', 'local_facebook'); ?></th>
+  						<th width="10%" style= "border-top-right-radius: 8px;">Share</th>						
 					</tr>
 				</thead>
 				<tbody>
 			<?php 
 			//foreach that gives the corresponding image to the new and old items created(resource,post,forum), and its title, how upload it and its link
+			
 			foreach($dataarray as $data){
 				$discussionId = null;
 				$markid = null;
 				$assignid = null;
 				if($data['course'] == $courseid){
 					$date = date("d/m/Y H:i", $data['date']);
-					
-					echo '<tr><td ';
-					if ($data['date'] > $lastvisit) {
-						echo 'style="margin-left:10px; border-left:3px solid #2a2a2a;"';
-					}
-					echo '><center>';
+					echo '<tr courseid="'.$courseid.'"><td';
+					if ($data['date']>$lastvisit) {
+							echo '><center><span class="glyphicon glyphicon-option-vertical" aria-hidden="true" style="color: #2a2a2a;"></span>&nbsp&nbsp';
+						}else{
+								echo '><center><span class="glyphicon glyphicon-option-vertical" aria-hidden="true" style="color: transparent;"></span>&nbsp&nbsp';
+							}
+					echo'</td><td> ';
 					
 					if($data['image'] == FACEBOOK_IMAGE_POST){
-						echo '<img src="images/post.png">';
-						$discussionId = $data['discussion'];
+							echo '<img src="images/post.png">';
+							$discussionId = $data['discussion'];
 					}
-					elseif($data['image'] == FACEBOOK_IMAGE_RESOURCE){
-						echo '<img src="images/resource.png">';
-					}					
-					elseif($data['image'] == FACEBOOK_IMAGE_LINK){
-						echo '<img src="images/link.png">';
+					else if($data['image'] == FACEBOOK_IMAGE_RESOURCE){
+							echo '<img src="images/resource.png">';
 					}
-					elseif($data['image'] == FACEBOOK_IMAGE_EMARKING) {
+					
+					else if($data['image'] == FACEBOOK_IMAGE_LINK){
+							echo '<img src="images/link.png">';
+					}
+					
+					else if($data['image'] == FACEBOOK_IMAGE_EMARKING){
 						echo '<img src="images/emarking.png">';
 						$markid = $data['id'];
 					}
-					elseif($data['image'] == FACEBOOK_IMAGE_ASSIGN) {
+					
+					else if($data['image'] == FACEBOOK_IMAGE_ASSIGN){
 						echo '<img src="images/assign.png">';
 						$assignid = $data['id'];
 					}
-
 					
 					if($discussionId != null) {
-						echo '</center></td><td>';
-						if($data['date'] > $lastvisit) {
-							echo '<b><a href="#" discussionid="'.$discussionId.'" component="forum">'.$data['title'].'</a>
-								</td><td><b>'.$date.'</td><td style="font-size:13px"><b>'.$data ['from'].'</td></b>
-								<td><button type="button" class="btn btn-primary btn-sm" style="color:#E5E3FB">
-								<img src="images/facebook_1.png" style="height: 70%; width: auto;"></img><b>| share
-								</b></button></td></tr>';
-						} else {
- 							echo '<a href="#" discussionid="'.$discussionId.'" component="forum">'.$data['title'].'</a>
-								</td><td>'.$date.'</td><td style="font-size: 13px"><b>'.$data ['from'].'</b></td>
-								<td><button type="button" class="btn btn-default btn-sm" style="color:#909090">
-								<img src="images/facebook_2.png" style="height: 70%; width: auto;"></img><b>| share
-								</b></button></td></tr>';
-						}
+							echo '</center></td><td';
+							if($data['date']>$lastvisit) {
+									echo ' style="font-weight:bold;"><a href="#" discussionid="'.$discussionId.'" component="forum">'.$data['title'].'</a>
+		 									</td><td style="font-size:13px; font-weight:bold;">'.$data ['from'].'</td><td style="font-weight:bold;">'.$date.'</td>
+		  									<td><button type="button" class="btn btn-primary btn-sm" style="color:#E5E3FB">
+		   									<span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>&nbsp<b> share
+		 									</b></button></td></tr>';
+							} else {
+									echo '><a href="#" discussionid="'.$discussionId.'" component="forum">'.$data['title'].'</a>
+ 									</td><td style="font-size:13px">'.$data ['from'].'</td><td>'.$date.'</td>
+ 									<td> <button type="button" class="btn btn-default btn-sm" style="color:#909090;">
+   									<span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>&nbsp<b> share
+ 									</b></button></td></tr>';
+								}
+					
 						
-						$postData = get_posts_from_discussion($discussionId);
+					$postData = get_posts_from_discussion($discussionId);
 						?>
 						<!-- Modal -->
 						<div class="modal fade" id="m<?php echo $discussionId; ?>" tabindex="-1" role="dialog" aria-labelledby="modal">
@@ -295,7 +304,7 @@ if ($userfacebookinfo != false) {
 						<?php
 					} elseif ($markid != null) {
 						echo '</center></td><td><a href="#" emarkingid="'.$markid.'" component="emarking">'.$data['title'].'</a>
-									</td><td>'.$date.'</td><td style="font-size:11px"><b>'.$data ['from'].'</b></td></tr>';
+									</td><td>'.$data ['from'].'</td><td style="font-size:11px"><b>'.$date.'</b></td></tr>';
 						?>
 						<!-- Modal -->
 						<div class="modal fade" id="e<?php echo $markid; ?>" tabindex="-1" role="dialog" aria-labelledby="modal">
@@ -316,7 +325,7 @@ if ($userfacebookinfo != false) {
 						  					<b><?php echo get_string('grade', 'local_facebook'); ?></b>
 						  					<br>
 						  					<?php
-						  					if($data['status'] >= EMARKING_STATUS_PUBLISHED) {
+						  					if($data['status'] >= 20) {
 						  						echo $data['grade'];
 						  					} else {
 						  						echo "-";
@@ -327,9 +336,9 @@ if ($userfacebookinfo != false) {
 						  					<b><?php echo get_string('status', 'local_facebook'); ?></b>
 						  					<br>
 						  					<?php
-						  					if($data['status'] >= EMARKING_STATUS_PUBLISHED) {
+						  					if($data['status'] >= 20) {
 						  						echo get_string('published', 'local_facebook');
-						  					} else if($data['status'] >= EMARKING_STATUS_SUBMITTED) {
+						  					} else if($data['status'] >= 10) {
 						  						echo get_string('submitted', 'local_facebook');
 						  					} else {
 						  						echo get_string('absent', 'local_facebook');
@@ -420,7 +429,7 @@ if ($userfacebookinfo != false) {
 						<?php
 					} else {
 						echo '</center></td><td><a href="'.$data['link'].'" target="_blank">'.$data['title'].'</a>
-									</td><td>'.$date.'</td><td style="font-size:11px"><b>'.$data ['from'].'</b></td></tr>';
+									</td><td>'.$data ['from'].'</td><td style="font-size:11px"><b>'.$date.'</b></td></tr>';
 					}
 				}
 			}
@@ -439,6 +448,10 @@ if ($userfacebookinfo != false) {
 	$("*", document.body).click(function(event) {
 		event.stopPropagation();
 
+		var courseid = $(this).parent().parent().attr('courseid');
+		var badgecourseid = $( "button[courseid='"+courseid+"']" ).parent().find('.badge');
+		var aclick = $(this).parent().attr('style');
+
 		if(($(this).attr('component') == "button") && ($(this).attr('courseid') != courseId)) {
 			$('#c' + courseId).fadeOut(300);
 			courseId = $(this).attr('courseid');
@@ -446,8 +459,25 @@ if ($userfacebookinfo != false) {
 		}
 
 		else if($(this).attr('component') == "forum") {
+			
 			discussionId = $(this).attr('discussionid');
 			$('#m' + discussionId).modal('show');
+			
+			if(aclick == 'font-weight:bold;'){
+				
+				$(this).parent().parent().children("td").css('font-weight','normal');
+				$(this).parent().parent().children("td").children("button").removeClass("btn btn-primary");
+				$(this).parent().parent().children("td").children("button").addClass("btn btn-default");
+				$(this).parent().parent().children("td").children("center").children("span").css('color','transparent');
+				$(this).parent().parent().children("td").children("button").css('color','#909090');
+				
+				if(badgecourseid.text() == 1) { 
+					badgecourseid.remove(); 
+				}
+				else{ 
+					badgecourseid.text(badgecourseid.text()-1); 
+				}
+			}
 		}
 
 		else if($(this).attr('component') == "close-modal") {
