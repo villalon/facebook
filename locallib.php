@@ -211,10 +211,12 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 	
 	// Query for the resource information
 	$dataresourcesql = "SELECT cm.id AS coursemoduleid, r.id AS resourceid, r.name AS resourcename, r.timemodified, 
-			  r.course AS resourcecourse, cm.visible, cm.visibleold
+			  r.course AS resourcecourse, cm.visible, cm.visibleold, CONCAT(u.firstname,' ',u.lastname) as user
 			  FROM {resource} AS r 
               INNER JOIN {course_modules} AS cm ON (cm.instance = r.id)
               INNER JOIN {modules} AS m ON (cm.module = m.id)
+              INNER JOIN {logstore_standard_log} AS log ON (log.objectid = cm.id AND log.action = 'created' AND log.target = 'course_module')
+              INNER JOIN {user} AS u ON (u.id = log.userid)
 			  WHERE r.course $sqlin 
 			  AND m.name IN (?) 
 			  AND cm.visible = ?
@@ -233,10 +235,12 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 	
 	//query for the link information
 	$datalinksql="SELECT url.id AS id, url.name AS urlname, url.externalurl AS externalurl, url.timemodified AS timemodified,
-	          url.course AS urlcourse, cm.visible AS visible, cm.visibleold AS visibleold
+	          url.course AS urlcourse, cm.visible AS visible, cm.visibleold AS visibleold, CONCAT(u.firstname,' ',u.lastname) as user
 		      FROM {url} AS url
               INNER JOIN {course_modules} AS cm ON (cm.instance = url.id)
               INNER JOIN {modules} AS m ON (cm.module = m.id)
+              INNER JOIN {logstore_standard_log} AS log ON (log.objectid = cm.id AND log.action = 'created' AND log.target = 'course_module')
+              INNER JOIN {user} AS u ON (u.id = log.userid)
 		      WHERE url.course $sqlin 
 		      AND m.name IN (?)
 		      AND cm.visible = ?
@@ -246,7 +250,7 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 	$datalink = $DB->get_records_sql($datalinksql, $paramslink);
 	
 	// Query for getting eMarkings by course
-	$dataemarkingsql= "SELECT CONCAT(s.id,e.id,s.grade) as ids,
+	$dataemarkingsql= "SELECT CONCAT(s.id,e.id,s.grade) AS ids,
 			s.id AS id, 
 			e.id AS emarkingid, 
 			e.course AS course,
@@ -256,8 +260,8 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 			d.timemodified AS date,
 			s.teacher AS teacherid,
 			CONCAT(u.firstname,' ',u.lastname) AS user
-			FROM mdl_emarking_draft as d join mdl_emarking_submission as s on (d.submissionid = s.id and d.status in (20,30,35,40) and s.student = 3)
-			join mdl_emarking as e on (e.id = d.emarkingid and e.course in (2) and e.type in (1,5,0))
+			FROM {emarking_draft} AS d JOIN {emarking_submission} AS s ON (d.submissionid = s.id AND d.status IN (20,30,35,40) AND s.student = ?)
+			JOIN {emarking} AS e ON (e.id = d.emarkingid AND e.course $sqlin AND e.type in (1,5,0))
 			JOIN {user} AS u ON (u.id = s.student)";
 	
 	$emarkingparams = $param;
@@ -265,37 +269,30 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 	
 	// Get the data from the query
 	$dataemarking = $DB->get_records_sql($dataemarkingsql, $emarkingparams);
-
-	$dataassignmentsql = "SELECT asub.id AS id, 
-			cm.id AS moduleid, 
-			a.course AS course, 
-			a.name AS name, 
-			a.intro AS intro, 
-			asub.timemodified AS date, 
+	
+	$dataassignmentsql = "SELECT a.id, 
+			a.name, 
 			a.duedate AS due, 
-			asub.status AS status, 
-			ag.grade AS grade 
-			FROM {course_modules} AS cm 
-			INNER JOIN {modules} AS m ON (cm.module = m.id) 
-	   		INNER JOIN {assign} AS a ON (a.course = cm.course) 
-    		INNER JOIN {assign_submission} AS asub ON ( asub.assignment = a.id) 
-    		INNER JOIN {user} AS u ON (u.id = asub.userid) 
-			INNER JOIN {assign_grades} AS ag ON (a.id = ag.assignment) 
-			WHERE a.course $sqlin 
-			AND m.id = ? 
-			AND cm.visible = ? 
-    		AND m.visible = ? 
-    		AND u.id = ? 
-			GROUP BY asub.id";
+			a.course,
+			a.intro,
+			a.allowsubmissionsfromdate AS date, 
+			asub.id as submissionid, 
+			asub.timemodified as submissiontime,
+			asub.status,
+			ag.grade,
+			cm.id AS moduleid
+			FROM {assign} AS a LEFT JOIN {assign_submission} AS asub ON (a.id = asub.assignment AND a.course $sqlin AND asub.userid = ?)
+			JOIN {course_modules} AS cm ON (a.course = cm.course AND cm.visible = ?)
+			JOIN {modules} AS m ON (m.id = cm.module AND m.visible = ? AND m.name = 'assign')
+			LEFT JOIN {assign_grades} AS ag ON (a.id = ag.assignment)";
 	
 	$sqlparams = array(
-			MODULE_ASSIGN,
+			$moodleid,
 			FACEBOOK_COURSE_MODULE_VISIBLE,
 			FACEBOOK_COURSE_MODULE_VISIBLE
 	);
 	
-	$assignparams = array_merge($param, $sqlparams);
-	$assignparams[] = $moodleid;
+	$assignparams = array_merge($param,$sqlparams);	
 	$dataassign = $DB->get_records_sql($dataassignmentsql, $assignparams);
 	
 	$totaldata = array();
@@ -328,7 +325,7 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 					'image'=>FACEBOOK_IMAGE_RESOURCE,
 					'link'=>$resourceurl,
 					'title'=>$resource->resourcename,
-					'from'=>'',
+					'from'=>$resource->user,
 					'date'=>$resource->timemodified,
 					'course'=>$resource->resourcecourse 
 			);
@@ -343,7 +340,7 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 					'image'=>FACEBOOK_IMAGE_LINK,
 					'link'=>$link->externalurl,
 					'title'=>$link->urlname,
-					'from'=>'',
+					'from'=>$link->user,
 					'date'=>$link->timemodified,
 					'course'=>$link->urlcourse 
 			);

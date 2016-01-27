@@ -111,7 +111,7 @@ $userfacebookinfo = $DB->get_record('facebook_user',array('moodleid'=>3,'status'
 
 // if the user exist then show the app, if not tell him to connect his facebook account
 if ($userfacebookinfo != false) {
-	$moodleid = 2;
+	$moodleid = $userfacebookinfo->moodleid;
 	$lastvisit = $userfacebookinfo->lasttimechecked;
 	$user_info = $DB->get_record('user', array(
 			'id'=>$moodleid
@@ -388,7 +388,7 @@ if ($userfacebookinfo != false) {
 						      		</div>
 						      		<div class="col-md-6">
 						      			<?php
-				      					if($data['status'] == 'view') {
+				      					if($data['status'] != 'submitted') {
 				      						echo "No entregado<br>";
 				      					} else {
 				      						echo "Enviado para calificar<br>";
@@ -400,25 +400,27 @@ if ($userfacebookinfo != false) {
 				      						echo "Sin calificar<br>";
 				      					}
 				      					
-				      					$duedate = date('r', $data['due']);
+				      					$duedate = date('H:i - d/m/Y', $data['due']);
 				      					echo $duedate."<br>";
 				      					
 				      					$interval = $data['due'] - time();
 				      					if($interval > 0) {
-				      						$timeleft = ceil($interval / (60 * 60 * 24));
-				      						echo $timeleft." días<br>";
+				      						$daysleft = floor($interval / (60 * 60 * 24));
+				      						//echo $interval;
+				      						$hoursleft = floor(($interval - ($daysleft*24*60*60))/(60*60));
+				      						echo $daysleft." días y ".$hoursleft." horas<br>";
 				      					} else {
 				      						echo "Se ha acabado el tiempo<br>";
 				      					}
 				      					
-				      					$lastmodified = date('r', $data['date']);
+				      					$lastmodified = date('H:i - d/m/Y', $data['date']);
 				      					echo $lastmodified;
 						      			?>
 						      			</div>
 						      		</div>
 						      	</div>
 						      <div class="modal-footer">
-						      	<a href="<?php echo $data['link']; ?>"
+						      	<a href="<?php echo $data['link']; ?>" target="_blank" >
 						      		<button type="button" class="btn btn-default">Ver en moodle</button>
 						      	</a>
 						        <button type="button" class="btn btn-default" data-dismiss="modal" component="close-modal" modalid="a<?php echo $assignid; ?>">Close</button>
