@@ -282,17 +282,19 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 			asub.status,
 			ag.grade,
 			cm.id AS moduleid
-			FROM {assign} AS a LEFT JOIN {assign_submission} AS asub ON (a.id = asub.assignment)
+			FROM {assign} AS a LEFT JOIN {assign_submission} AS asub ON (a.id = asub.assignment AND asub.userid = ?)
 			JOIN {course_modules} AS cm ON (a.course = cm.course AND a.course $sqlin AND cm.visible = ?)
 			JOIN {modules} AS m ON (m.id = cm.module AND m.visible = ? AND m.name = 'assign')
 			LEFT JOIN {assign_grades} AS ag ON (a.id = ag.assignment)";
+	
+	$userid = array($moodleid);
 	
 	$sqlparams = array(
 			FACEBOOK_COURSE_MODULE_VISIBLE,
 			FACEBOOK_COURSE_MODULE_VISIBLE
 	);
 	
-	$assignparams = array_merge($param,$sqlparams);	
+	$assignparams = array_merge($userid,$param,$sqlparams);	
 	$dataassign = $DB->get_records_sql($dataassignmentsql, $assignparams);
 	
 	$totaldata = array();
