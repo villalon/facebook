@@ -250,7 +250,7 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 	$datalink = $DB->get_records_sql($datalinksql, $paramslink);
 	
 	// Query for getting eMarkings by course
-	$dataemarkingsql= "SELECT CONCAT(s.id,e.id,s.grade) AS ids,
+	$dataemarkingsql= "SELECT SELECT CONCAT(s.id,e.id,s.grade) AS ids,
 			s.id AS id, 
 			e.id AS emarkingid, 
 			e.course AS course,
@@ -270,7 +270,8 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 	// Get the data from the query
 	$dataemarking = $DB->get_records_sql($dataemarkingsql, $emarkingparams);
 	
-	$dataassignmentsql = "SELECT a.id, 
+	$dataassignmentsql = "SELECT CONCAT(a.id,asub.id,ag.grade) AS ids
+			a.id, 
 			a.name, 
 			a.duedate AS due, 
 			a.course,
@@ -293,7 +294,7 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 	);
 	
 	$assignparams = array_merge($param,$sqlparams);	
-	$dataassign = $DB->get_records_sql($dataassignmentsql, $assignparams);
+	//$dataassign = $DB->get_records_sql($dataassignmentsql, $assignparams);
 	
 	$totaldata = array();
 	// Foreach used to fill the array with the posts information
