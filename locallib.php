@@ -270,7 +270,7 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 	// Get the data from the query
 	$dataemarking = $DB->get_records_sql($dataemarkingsql, $emarkingparams);
 	
-	$dataassignmentsql = "SELECT CONCAT(a.id,asub.id,ag.grade) AS ids
+	$dataassignmentsql = "SELECT CONCAT(a.id,a.duedate) AS ids,
 			a.id, 
 			a.name, 
 			a.duedate AS due, 
