@@ -303,8 +303,18 @@ if ($userfacebookinfo != false) {
 						</div>
 						<?php
 					} elseif ($markid != null) {
-						echo '</center></td><td><a href="#" emarkingid="'.$markid.'" component="emarking">'.$data['title'].'</a>
-									</td><td>'.'</td><td style="font-size:11px"><b>'.$date.'</b></td></tr>';
+						echo '</center></td><td';
+						if($data['date']>$lastvisit){
+							echo ' style="font-weight:bold"><a href="#" emarkingid="'.$markid.'" component="emarking">'.$data['title'].'</a>
+ 							</td><td style="font-size:13px; font-weight:bold;">'.$data ['from'].'</td><td style="font-size:14px; font-weight:bold;">'.$date.'</td><td><button type="button" class="btn btn-primary btn-sm" style="color:#E5E3FB;">
+ 							<span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>&nbsp<b> share
+ 							</b></button></td></tr>';
+						}else{
+							echo '><a href="#" emarkingid="'.$markid.'" component="emarking">'.$data['title'].'</a>
+ 							</td><td style="font-size:13px">'.$data ['from'].'</td><td style="font-size:14px">'.$date.'</td><td><button type="button" class="btn btn-default btn-sm" style="color:#909090;">
+ 							<span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>&nbsp<b> share
+ 							</b></button></td></tr>';
+						}
 						?>
 						<!-- Modal -->
 						<div class="modal fade" id="e<?php echo $markid; ?>" tabindex="-1" role="dialog" aria-labelledby="modal">
@@ -361,8 +371,17 @@ if ($userfacebookinfo != false) {
 						</div>
 						<?php
 					} elseif($assignid != null) {
-						echo '</center></td><td><a href="#" assignid="'.$assignid.'" component="assign">'.$data['title'].'</a>
-									</td><td>'.$date.'</td></tr>';
+					echo '</center></td><td';
+						if($data['date']>$lastvisit) {
+						echo ' style="font-weight:bold"><a href="#" assignid="'.$assignid.'" component="assign">'.$data['title'].'</a>
+									</td><td style="font-size:13px; font-weight:bold;"></td><td style="font-size:14px; font-weight:bold;">'.$date.'</td><td><button type="button" class="btn btn-primary btn-sm" style="color:#E5E3FB;">
+   						<span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>&nbsp<b> share</b></button></td></tr>';
+						}
+						else{
+						echo '><a href="#" assignid="'.$assignid.'" component="assign">'.$data['title'].'</a>
+									</td><td style="font-size:13px"></td><td>'.$date.'</td><td style="font-size:14px"><button type="button" class="btn btn-default btn-sm" style="color:#909090;">
+   						<span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>&nbsp<b> share</b></button></td></tr>';
+						}
 						
 						?>
 						<!-- Modal -->
@@ -430,8 +449,18 @@ if ($userfacebookinfo != false) {
 						</div>
 						<?php
 					} else {
-						echo '</center></td><td><a href="'.$data['link'].'" target="_blank">'.$data['title'].'</a>
-									</td><td>'.$data ['from'].'</td><td style="font-size:11px"><b>'.$date.'</b></td></tr>';
+						echo '</center></td><td';
+					if($data['date']>$lastvisit){
+ 							echo ' style="font-weight:bold"><a href="'.$data['link'].'" target="_blank">'.$data['title'].'</a>
+ 									</td><td style="font-size:13px; font-weight:bold;">'.$data ['from'].'</td><td style="font-size:14px; font-weight:bold;">'.$date.'</td><td><button type="button" class="btn btn-primary btn-sm" style="color:#E5E3FB;">
+ 									<span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>&nbsp<b> share
+ 									</b></button></td></tr>';
+ 						}else{
+ 							echo '><a href="'.$data['link'].'" target="_blank">'.$data['title'].'</a>
+ 									</td><td style="font-size:13px">'.$data ['from'].'</td><td style="font-size:14px">'.$date.'</td><td><button type="button" class="btn btn-default btn-sm" style="color:#909090;">
+ 									<span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>&nbsp<b> share
+ 									</b></button></td></tr>';
+					}
 					}
 				}
 			}
@@ -490,11 +519,41 @@ if ($userfacebookinfo != false) {
 		else if($(this).attr('component') == "emarking") {
 			emarkingId = $(this).attr('emarkingid');
 			$('#e' + emarkingId).modal('show');
+
+			if(aclick == 'font-weight:bold'){			
+				 $(this).parent().parent().children("td").css('font-weight','normal');
+				 $(this).parent().parent().children("td").children("button").removeClass("btn btn-primary");
+				 $(this).parent().parent().children("td").children("button").addClass("btn btn-default");
+				 $(this).parent().parent().children("td").children("center").children("span").css('color','transparent');
+				 $(this).parent().parent().children("td").children("button").css('color','#909090');
+				 				
+				 if(badgecourseid.text() == 1) { 
+				 	badgecourseid.remove(); 
+				 }
+				 else{ 
+				 	badgecourseid.text(badgecourseid.text()-1); 
+				 }
+			}
 		}
 
 		else if($(this).attr('component') == "assign") {
 			assignId = $(this).attr('assignid');
 			$('#a' + assignId).modal('show');
+
+			if(aclick == 'font-weight:bold'){			
+				 $(this).parent().parent().children("td").css('font-weight','normal');
+				 $(this).parent().parent().children("td").children("button").removeClass("btn btn-primary");
+				 $(this).parent().parent().children("td").children("button").addClass("btn btn-default");
+				 $(this).parent().parent().children("td").children("center").children("span").css('color','transparent');
+				 $(this).parent().parent().children("td").children("button").css('color','#909090');
+				 				
+				 if(badgecourseid.text() == 1) { 
+				 	badgecourseid.remove(); 
+				 }
+				 else{ 
+				 	badgecourseid.text(badgecourseid.text()-1); 
+				 }
+			}
 		}
 	});
 

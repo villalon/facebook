@@ -279,16 +279,20 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 			a.duedate AS due, 
 			a.course,
 			a.intro,
-			a.allowsubmissionsfromdate AS date, 
-			asub.id as submissionid, 
-			asub.timemodified as submissiontime,
+			a.allowsubmissionsfromdate AS date,
+			asub.id AS submissionid, 
+			asub.timemodified AS submissiontime,
 			asub.status,
 			ag.grade,
 			cm.id AS moduleid
 			FROM {assign} AS a LEFT JOIN {assign_submission} AS asub ON (a.id = asub.assignment AND asub.userid = ?)
 			JOIN {course_modules} AS cm ON (a.course = cm.course AND a.course $sqlin AND cm.visible = ?)
 			JOIN {modules} AS m ON (m.id = cm.module AND m.visible = ? AND m.name = 'assign')
-			LEFT JOIN {assign_grades} AS ag ON (a.id = ag.assignment)";
+			LEFT JOIN {assign_grades} AS ag ON (a.id = ag.assignment)
+			INNER JOIN {role_assignments} AS ra ON (ra.userid = ?)
+			INNER JOIN {context} AS ct ON (ct.id = ra.contextid)
+			INNER JOIN {course} AS c ON (c.id = ct.instanceid AND c.id = a.id)
+			INNER JOIN {role} AS r ON (r.id = ra.roleid)";
 	
 	$userid = array($moodleid);
 	
@@ -297,7 +301,7 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 			FACEBOOK_COURSE_MODULE_VISIBLE
 	);
 	
-	$assignparams = array_merge($userid,$param,$sqlparams);	
+	$assignparams = array_merge($userid,$param,$sqlparams,$userid);	
 	$dataassign = $DB->get_records_sql($dataassignmentsql, $assignparams);
 	
 	$totaldata = array();
@@ -382,7 +386,7 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 				'link'=>$assignurl,
 				'title'=>$assign->name,
 				'intro'=>$assign->intro,
-				'date'=>$assign->date,
+				'date'=>$assign->due,
 				'due'=>$assign->due,
 				'course'=>$assign->course,
 				'status'=>$assign->status,
