@@ -258,14 +258,17 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 			d.grade AS grade,
 			d.status AS status,
 			d.timemodified AS date,
-			s.teacher AS teacherid,
+			s.teacher AS teacher,
+			cm.id as moduleid,
 			CONCAT(u.firstname,' ',u.lastname) AS user
 			FROM {emarking_draft} AS d JOIN {emarking} AS e ON (e.id = d.emarkingid AND e.course $sqlin AND e.type in (1,5,0))
 			JOIN {emarking_submission} AS s ON (d.submissionid = s.id AND d.status IN (20,30,35,40) AND s.student = ?)
-			JOIN {user} AS u ON (u.id = s.student)";
+			JOIN {user} AS u ON (u.id = s.student)
+			JOIN {course_modules} AS cm ON (cm.instance = e.id AND cm.course  $sqlin)
+			JOIN {modules} AS m ON (cm.module = m.id AND m.name = 'emarking')";
 	
-	$emarkingparams = $param;
-	$emarkingparams[] = $moodleid;
+	//$emarkingparams = $param;
+	$emarkingparams = array_merge($param,array($moodleid),$param);
 	
 	// Get the data from the query
 	$dataemarking = $DB->get_records_sql($dataemarkingsql, $emarkingparams);
@@ -350,14 +353,9 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 	}
 	
 	foreach($dataemarking as $emarking){
-		$cm = $DB->get_record('course_modules', array(
-				'course' => $emarking->course,
-				'module' => MODULE_EMARKING,
-				'instance' => $emarking->emarkingid
-		));
-		
+
 		$emarkingurl = new moodle_url('/mod/emarking/view.php', array(
-				'id' => $cm->id
+				'id' => $emarking->moduleid
 		));
 		
 		$totaldata[] = array(
@@ -370,7 +368,7 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 				'id'=>$emarking->id,
 				'grade'=>$emarking->grade,
 				'status'=>$emarking->status,
-				'teacherid'=>$emarking->teacherid
+				'teacherid'=>$emarking->teacher
 		);
 	}
 	

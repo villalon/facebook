@@ -304,7 +304,7 @@ if ($userfacebookinfo != false) {
 						<?php
 					} elseif ($markid != null) {
 						echo '</center></td><td><a href="#" emarkingid="'.$markid.'" component="emarking">'.$data['title'].'</a>
-									</td><td>'.$data ['from'].'</td><td style="font-size:11px"><b>'.$date.'</b></td></tr>';
+									</td><td>'.'</td><td style="font-size:11px"><b>'.$date.'</b></td></tr>';
 						?>
 						<!-- Modal -->
 						<div class="modal fade" id="e<?php echo $markid; ?>" tabindex="-1" role="dialog" aria-labelledby="modal">
