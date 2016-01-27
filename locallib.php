@@ -250,7 +250,7 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 	$datalink = $DB->get_records_sql($datalinksql, $paramslink);
 	
 	// Query for getting eMarkings by course
-	$dataemarkingsql= "SELECT SELECT CONCAT(s.id,e.id,s.grade) AS ids,
+	$dataemarkingsql= "SELECT CONCAT(s.id,e.id,s.grade) AS ids,
 			s.id AS id, 
 			e.id AS emarkingid, 
 			e.course AS course,
@@ -260,8 +260,8 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 			d.timemodified AS date,
 			s.teacher AS teacherid,
 			CONCAT(u.firstname,' ',u.lastname) AS user
-			FROM {emarking_draft} AS d JOIN {emarking_submission} AS s ON (d.submissionid = s.id AND d.status IN (20,30,35,40) AND s.student = ?)
-			JOIN {emarking} AS e ON (e.id = d.emarkingid AND e.course $sqlin AND e.type in (1,5,0))
+			FROM {emarking_draft} AS d JOIN {emarking} AS e ON (e.id = d.emarkingid AND e.course $sqlin AND e.type in (1,5,0))
+			JOIN {emarking_submission} AS s ON (d.submissionid = s.id AND d.status IN (20,30,35,40) AND s.student = ?)
 			JOIN {user} AS u ON (u.id = s.student)";
 	
 	$emarkingparams = $param;
