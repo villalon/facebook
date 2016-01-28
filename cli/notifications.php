@@ -105,7 +105,7 @@ $fb = new Facebook([
 ]);
 
 if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
-
+	$counttosend = 0;
 	foreach($facebookusers as $user){
 		
 		$courses = enrol_get_users_courses($user->id);
@@ -223,9 +223,7 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 				echo "<td>".$notification->countallurl."</td>";
 				echo "<td>".$notification->countallpost."</td>";
 				echo "<td>".$notification->emarkingid."</td>";
-	
-				$counttosend = 0;
-				
+				/*
 				if( ($notification->countallresources+$notification->countallurl+$notification->countallpost+$notification->emarkingid) > 0 ){
 					$data = array(
 							"link" => "",
@@ -236,6 +234,7 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 					$fb->setDefaultAccessToken($appid.'|'.$secretid);
 					$response = $fb->post('/'.$user->facebookid.'/notifications', $data);
 					$return = $response->getDecodedBody();
+					
 					if($return['success'] == TRUE){
 						// Echo that tells to who notifications were sent, ordered by id
 						echo $counttosend." ".$user->facebookid." ok\n";
@@ -243,7 +242,7 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 					}else{
 						echo $userfacebookid->facebookid." fail\n";
 					}
-				}
+				}*/
 			}
 			echo "</tr>";
 		}else{
