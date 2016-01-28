@@ -218,7 +218,7 @@ if ($userfacebookinfo != false) {
 <!--   				</ul> -->
 				</nav>
   				</div>
-  				<div class="scroll" style="font-size: 13px; height: 68%!important;">
+  				<div class="scroll" style="font-size: 13px; height: 90%!important;">
   				
 			<table class="tablesorter" border="0" width="100%" style="font-size: 13px; margin-left:9px;">
 				<thead>
