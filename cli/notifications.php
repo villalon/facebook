@@ -221,28 +221,29 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 				echo "<td>".$user->name."</td>";
 				echo "<td>".$notification->countallresources."</td>";
 				echo "<td>".$notification->countallurl."</td>";
-						echo "<td>".$notification->countallpost."</td>";
+				echo "<td>".$notification->countallpost."</td>";
 				echo "<td>".$notification->emarkingid."</td>";
 	
 				$counttosend = 0;
 				
-				$data = array(
-						"link" => "",
-						"message" => "",
-						"template" => "Tienes nuevas notificaciones de WebCursos."
-				);
-				
-				$fb->setDefaultAccessToken($appid.'|'.$secretid);
-				$response = $fb->post('/'.$user->facebookid.'/notifications', $data);
-				$return = $response->getDecodedBody();
-				if($return['success'] == TRUE){
-					// Echo that tells to who notifications were sent, ordered by id
-					echo $counttosend." ".$user->facebookid." ok\n";
-					$counttosend++;
-				}else{
-					echo $userfacebookid->facebookid." fail\n";
+				if( ($notification->countallresources+$notification->countallurl+$notification->countallpost+$notification->emarkingid) > 0 ){
+					$data = array(
+							"link" => "",
+							"message" => "",
+							"template" => "Tienes nuevas notificaciones de WebCursos."
+					);
+					
+					$fb->setDefaultAccessToken($appid.'|'.$secretid);
+					$response = $fb->post('/'.$user->facebookid.'/notifications', $data);
+					$return = $response->getDecodedBody();
+					if($return['success'] == TRUE){
+						// Echo that tells to who notifications were sent, ordered by id
+						echo $counttosend." ".$user->facebookid." ok\n";
+						$counttosend++;
+					}else{
+						echo $userfacebookid->facebookid." fail\n";
+					}
 				}
-				
 			}
 			echo "</tr>";
 		}else{
