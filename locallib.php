@@ -48,7 +48,7 @@ define('MODULE_ASSIGN', 1);
  * @param date $lastvisit        	
  * @return 3 arrays
  */
-function get_total_notification($sqlin, $param, $lastvisit){
+function get_total_notification($sqlin, $param, $lastvisit, $moodleid){
 	global  $DB;
 	
 	//sql that counts all the new of recently modified resources
@@ -145,8 +145,36 @@ function get_total_notification($sqlin, $param, $lastvisit){
 		}
 	}
 	
+	$dataemarkingsql= "SELECT CONCAT(s.id,e.id,s.grade) AS ids,
+		COUNT(s.id) AS total,
+		e.id AS emarkingid,
+		e.course AS course,
+		e.name AS testname,
+		d.grade AS grade,
+		d.status AS status,
+		d.timemodified AS date,
+		s.teacher AS teacher,
+		cm.id as moduleid,
+		CONCAT(u.firstname,' ',u.lastname) AS user
+		FROM {emarking_draft} AS d JOIN {emarking} AS e ON (e.id = d.emarkingid AND e.course $sqlin AND e.type in (1,5,0))
+		JOIN {emarking_submission} AS s ON (d.submissionid = s.id AND d.status IN (20,30,35,40) AND s.student = ?)
+		JOIN {user} AS u ON (u.id = s.student)
+		JOIN {course_modules} AS cm ON (cm.instance = e.id AND cm.course  $sqlin)
+		JOIN {modules} AS m ON (cm.module = m.id AND m.name = 'emarking')
+		WHERE d.timemodified >= ?";
 	
-	return array($resourcepercourse, $urlpercourse, $totalpostpercourse);
+	$emarkingparams = array_merge($param,array($moodleid),$param, array($lastvisit));
+	
+	$totalemarkingperstudent = array();
+	
+	if($totalemarking = $DB->get_records_sql($dataemarkingsql, $emarkingparams)){
+		foreach($totalemarking as $objects){
+			$totalemarkingperstudent[$objects->course] = $objects->total;
+		}
+	}
+	
+	
+	return array($resourcepercourse, $urlpercourse, $totalpostpercourse, $totalemarkingperstudent);
 }
 /**
  * Sort the records by the field inside record.
@@ -215,7 +243,7 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 			  FROM {resource} AS r 
               INNER JOIN {course_modules} AS cm ON (cm.instance = r.id)
               INNER JOIN {modules} AS m ON (cm.module = m.id)
-              INNER JOIN {logstore_standard_log} AS log ON (log.objectid = cm.id AND log.action = 'created' AND log.target = 'course_module')
+              LEFT JOIN {logstore_standard_log} AS log ON (log.objectid = cm.id AND log.action = 'created' AND log.target = 'course_module')
               INNER JOIN {user} AS u ON (u.id = log.userid)
 			  WHERE r.course $sqlin 
 			  AND m.name IN (?) 
@@ -239,7 +267,7 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 		      FROM {url} AS url
               INNER JOIN {course_modules} AS cm ON (cm.instance = url.id)
               INNER JOIN {modules} AS m ON (cm.module = m.id)
-              INNER JOIN {logstore_standard_log} AS log ON (log.objectid = cm.id AND log.action = 'created' AND log.target = 'course_module')
+              LEFT JOIN {logstore_standard_log} AS log ON (log.objectid = cm.id AND log.action = 'created' AND log.target = 'course_module')
               INNER JOIN {user} AS u ON (u.id = log.userid)
 		      WHERE url.course $sqlin 
 		      AND m.name IN (?)
@@ -273,7 +301,7 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 	// Get the data from the query
 	$dataemarking = $DB->get_records_sql($dataemarkingsql, $emarkingparams);
 	
-	$dataassignmentsql = "SELECT CONCAT(a.id,a.duedate) AS ids,
+	/*$dataassignmentsql = "SELECT CONCAT(a.id,a.duedate) AS ids,
 			a.id, 
 			a.name, 
 			a.duedate AS due, 
@@ -292,17 +320,27 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 			INNER JOIN {role_assignments} AS ra ON (ra.userid = ?)
 			INNER JOIN {context} AS ct ON (ct.id = ra.contextid)
 			INNER JOIN {course} AS c ON (c.id = ct.instanceid AND c.id = a.id)
-			INNER JOIN {role} AS r ON (r.id = ra.roleid)";
-	
+			INNER JOIN {role} AS r ON (r.id = ra.roleid)";*/
+	/*
 	$userid = array($moodleid);
+	
+	$dataassignmentsql = "SELECT *
+			FROM mdl_assign AS a INNER JOIN mdl_assign_submission AS asub ON (a.id = asub.assignment AND asub.userid = ?)
+			INNER JOIN mdl_course_modules AS cm ON (a.course = cm.course AND a.course $sqlin AND cm.visible = ?)
+			JOIN {modules} AS m ON (m.id = cm.module AND m.visible = ? AND m.name = 'assign')
+			GROUP BY a.id";
+	
+	$count = $DB->count_records_sql($dataassignmentsql,array_merge($userid,$param,array(1,1)));
+	echo "<h3>$count</h3>";
+	*/
 	
 	$sqlparams = array(
 			FACEBOOK_COURSE_MODULE_VISIBLE,
 			FACEBOOK_COURSE_MODULE_VISIBLE
 	);
 	
-	$assignparams = array_merge($userid,$param,$sqlparams,$userid);	
-	$dataassign = $DB->get_records_sql($dataassignmentsql, $assignparams);
+	//$assignparams = array_merge($userid,$param,$sqlparams,$userid);	
+	//$dataassign = $DB->get_records_sql($dataassignmentsql, $assignparams);
 	
 	$totaldata = array();
 	// Foreach used to fill the array with the posts information
@@ -375,7 +413,7 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 				'teacherid'=>$emarking->teacher
 		);
 	}
-	
+	/*
 	foreach($dataassign as $assign){
 		$assignurl = new moodle_url('/mod/assign/view.php', array(
 				'id'=>$assign->moduleid
@@ -394,7 +432,7 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 				'id'=>$assign->id
 		);
 	}
-	
+	*/
 	// Returns the final array ordered by date to index.php
 	return record_sort($totaldata, 'date', 'true');
 }
@@ -459,3 +497,8 @@ function get_posts_from_discussion($discussionId) {
 	
 	return $data;
 }
+
+function cmp($a, $b){
+	return strcmp ($b->totalnotifications, $a->totalnotifications);
+}
+

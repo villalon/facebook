@@ -85,10 +85,6 @@ define('FACEBOOK_MODULE_NOT_VISIBLE', 0);
 define('FACEBOOK_NOTIFICATIONS_WANTED', 1);
 define('FACEBOOK_NOTIFICATIONS_UNWANTED', 0);
 
-define('MODULE_RESOURCE', 17);
-define('MODULE_ASSIGN', 1);
-define('MODULE_EMARKING', 23);
-define('MODULE_URL', 20);
 
 // Sql that brings the latest time modified from facebook_notifications
 $maxtimenotificationssql = "SELECT max(timemodified) AS maxtime	
