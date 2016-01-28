@@ -25,14 +25,8 @@ body {
 	width: 100%;
 }
 
-#separador {
-	height: 5%;
-	width: 100%;
-	background-color: white;
-}
-
 #container2 {
-	height: 200px;
+	height: 10%;
 	background-color: black;
 	width: 100%;
 }

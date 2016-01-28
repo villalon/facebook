@@ -460,12 +460,12 @@ if ($userfacebookinfo != false) {
 					} else {
 						echo '</center></td><td';
 					if($data['date']>$lastvisit){
- 							echo ' style="font-weight:bold"><a href="'.$data['link'].'" target="_blank">'.$data['title'].'</a>
+ 							echo ' style="font-weight:bold"><a href="'.$data['link'].'" target="_blank" component="other">'.$data['title'].'</a>
  									</td><td style="font-size:13px; font-weight:bold;">'.$data ['from'].'</td><td style="font-size:14px; font-weight:bold;">'.$date.'</td><td><button type="button" class="btn btn-primary btn-sm" style="color:#E5E3FB;">
  									<span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>&nbsp<b> share
  									</b></button></td></tr>';
  						}else{
- 							echo '><a href="'.$data['link'].'" target="_blank">'.$data['title'].'</a>
+ 							echo '><a href="'.$data['link'].'" target="_blank" component="other">'.$data['title'].'</a>
  									</td><td style="font-size:13px">'.$data ['from'].'</td><td style="font-size:14px">'.$date.'</td><td><button type="button" class="btn btn-default btn-sm" style="color:#909090;">
  									<span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>&nbsp<b> share
  									</b></button></td></tr>';
@@ -564,6 +564,24 @@ if ($userfacebookinfo != false) {
 				 }
 			}
 		}
+		else if($(this).attr('component') == "other") {
+			
+			if(aclick == 'font-weight:bold'){
+				
+				$(this).parent().parent().children("td").css('font-weight','normal');
+				$(this).parent().parent().children("td").children("button").removeClass("btn btn-primary");
+				$(this).parent().parent().children("td").children("button").addClass("btn btn-default");
+				$(this).parent().parent().children("td").children("center").children("span").css('color','transparent');
+				$(this).parent().parent().children("td").children("button").css('color','#909090');
+				
+				if(badgecourseid.text() == 1) { 
+					badgecourseid.remove(); 
+				}
+				else{ 
+					badgecourseid.text(badgecourseid.text()-1); 
+				}
+			}
+		}
 	});
 
 	$("#search").on('change keyup paste', function() {
@@ -585,7 +603,6 @@ if ($userfacebookinfo != false) {
 	<?php
  	echo "</div></div>";
 	include 'htmltoinclude/spacer.html';
-	echo '<div id="overlay"></div>';
 
 	//updates the user last time in the app
 	$userfacebookinfo->lasttimechecked = time();
