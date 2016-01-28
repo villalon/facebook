@@ -89,7 +89,7 @@ define('FACEBOOK_NOTIFICATIONS_UNWANTED', 0);
 $sqlusers = "SELECT  u.id as id, f.facebookid, u.lastaccess, CONCAT(u.firstname,' ',u.lastname) as name
 	FROM {user} AS u JOIN {facebook_user} AS f ON (u.id = f.moodleid AND f.status = ?)
 	WHERE f.facebookid iS NOT NULL
-	GROUP BY u.id";
+	GROUP BY f.facebookid";
 
 echo "<table border=1>";
 echo "<tr><th>User id</th> <th>User name</th> <th>total Resources</th> <th>Total Urls</th> <th>Total posts</th> <th>total emarking</th></tr> ";
@@ -171,7 +171,7 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 			AND m.visible = ?
 			AND r.timemodified >= ?
 			AND user.id = ?
-			GROUP BY cm.course)
+			GROUP BY cm.course, user.id)
 			AS Resources,
 				
 			(SELECT COUNT(cm.module) AS countallurl
@@ -188,7 +188,7 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 			AND m.visible = ?
 			AND  u.timemodified >= ?
 			AND user.id = ?
-			GROUP BY cm.course )
+			GROUP BY cm.course,user.id )
 			as Urls,
 			
 			(SELECT fd.course AS idcoursefd, COUNT(fp.id) AS countallpost
@@ -201,7 +201,7 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 			WHERE fd.course $sqlincourses
 			AND fp.modified > ?
 			AND user.id = ?
-			GROUP BY fd.course)
+			GROUP BY fd.course,user.id)
 			as Posts,
 			
 			(SELECT COUNT(e.id) AS emarkingid
@@ -210,13 +210,15 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 			JOIN {user} AS u ON (u.id = s.student )
 			JOIN {course_modules} AS cm ON (cm.instance = e.id AND cm.course  $sqlincourses)
 			JOIN {modules} AS m ON (cm.module = m.id AND m.name = 'emarking')
-			WHERE d.timemodified >= ?)
+			WHERE d.timemodified >= ?
+			GROUP BY u.id)
 			as Emarkings";
 		
 			$notifications = $DB->get_records_sql($sqlnotifications, $params);
 			
-			echo "<tr>";
+			
 			foreach ($notifications as $notification){
+				echo "<tr>";
 				//var_dump($notification);
 				echo "<td>".$user->id."</td>";
 				echo "<td>".$user->name."</td>";
@@ -244,8 +246,9 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 						echo $userfacebookid->facebookid." fail\n";
 					}
 				}*/
+				echo "</tr>";
 			}
-			echo "</tr>";
+			
 		}else{
 		echo "chupalo no tienes cursos";
 	}
