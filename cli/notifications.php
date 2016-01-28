@@ -105,6 +105,7 @@ $fb = new Facebook([
 ]);
 
 if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
+	var_dump($facebookusers);
 	$counttosend = 0;
 	foreach($facebookusers as $user){
 		
