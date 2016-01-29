@@ -301,7 +301,7 @@ if ($userfacebookinfo != false) {
 						      <?php
 						        foreach($postData as $post) {
 						        	$date = $post['date'];
-						        	echo "<div align='left'style='background-color:#CCCCCC; border-radius: 4px 4px 0 0; padding:4px; color:#333333;'><img src='images/post.png'>
+						        	echo "<div align='left'style='background-color:#E6E6E6; border-radius: 4px 4px 0 0; padding:4px; color:#333333;'><img src='images/post.png'>
  									<b>&nbsp&nbsp".$data['title']."<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".$post['user'].", ".date('l d-F-Y', $date)."</b></div>";
  						        	echo "<div align='left' style='border-radius: 0 0 4px 4px; 	word-wrap: break-word;'>".$post['message']."</div>";
  						        	echo "<br>";
@@ -620,7 +620,7 @@ if ($userfacebookinfo != false) {
 	echo'</div></div>';
 	echo '<div class="popup" role="dialog" aria-labelledby="modal">';
 	echo '<div class="cuerpo" style="margin:200px"><h1>'.get_string('existtittle', 'local_facebook').'</h1>
-    <p>'.get_string('existtext', 'local_facebook').'<a  target="_blank" href="'.$connecturl.'" >'.get_string('existlink', 'local_facebook').'</a></p></div>';
+    <p>Para enlazar tu cuenta click <a  target="_blank" href="'.$connecturl.'" >Aquí</a></p></div>';
 	echo '</div>';
 	include 'htmltoinclude/spacer.html';
 }
