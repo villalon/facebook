@@ -185,6 +185,8 @@ if ($userfacebookinfo != false) {
 	
 	
 	echo "<div class='col-md-10 col-sm-9 col-xs-12'>";
+	echo"<div class='advert'><div style='position: relative;'><img src='images/jpg_an_1.jpg'style='margin-top:10%; margin-left:8%; width:35%'><img src='images/jpg_an_2.jpg' style='margin-top:10%; margin-left:5%; width:35%'></div></div>";
+		
 	foreach($usercourse as $courses){
 			
 		$fullname = $courses->fullname;
@@ -299,8 +301,10 @@ if ($userfacebookinfo != false) {
 						      <?php
 						        foreach($postData as $post) {
 						        	$date = $post['date'];
-						        	echo "<div align='left'>".$post['message']."</div>";
-						        	echo "<div align='right'>".$post['user'].", ".date('l d-F-Y', $date)."</div><br>";
+						        	echo "<div align='left'style='background-color:#CCCCCC; border-radius: 4px 4px 0 0; padding:4px; color:#333333;'><img src='images/post.png'>
+ 									<b>&nbsp&nbsp".$data['title']."<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".$post['user'].", ".date('l d-F-Y', $date)."</b></div>";
+ 						        	echo "<div align='left' style='border-radius: 0 0 4px 4px; 	word-wrap: break-word;'>".$post['message']."</div>";
+ 						        	echo "<br>";
 						        }
 						      ?>
 						      </div>
@@ -491,11 +495,15 @@ if ($userfacebookinfo != false) {
 		var courseid = $(this).parent().parent().attr('courseid');
 		var badgecourseid = $( "button[courseid='"+courseid+"']" ).parent().find('.badge');
 		var aclick = $(this).parent().attr('style');
+		var advert = $(this).parent().parent().parent().parent().parent().find('.advert');
+		
 
 		if(($(this).attr('component') == "button") && ($(this).attr('courseid') != courseId)) {
 			$('#c' + courseId).fadeOut(300);
 			courseId = $(this).attr('courseid');
 			$('#c' + courseId).delay(300).fadeIn(300);
+			advert.remove(); 
+			
 		}
 
 		else if($(this).attr('component') == "forum") {
@@ -609,7 +617,10 @@ if ($userfacebookinfo != false) {
 	$DB->update_record('facebook_user', $userfacebookinfo);
 
 } else{
-	echo '<div class="cuerpo"><h1>'.get_string('existtittle', 'local_facebook').'</h1>
-		     <p>'.get_string('existtext', 'local_facebook').'<a  target="_blank" href="'.$connecturl.'" >'.get_string('existlink', 'local_facebook').'</a></p></div>';
+	echo'</div></div>';
+	echo '<div class="popup" role="dialog" aria-labelledby="modal">';
+	echo '<div class="cuerpo" style="margin:200px"><h1>'.get_string('existtittle', 'local_facebook').'</h1>
+    <p>'.get_string('existtext', 'local_facebook').'<a  target="_blank" href="'.$connecturl.'" >'.get_string('existlink', 'local_facebook').'</a></p></div>';
+	echo '</div>';
 	include 'htmltoinclude/spacer.html';
 }
