@@ -39,26 +39,7 @@ use Facebook\FacebookRedirectLoginHelper;
 use Facebook\FacebookRequire;
 
 include "htmltoinclude/bootstrap.html";
-/*
-?>
-<script>
-  window.fbAsyncInit = function() {
-    FB.init({
-      appId      : '633751800045647',
-      xfbml      : true,
-      version    : 'v2.5'
-    });
-  };
 
-  (function(d, s, id){
-     var js, fjs = d.getElementsByTagName(s)[0];
-     if (d.getElementById(id)) {return;}
-     js = d.createElement(s); js.id = id;
-     js.src = "//connect.facebook.net/en_US/sdk.js";
-     fjs.parentNode.insertBefore(js, fjs);
-   }(document, 'script', 'facebook-jssdk'));
-</script>
-<?php
 
 //gets all facebook information needed
 $appid = $CFG->fbkAppID;
@@ -68,7 +49,7 @@ $config = array(
 		"app_secret" => $secretid,
 		"default_graph_version" => "v2.5"
 );
-/*
+
 $fb = new Facebook\Facebook($config);
 
 $helper = $fb->getCanvasHelper();
@@ -95,7 +76,7 @@ $facebookdata = $helper->getSignedRequest();
 $user_data = $fb->get("/me?fields=id",$accessToken);
 $user_profile = $user_data->getGraphUser();
 $facebook_id = $user_profile["id"];
-*/
+
 $app_name= $CFG->fbkAppNAME;
 $app_email= $CFG->fbkemail;
 $tutorial_name=$CFG->fbktutorialsN;
@@ -107,7 +88,7 @@ $connecturl= new moodle_url('/local/facebook/connect.php');
 include 'htmltoinclude/sidebar.html';
 
 //search for the user facebook information
-$userfacebookinfo = $DB->get_record('facebook_user',array('moodleid'=>$USER->id,'status'=>1));
+$userfacebookinfo = $DB->get_record('facebook_user',array('facebookid'=>$facebook_id,'status'=>1));
 
 // if the user exist then show the app, if not tell him to connect his facebook account
 if ($userfacebookinfo != false) {
