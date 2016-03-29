@@ -88,7 +88,7 @@ define('FACEBOOK_NOTIFICATIONS_UNWANTED', 0);
 // Sql that brings the facebook user id
 $sqlusers = "SELECT  u.id as id, f.facebookid, u.lastaccess, CONCAT(u.firstname,' ',u.lastname) as name
 	FROM {user} AS u JOIN {facebook_user} AS f ON (u.id = f.moodleid AND f.status = ?)
-	WHERE f.facebookid iS NOT NULL
+	WHERE f.facebookid IS NOT NULL
 	GROUP BY f.facebookid";
 
 echo "<table border=1>";
