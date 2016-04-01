@@ -229,6 +229,7 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 				echo "<td>".$notification->countallurl."</td>";
 				echo "<td>".$notification->countallpost."</td>";
 				echo "<td>".$notification->emarkingid."</td>";
+				var_dump($notification);
 				/*
 				if( ($notification->countallresources+$notification->countallurl+$notification->countallpost+$notification->emarkingid) > 0 ){
 					$data = array(
