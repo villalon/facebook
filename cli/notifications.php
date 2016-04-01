@@ -310,19 +310,19 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 			
 			//$notifications = $DB->get_records_sql($sqlnotifications, $params);
 			
-			$resources = $DB->get_records_sql($sqlresources, $resourcesparams);
-			$urls = $DB->get_records_sql($sqlurls, $urlsparams);
-			$posts = $DB->get_records_sql($sqlposts, $postsparams);
-			$emarkings = $DB->get_records_sql($sqlemarkings, $emarkingsparams);
+			$resources = $DB->get_record_sql($sqlresources, $resourcesparams);
+			$urls = $DB->get_record_sql($sqlurls, $urlsparams);
+			$posts = $DB->get_record_sql($sqlposts, $postsparams);
+			$emarkings = $DB->get_record_sql($sqlemarkings, $emarkingsparams);
 			
 			echo "<tr>";
 			//var_dump($notification);
 			echo "<td>".$user->id."</td>";
 			echo "<td>".$user->name."</td>";
-			echo "<td>".$resources->count."</td>";
-			echo "<td>".$urls->count."</td>";
-			echo "<td>".$posts->count."</td>";
-			echo "<td>".$emarkings->count."</td>";
+			echo "<td>".$resources."</td>";
+			echo "<td>".$urls."</td>";
+			echo "<td>".$posts."</td>";
+			echo "<td>".$emarkings."</td>";
 			/*
 			if( ($notification->countallresources+$notification->countallurl+$notification->countallpost+$notification->emarkingid) > 0 ){
 				$data = array(
