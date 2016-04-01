@@ -22,6 +22,7 @@
  * @copyright  2010 Jorge Villalon (http://villalon.cl)
  * @copyright  2015 Mihail Pozarski (mipozarski@alumnos.uai.cl)
  * @copyright  2015 Hans Jeria (hansjeria@gmail.com)
+ * @copyright  2016 Mark Michaelsen (mmichaelsen678@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -157,7 +158,7 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 			
 			$sqlnotifications = "SELECT Resources.countallresources, Urls.countallurl, Posts.countallpost, Emarkings.emarkingid
 			FROM
-			(SELECT COUNT(cm.module) AS countallresources
+			(SELECT user.id AS userid, COUNT(cm.module) AS countallresources
 			FROM {course_modules} AS cm
 			INNER JOIN {modules} AS m ON (cm.module = m.id)
 			INNER JOIN {resource} AS r ON (cm.instance=r.id)
@@ -171,10 +172,10 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 			AND m.visible = ?
 			AND r.timemodified >= ?
 			AND user.id = ?
-			GROUP BY cm.course, user.id)
+			GROUP BY user.id)
 			AS Resources,
 				
-			(SELECT COUNT(cm.module) AS countallurl
+			(SELECT user.id AS userid, COUNT(cm.module) AS countallurl
 			FROM {course_modules} AS cm
 			INNER JOIN {modules} AS m ON (cm.module = m.id)
 			INNER JOIN {url} AS u ON (cm.instance=u.id)
@@ -188,10 +189,10 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 			AND m.visible = ?
 			AND  u.timemodified >= ?
 			AND user.id = ?
-			GROUP BY cm.course,user.id )
+			GROUP BY user.id )
 			as Urls,
 			
-			(SELECT fd.course AS idcoursefd, COUNT(fp.id) AS countallpost
+			(SELECT user.id AS userid, fd.course AS idcoursefd, COUNT(fp.id) AS countallpost
 			FROM {forum_posts} AS fp
 			INNER JOIN {forum_discussions} AS fd ON (fp.discussion=fd.id)
 			INNER JOIN {course} AS course ON (course.id = fd.course)
@@ -201,19 +202,21 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 			WHERE fd.course $sqlincourses
 			AND fp.modified > ?
 			AND user.id = ?
-			GROUP BY fd.course,user.id)
+			GROUP BY user.id)
 			as Posts,
 			
-			(SELECT COUNT(e.id) AS emarkingid
+			(SELECT user.id AS userid, COUNT(e.id) AS emarkingid
 			FROM {emarking_draft} AS d JOIN {emarking} AS e ON (e.id = d.emarkingid AND e.course $sqlincourses AND e.type in (1,5,0))
 			JOIN {emarking_submission} AS s ON (d.submissionid = s.id AND d.status IN (20,30,35,40) AND s.student = ?)
-			JOIN {user} AS u ON (u.id = s.student )
-			JOIN {course_modules} AS cm ON (cm.instance = e.id AND cm.course  $sqlincourses)
+			JOIN {user} AS user ON (user.id = s.student )
+			JOIN {course_modules} AS cm ON (cm.instance = e.id AND cm.course $sqlincourses)
 			JOIN {modules} AS m ON (cm.module = m.id AND m.name = 'emarking')
 			WHERE d.timemodified >= ?
-			GROUP BY u.id)
+			GROUP BY user.id)
 			as Emarkings";
-		
+			
+			$sql = "SELECT COUNT()";
+			
 			$notifications = $DB->get_records_sql($sqlnotifications, $params);
 			
 			
