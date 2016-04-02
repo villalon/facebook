@@ -353,10 +353,16 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 			if ($notifications == 0) {
 				echo "<td>No notifications found</td>";
 			} elseif ($user->facebookid != null) {
+				if ($notifications == 1) {
+					$template = "Tienes $notifications notificación de WebCursos.";
+				} else {
+					$template = "Tienes $notifications notificaciones de WebCursos.";
+				}
+				
 				$data = array(
 						"link" => "",
 						"message" => "",
-						"template" => "Tienes ".$notifications." notificaciones de WebCursos."
+						"template" => $template
 				);
 			
 				$fb->setDefaultAccessToken($appid.'|'.$secretid);
@@ -373,7 +379,22 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 						echo "<td>Not sent (success = FALSE)</td>";
 					}
 				} catch (Exception $e) {
-					echo "<td>Exception found: <br>".$e->getMessage()."</td>";
+					$exception = $e->getMessage();
+					echo "<td>Exception found: <br>$exception<br>";
+					
+					if (strpos($exception, "not installed") !== false) {
+						$updatedata = new stdObject();
+						$updatedata->id = $user->id;
+						$updatedata->status = 0;
+						
+						if ($DB->update_record('facebook_user', $updatedata)) {
+							echo "Record updated.";
+						} else {
+							echo "Could not update the record.";
+						}
+						
+						echo "</td>";
+					}
 				}
 			}
 			
@@ -404,7 +425,7 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 	}
 	}
 echo "</table>";
-echo $sent." notifications sent.";
+echo $sent." notifications sent.<br>";
 
 $finaltime = time();
 $executiontime = $finaltime - $initialtime;
