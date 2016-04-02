@@ -124,7 +124,7 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 		if(!empty($courseidarray)){
 			
 			
-			// get_in_or_equal used after in the IN ('') clause of multiple querys
+			// get_in_or_equal used in the IN ('') clause of multiple querys
 			list($sqlincourses, $paramcourses) = $DB->get_in_or_equal($courseidarray);
 			
 			$resourcesparams = array_merge(
@@ -259,6 +259,8 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 			as Emarkings";
 			*/
 			
+			// Queries for getting the amount of notifications for each supported module
+			// TODO: OPTIMIZATION
 			$sqlresources = "SELECT user.id AS userid, COUNT(cm.module) AS count
 				FROM {course_modules} AS cm
 				INNER JOIN {modules} AS m ON (cm.module = m.id)
@@ -316,7 +318,6 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 			
 			
 			echo "<tr>";
-			//var_dump($notification);
 			echo "<td>".$user->id."</td>";
 			echo "<td>".$user->name."</td>";
 			
@@ -367,12 +368,12 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 			
 				$fb->setDefaultAccessToken($appid.'|'.$secretid);
 				
+				// Handles when the notifier throws an exception (couldn't send the notification)
 				try {
 					$response = $fb->post('/'.$user->facebookid.'/notifications', $data);
 					$return = $response->getDecodedBody();
 					
 					if($return['success'] == TRUE){
-						// Echo that tells to who notifications were sent, ordered by id
 						echo "<td>Sent: $notifications</td>";
 						$sent++;
 					} else {
@@ -382,12 +383,18 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 					$exception = $e->getMessage();
 					echo "<td>Exception found: <br>$exception<br>";
 					
+					// If the user hasn't installed the app, update it's record
 					if (strpos($exception, "not installed") !== false) {
-						$updatedata = new stdClass();
-						$updatedata->id = $user->id;
-						$updatedata->status = 0;
+						$updatequery = "UPDATE {facebook_user} 
+								SET status = ? 
+								WHERE moodleid = ?";
 						
-						if ($DB->update_record('facebook_user', $updatedata)) {
+						$updateparams = array(
+								0,
+								$user->id
+						);
+						
+						if ($DB->execute($updatequery, $updateparams)) {
 							echo "Record updated.";
 						} else {
 							echo "Could not update the record.";
@@ -421,16 +428,16 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 			echo "</tr>";
 			
 		}else{
-		echo "chupalo no tienes cursos";
+			echo "chupalo no tienes cursos";
+		}
 	}
-	}
-echo "</table>";
-echo $sent." notifications sent.<br>";
-
-$finaltime = time();
-$executiontime = $finaltime - $initialtime;
-
-echo "Execution time: ".$executiontime." seconds.";
+	echo "</table>";
+	echo $sent." notifications sent.<br>";
+	
+	$finaltime = time();
+	$executiontime = $finaltime - $initialtime;
+	
+	echo "Execution time: ".$executiontime." seconds.";
 }
 
 
