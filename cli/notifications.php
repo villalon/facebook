@@ -86,6 +86,8 @@ define('FACEBOOK_MODULE_NOT_VISIBLE', 0);
 define('FACEBOOK_NOTIFICATIONS_WANTED', 1);
 define('FACEBOOK_NOTIFICATIONS_UNWANTED', 0);
 
+$initialtime = time();
+
 // Sql that brings the facebook user id
 $sqlusers = "SELECT  u.id as id, f.facebookid AS facebookid, u.lastaccess, CONCAT(u.firstname,' ',u.lastname) as name
 	FROM {user} AS u JOIN {facebook_user} AS f ON (u.id = f.moodleid AND f.status = ?)
@@ -348,7 +350,9 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 				echo "<td>0</td>";
 			}
 			
-			if(($user->facebookid != null) || ($notifications != 0)){
+			if ($notifications == 0) {
+				echo "<td>No notifications found</td>";
+			} elseif ($user->facebookid != null) {
 				$data = array(
 						"link" => "",
 						"message" => "",
@@ -363,13 +367,13 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 					
 					if($return['success'] == TRUE){
 						// Echo that tells to who notifications were sent, ordered by id
-						echo "<td>Enviada</td>";
+						echo "<td>Sent: $notifications</td>";
 						$sent++;
 					} else {
-						echo "<td>No Enviada (success = FALSE)</td>";
+						echo "<td>Not sent (success = FALSE)</td>";
 					}
 				} catch (Exception $e) {
-					echo "<td>".$e->getMessage()."</td>";
+					echo "<td>Exception found: <br>".$e->getMessage()."</td>";
 				}
 			}
 			
@@ -394,13 +398,18 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 				}
 			}*/
 			echo "</tr>";
-			echo $sent." notificaciones enviadas.";
 			
 		}else{
 		echo "chupalo no tienes cursos";
 	}
 	}
 echo "</table>";
+echo $sent." notifications sent.";
+
+$finaltime = time();
+$executiontime = $finaltime - $initialtime;
+
+echo "Execution time: ".$executiontime." seconds.";
 }
 
 
