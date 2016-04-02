@@ -383,7 +383,7 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 					echo "<td>Exception found: <br>$exception<br>";
 					
 					if (strpos($exception, "not installed") !== false) {
-						$updatedata = new stdObject();
+						$updatedata = new stdClass();
 						$updatedata->id = $user->id;
 						$updatedata->status = 0;
 						
