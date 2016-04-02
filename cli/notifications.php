@@ -87,16 +87,18 @@ define('FACEBOOK_NOTIFICATIONS_WANTED', 1);
 define('FACEBOOK_NOTIFICATIONS_UNWANTED', 0);
 
 // Sql that brings the facebook user id
-$sqlusers = "SELECT  u.id as id, f.facebookid, u.lastaccess, CONCAT(u.firstname,' ',u.lastname) as name
+$sqlusers = "SELECT  u.id as id, f.facebookid AS facebookid, u.lastaccess, CONCAT(u.firstname,' ',u.lastname) as name
 	FROM {user} AS u JOIN {facebook_user} AS f ON (u.id = f.moodleid AND f.status = ?)
 	WHERE f.facebookid IS NOT NULL
 	GROUP BY f.facebookid";
 
 echo "<table border=1>";
-echo "<tr><th>User id</th> <th>User name</th> <th>total Resources</th> <th>Total Urls</th> <th>Total posts</th> <th>total emarking</th></tr> ";
+echo "<tr><th>User id</th> <th>User name</th> <th>total Resources</th> <th>Total Urls</th> <th>Total posts</th> <th>total emarking</th> <th>Notification sent</th> </tr> ";
 
 $appid = $CFG->fbkAppID;
 $secretid = $CFG->fbkScrID;
+
+$sent = 0;
 
 // Facebook app information
 $fb = new Facebook([
@@ -316,28 +318,59 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 			echo "<td>".$user->id."</td>";
 			echo "<td>".$user->name."</td>";
 			
+			$notifications = 0;
+			
 			if($resources = $DB->get_record_sql($sqlresources, $resourcesparams)){
 				echo "<td>".$resources->count."</td>";
+				$notifications += $resources->count;
 			} else {
 				echo "<td>0</td>";
 			}
 			
 			if($urls = $DB->get_record_sql($sqlurls, $urlsparams)){
 				echo "<td>".$urls->count."</td>";
+				$notifications += $urls->count;
 			} else {
 				echo "<td>0</td>";
 			}
 			
 			if($posts = $DB->get_record_sql($sqlposts, $postsparams)){
 				echo "<td>".$posts->count."</td>";
+				$notifications += $posts->count;
 			} else {
 				echo "<td>0</td>";
 			}
 			
 			if($emarkings = $DB->get_record_sql($sqlemarkings, $emarkingsparams)){
 				echo "<td>".$emarkings->count."</td>";
+				$notifications += $emarkings->count;
 			} else {
 				echo "<td>0</td>";
+			}
+			
+			if(($user->facebookid != null) || ($notifications != 0)){
+				$data = array(
+						"link" => "",
+						"message" => "",
+						"template" => "Tienes ".$notifications." notificaciones de WebCursos."
+				);
+			
+				$fb->setDefaultAccessToken($appid.'|'.$secretid);
+				
+				try {
+					$response = $fb->post('/'.$user->facebookid.'/notifications', $data);
+					$return = $response->getDecodedBody();
+					
+					if($return['success'] == TRUE){
+						// Echo that tells to who notifications were sent, ordered by id
+						echo "<td>Enviada</td>";
+						$sent++;
+					} else {
+						echo "<td>No Enviada (success = FALSE)</td>";
+					}
+				} catch (Exception $e) {
+					echo "<td>".$e->getMessage()."</td>";
+				}
 			}
 			
 			/*
@@ -361,6 +394,7 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 				}
 			}*/
 			echo "</tr>";
+			echo $sent." notificaciones enviadas.";
 			
 		}else{
 		echo "chupalo no tienes cursos";
