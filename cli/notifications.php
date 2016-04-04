@@ -433,7 +433,7 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 			echo "</tr>";
 		}else{
 			// When the current user isn't enroled in any course (debugging)
-			echo "Chupalo no tienes cursos";
+			echo "<br><b>Chupalo no tienes cursos</b><br>";
 		}
 	}
 	echo "</table>";
