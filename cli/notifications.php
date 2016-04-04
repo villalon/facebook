@@ -94,12 +94,14 @@ $sqlusers = "SELECT  u.id as id, f.facebookid AS facebookid, u.lastaccess, CONCA
 	WHERE f.facebookid IS NOT NULL
 	GROUP BY f.facebookid";
 
+// Table made for debugging purposes
 echo "<table border=1>";
 echo "<tr><th>User id</th> <th>User name</th> <th>total Resources</th> <th>Total Urls</th> <th>Total posts</th> <th>total emarking</th> <th>Notification sent</th> </tr> ";
 
 $appid = $CFG->fbkAppID;
 $secretid = $CFG->fbkScrID;
 
+// Counts every notification sent
 $sent = 0;
 
 // Facebook app information
@@ -110,19 +112,18 @@ $fb = new Facebook([
 ]);
 
 if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
-	var_dump($facebookusers);
-	$counttosend = 0;
 	foreach($facebookusers as $user){
+		var_dump($user);
 		
 		$courses = enrol_get_users_courses($user->id);
-		
 		$courseidarray = array();
+		
+		// Save all courses ids in an array
 		foreach ($courses as $course){
 			$courseidarray[] = $course->id;
 		}	
 		
 		if(!empty($courseidarray)){
-			
 			
 			// get_in_or_equal used in the IN ('') clause of multiple querys
 			list($sqlincourses, $paramcourses) = $DB->get_in_or_equal($courseidarray);
@@ -321,8 +322,10 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 			echo "<td>".$user->id."</td>";
 			echo "<td>".$user->name."</td>";
 			
+			// Count total notifications for the current user
 			$notifications = 0;
 			
+			// Print the obtained information in the table (debugging)
 			if($resources = $DB->get_record_sql($sqlresources, $resourcesparams)){
 				echo "<td>".$resources->count."</td>";
 				$notifications += $resources->count;
@@ -351,6 +354,7 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 				echo "<td>0</td>";
 			}
 			
+			// Check if there are notifications to send
 			if ($notifications == 0) {
 				echo "<td>No notifications found</td>";
 			} elseif ($user->facebookid != null) {
@@ -383,8 +387,8 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 					$exception = $e->getMessage();
 					echo "<td>Exception found: <br>$exception<br>";
 					
-					// If the user hasn't installed the app, update it's record
-					if (strpos($exception, "not installed") !== false) {
+					// If the user hasn't installed the app, update it's record to status = 0
+					if (strpos($exception, "not installed") !== FALSE) {
 						$updatequery = "UPDATE {facebook_user} 
 								SET status = ? 
 								WHERE moodleid = ?";
@@ -395,7 +399,7 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 						);
 						
 						if ($DB->execute($updatequery, $updateparams)) {
-							echo "Record updated.";
+							echo "Record updated, set status to 0.";
 						} else {
 							echo "Could not update the record.";
 						}
@@ -425,26 +429,28 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 					echo $userfacebookid->facebookid." fail\n";
 				}
 			}*/
-			echo "</tr>";
 			
+			echo "</tr>";
 		}else{
-			echo "chupalo no tienes cursos";
+			// When the current user isn't enroled in any course (debugging)
+			echo "Chupalo no tienes cursos";
 		}
 	}
 	echo "</table>";
+	
+	// Check how many notifications were sent
 	echo $sent." notifications sent.<br>";
 	
+	// Displays the time required to complete the process
 	$finaltime = time();
 	$executiontime = $finaltime - $initialtime;
 	
 	echo "Execution time: ".$executiontime." seconds.";
 }
 
-
-
 die();
 
-
+// ----------------- previous version ----------------- //
 
 // Sql that brings the latest time modified from facebook_notifications
 $maxtimenotificationssql = "SELECT max(timemodified) AS maxtime	
