@@ -30,7 +30,7 @@ global $DB, $USER, $CFG;
 $moodleid = $USER->id;
 $course = $DB->get_record('course', array('fullname' => 'Curso de gente'));
 
-echo "Id: ".$course->id."\n ";
+echo "Id: ".$course->id."\n Course: ".$course->fullname."\n";
 
 
 $start = microtime(TRUE);
@@ -39,7 +39,7 @@ $end = microtime(TRUE);
 $timeelapsed = $end - $start;
 
 echo "Query time: ".$timeelapsed." s <br>";
-
+/*
 echo '<table border="1" width="100%" style="font-size: 13px; margin-left: 9px;">
 				<thead>
 					<tr>
@@ -52,11 +52,11 @@ echo '<table border="1" width="100%" style="font-size: 13px; margin-left: 9px;">
 					</tr>
 				</thead>
 				<tbody>';
-
+*/
 
 
 foreach ($coursedata as $module) {
-	$date = date ( "d/m/Y H:i", $data ['date'] );
+	/*$date = date ( "d/m/Y H:i", $data ['date'] );
 	echo "<tr><td>";
 	if ($data ['image'] == FACEBOOK_IMAGE_POST) {
 		echo '<img src="images/post.png">';
@@ -81,6 +81,9 @@ foreach ($coursedata as $module) {
 	
 	echo "</td><td><a href='#' discussionid='" . $discussionId . "' component='forum'>". $data['title'] ."</a></td>
 			<td>". $data['from'] ."</td><td>". $date ."</td></tr>";
+			*/
+	var_dump($module);
+	echo "<br><br>";
 }
 
-echo "</tbody></table>";
+//echo "</tbody></table>";
