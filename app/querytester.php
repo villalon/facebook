@@ -39,8 +39,7 @@ $timeelapsed = $end - $start;
 
 echo "Query time: ".$timeelapsed." s <br>";
 
-echo '<table class="tablesorter" border="0" width="100%"
-				style="font-size: 13px; margin-left: 9px;">
+echo '<table border="1" width="100%" style="font-size: 13px; margin-left: 9px;">
 				<thead>
 					<tr>
 						<th width="1%" style="border-top-left-radius: 8px;"></th>
