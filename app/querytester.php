@@ -30,6 +30,8 @@ global $DB, $USER, $CFG;
 $moodleid = $USER->id;
 $course = $DB->get_record('course', array('fullname' => 'Curso de gente'));
 
+echo $course->id;
+
 echo "Curso de gente <br>";
 
 $start = microtime(TRUE);
