@@ -30,9 +30,8 @@ global $DB, $USER, $CFG;
 $moodleid = $USER->id;
 $course = $DB->get_record('course', array('fullname' => 'Curso de gente'));
 
-echo $course->id;
+echo "Id: ".$course->id."\n ";
 
-echo "Curso de gente <br>";
 
 $start = microtime(TRUE);
 $coursedata = get_course_data($moodleid, $course->id);
@@ -46,10 +45,9 @@ echo '<table border="1" width="100%" style="font-size: 13px; margin-left: 9px;">
 					<tr>
 						<th width="1%" style="border-top-left-radius: 8px;"></th>
 						<th width="5%"></th>
-						<th width="33%"><?php echo get_string("rowtittle", "local_facebook"); ?></th>
-						<th width="30%"><?php echo get_string("rowfrom", "local_facebook"); ?></th>
-						<th width="20%"><?php echo get_string("rowdate", "local_facebook"); ?></th>
-						<!--  					<th width="10%" style= "border-top-right-radius: 8px;">Share</th> -->
+						<th width="33%">Título</th>
+						<th width="30%">De</th>
+						<th width="30%">Fecha</th>
 						<th width="1%" style="background-color: transparent"></th>
 					</tr>
 				</thead>
