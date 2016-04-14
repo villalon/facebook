@@ -60,38 +60,38 @@ echo '<table border="1" width="100%" style="font-size: 13px; margin-left: 9px;">
 				</thead>
 				<tbody>';
 
-$module = 1;
+$modulecount = 1;
 
 foreach ($coursedata as $module) {
 	$date = date ( "d/m/Y H:i", $module ['date'] );
 	echo "<tr><td>";
 	if ($module ['image'] == FACEBOOK_IMAGE_POST) {
-		echo $module.'<img src="images/post.png">';
+		echo $modulecount.'<img src="images/post.png">';
 		$discussionId = $module ['discussion'];
 	}
 	
 	else if ($module ['image'] == FACEBOOK_IMAGE_RESOURCE) {
-		echo $module.'<img src="images/resource.png">';
+		echo $modulecount.'<img src="images/resource.png">';
 	}
 	
 	else if ($module ['image'] == FACEBOOK_IMAGE_LINK) {
-		echo $module.'<img src="images/link.png">';
+		echo $modulecount.'<img src="images/link.png">';
 	}
 	
 	else if ($module ['image'] == FACEBOOK_IMAGE_EMARKING) {
-		echo $module.'<img src="images/emarking.png">';
+		echo $modulecount.'<img src="images/emarking.png">';
 		$markid = $module ['id'];
 	}
 	
 	else if ($module ['image'] == FACEBOOK_IMAGE_ASSIGN) {
-		echo $module.'<img src="images/assign.png">';
+		echo $modulecount.'<img src="images/assign.png">';
 		$assignid = $module ['id'];
 	}
 	
 	echo "</td><td><a href='#'>". $module['title'] ."</a></td>
 			<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
 	
-	$module++;
+	$modulecount++;
 }
 
 echo "</tbody></table>";
