@@ -32,18 +32,20 @@ if (isguestuser()){
 	die();
 }
 
+$totalstart = microtime(TRUE);
+
 $moodleid = $USER->id;
 $course = $DB->get_record('course', array('fullname' => 'Curso el rey'));
 
 echo "Id: ".$course->id."<br> Course: ".$course->fullname."<br>";
 
 
-$start = microtime(TRUE);
+$querystart = microtime(TRUE);
 $coursedata = get_course_data($moodleid, $course->id);
-$end = microtime(TRUE);
-$timeelapsed = $end - $start;
+$queryend = microtime(TRUE);
+$querytime = $queryend - $querystart;
 
-echo "Query time: ".$timeelapsed." s <br>";
+echo "Query time: ".$querytime." s <br>";
 
 echo '<table border="1" width="100%" style="font-size: 13px; margin-left: 9px;">
 				<thead>
@@ -90,3 +92,8 @@ foreach ($coursedata as $module) {
 }
 
 echo "</tbody></table>";
+
+$totalend = microtime(TRUE);
+$totaltime = $totalend - $totalstart;
+
+echo "Total time: ".$totaltime." s";
