@@ -44,6 +44,7 @@ $querystart = microtime(TRUE);
 $coursedata = get_course_data($moodleid, $course->id);
 $queryend = microtime(TRUE);
 $querytime = $queryend - $querystart;
+echo "Modules found: ".count($coursedata);
 
 echo "Query time: ".$querytime." s <br>";
 
@@ -59,36 +60,38 @@ echo '<table border="1" width="100%" style="font-size: 13px; margin-left: 9px;">
 				</thead>
 				<tbody>';
 
-
+$module = 1;
 
 foreach ($coursedata as $module) {
 	$date = date ( "d/m/Y H:i", $module ['date'] );
 	echo "<tr><td>";
 	if ($module ['image'] == FACEBOOK_IMAGE_POST) {
-		echo '<img src="images/post.png">';
+		echo $module.'<img src="images/post.png">';
 		$discussionId = $module ['discussion'];
 	}
 	
 	else if ($module ['image'] == FACEBOOK_IMAGE_RESOURCE) {
-		echo '<img src="images/resource.png">';
+		echo $module.'<img src="images/resource.png">';
 	}
 	
 	else if ($module ['image'] == FACEBOOK_IMAGE_LINK) {
-		echo '<img src="images/link.png">';
+		echo $module.'<img src="images/link.png">';
 	}
 	
 	else if ($module ['image'] == FACEBOOK_IMAGE_EMARKING) {
-		echo '<img src="images/emarking.png">';
+		echo $module.'<img src="images/emarking.png">';
 		$markid = $module ['id'];
 	}
 	
 	else if ($module ['image'] == FACEBOOK_IMAGE_ASSIGN) {
-		echo '<img src="images/assign.png">';
+		echo $module.'<img src="images/assign.png">';
 		$assignid = $module ['id'];
 	}
 	
 	echo "</td><td><a href='#'>". $module['title'] ."</a></td>
 			<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
+	
+	$module++;
 }
 
 echo "</tbody></table>";
