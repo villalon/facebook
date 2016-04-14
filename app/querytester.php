@@ -48,12 +48,11 @@ echo "Query time: ".$timeelapsed." s <br>";
 echo '<table border="1" width="100%" style="font-size: 13px; margin-left: 9px;">
 				<thead>
 					<tr>
-						<th width="1%" style="border-top-left-radius: 8px;"></th>
-						<th width="5%"></th>
-						<th width="33%">Título</th>
+						<th width="3%" style="border-top-left-radius: 8px;"></th>
+						<th width="34%">Título</th>
 						<th width="30%">De</th>
 						<th width="30%">Fecha</th>
-						<th width="1%" style="background-color: transparent"></th>
+						<th width="3%" style="background-color: transparent"></th>
 					</tr>
 				</thead>
 				<tbody>';
