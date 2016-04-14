@@ -88,7 +88,7 @@ foreach ($coursedata as $module) {
 		$assignid = $module ['id'];
 	}
 	$link = $module['link'];
-	echo "</td><td><a href='.$link.'>". $module['title'] ."</a></td>
+	echo "</td><td><a href='".$link."'>". $module['title'] ."</a></td>
 			<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
 	
 	$modulecount++;
