@@ -33,6 +33,7 @@ if (isguestuser()){
 }
 
 $moodleid = $USER->id;
+
 $course = $DB->get_record('course', array('fullname' => 'Curso de gente'));
 
 echo "Id: ".$course->id."<br> Course: ".$course->fullname."<br>";
