@@ -33,7 +33,7 @@ if (isguestuser()){
 }
 
 $moodleid = $USER->id;
-$course = $DB->get_record('course', array('fullname' => 'Curso de gente'));
+$course = $DB->get_record('course', array('fullname' => 'Curso el rey'));
 
 echo "Id: ".$course->id."<br> Course: ".$course->fullname."<br>";
 
@@ -66,7 +66,9 @@ foreach ($coursedata as $module) {
 	if ($module ['image'] == FACEBOOK_IMAGE_POST) {
 		echo '<img src="images/post.png">';
 		$discussionId = $module ['discussion'];
-	} else if ($module ['image'] == FACEBOOK_IMAGE_RESOURCE) {
+	}
+	
+	else if ($module ['image'] == FACEBOOK_IMAGE_RESOURCE) {
 		echo '<img src="images/resource.png">';
 	}
 	
@@ -84,7 +86,7 @@ foreach ($coursedata as $module) {
 		$assignid = $module ['id'];
 	}
 	
-	echo "</td><td><a href='#' discussionid='" . $discussionId . "' component='forum'>". $module['title'] ."</a></td>
+	echo "</td><td><a href='#'>". $module['title'] ."</a></td>
 			<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
 }
 
