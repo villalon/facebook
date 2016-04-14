@@ -109,7 +109,7 @@ if ($userfacebookinfo != false) {
 	
 	// list the 3 arrays returned from the funtion
 	list ( $totalresource, $totalurl, $totalpost, $totalemarkingperstudent ) = get_total_notification ( $sqlin, $param, $lastvisit, $moodleid );
-	$dataarray = get_data_post_resource_link ( $sqlin, $param, $moodleid );
+	//$dataarray = get_data_post_resource_link ( $sqlin, $param, $moodleid );
 	
 	// foreach that reorganizes array
 	foreach ( $usercourse as $courses ) {
@@ -163,320 +163,7 @@ if ($userfacebookinfo != false) {
 	echo "<div class='col-md-10 col-sm-9 col-xs-12'>";
 	echo "<div class='advert'><div style='position: relative;'><img src='images/jpg_an_1.jpg'style='margin-top:10%; margin-left:8%; width:35%'><img src='images/jpg_an_2.jpg' style='margin-top:10%; margin-left:5%; width:35%'></div></div>";
 	
-	foreach ( $usercourse as $courses ) {
-		
-		$fullname = $courses->fullname;
-		$courseid = $courses->id;
-		
-		?>
-<div style="display: none;" id="c<?php echo $courseid; ?>">
 
-	<div class="panel panel-default"
-		style="margin-right: 20px; margin-top: 20px;">
-
-		<div class="panel">
-			<nav>
-				<ul>
-					<p class="small;"></p>
-					<p>
-						<b style="font-size: 120%; color: #727272;"><?php echo $fullname; ?></b>
-					</p>
-				</ul>
-
-				<!-- 				  <ul class="pagination pagination-sm"> -->
-				<!--     				<li> -->
-				<!--       					<a href="#" aria-label="Previous"> -->
-				<!--         				<span aria-hidden="true">&laquo;</span> -->
-				<!--       					</a> -->
-				<!--     				</li> -->
-				<!--     				<li><a href="#">1</a></li> -->
-				<!--     				<li><a href="#">2</a></li> -->
-				<!--     				<li><a href="#">3</a></li> -->
-				<!--     				<li><a href="#">4</a></li> -->
-				<!--     				<li><a href="#">5</a></li> -->
-				<!--     				<li> -->
-				<!--       					<a href="#" aria-label="Next"> -->
-				<!--         				<span aria-hidden="true">&raquo;</span> -->
-				<!--       					</a> -->
-				<!--     				</li> -->
-				<!--   				</ul> -->
-			</nav>
-		</div>
-		<div class="scroll" style="font-size: 13px; height: 90% !important;">
-
-			<table class="tablesorter" border="0" width="100%"
-				style="font-size: 13px; margin-left: 9px;">
-				<thead>
-					<tr>
-						<th width="1%" style="border-top-left-radius: 8px;"></th>
-						<th width="5%"></th>
-						<th width="33%"><?php echo get_string('rowtittle', 'local_facebook'); ?></th>
-						<th width="30%"><?php echo get_string('rowfrom', 'local_facebook'); ?></th>
-						<th width="20%"><?php echo get_string('rowdate', 'local_facebook'); ?></th>
-						<!--  					<th width="10%" style= "border-top-right-radius: 8px;">Share</th> -->
-						<th width="1%" style="background-color: transparent"></th>
-					</tr>
-				</thead>
-				<tbody>
-			<?php
-		// foreach that gives the corresponding image to the new and old items created(resource,post,forum), and its title, how upload it and its link
-		
-		foreach ( $dataarray as $data ) {
-			$discussionId = null;
-			$markid = null;
-			$assignid = null;
-			if ($data ['course'] == $courseid) {
-				$date = date ( "d/m/Y H:i", $data ['date'] );
-				echo '<tr courseid="' . $courseid . '"><td';
-				if ($data ['date'] > $lastvisit) {
-					echo '><center><span class="glyphicon glyphicon-option-vertical" aria-hidden="true" style="color: #2a2a2a;"></span>&nbsp&nbsp';
-				} else {
-					echo '><center><span class="glyphicon glyphicon-option-vertical" aria-hidden="true" style="color: transparent;"></span>&nbsp&nbsp';
-				}
-				echo '</td><td> ';
-				
-				if ($data ['image'] == FACEBOOK_IMAGE_POST) {
-					echo '<img src="images/post.png">';
-					$discussionId = $data ['discussion'];
-				} else if ($data ['image'] == FACEBOOK_IMAGE_RESOURCE) {
-					echo '<img src="images/resource.png">';
-				} 
-
-				else if ($data ['image'] == FACEBOOK_IMAGE_LINK) {
-					echo '<img src="images/link.png">';
-				} 
-
-				else if ($data ['image'] == FACEBOOK_IMAGE_EMARKING) {
-					echo '<img src="images/emarking.png">';
-					$markid = $data ['id'];
-				} 
-
-				else if ($data ['image'] == FACEBOOK_IMAGE_ASSIGN) {
-					echo '<img src="images/assign.png">';
-					$assignid = $data ['id'];
-				}
-				
-				if ($discussionId != null) {
-					echo '</center></td><td';
-					if ($data ['date'] > $lastvisit) {
-						echo ' style="font-weight:bold;"><a href="#" discussionid="' . $discussionId . '" component="forum">' . $data ['title'] . '</a>
-		 									</td><td style="font-size:13px; font-weight:bold;">' . $data ['from'] . '</td><td style="font-weight:bold;">' . $date . '</td>';
-						// <td><button type="button" class="btn btn-primary btn-sm" style="color:#E5E3FB">
-						// <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>&nbsp<b> share
-						// </b></button></td>
-						echo '</tr>';
-					} else {
-						echo '><a href="#" discussionid="' . $discussionId . '" component="forum">' . $data ['title'] . '</a>
- 									</td><td style="font-size:13px">' . $data ['from'] . '</td><td>' . $date . '</td>';
-						// <td> <button type="button" class="btn btn-default btn-sm" style="color:#909090;">
-						// <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>&nbsp<b> share
-						// </b></button></td>
-						echo '</tr>';
-					}
-					
-					$postData = get_posts_from_discussion ( $discussionId );
-					?>
-						<!-- Modal -->
-					<div class="modal fade" id="m<?php echo $discussionId; ?>"
-						tabindex="-1" role="dialog" aria-labelledby="modal">
-						<div class="modal-dialog" role="document">
-							<div class="modal-content">
-								<div class="modal-body">
-						      <?php
-					foreach ( $postData as $post ) {
-						$date = $post ['date'];
-						echo "<div align='left'style='background-color:#E6E6E6; border-radius: 4px 4px 0 0; padding:4px; color:#333333;'><img src='images/post.png'>
- 									<b>&nbsp&nbsp" . $data ['title'] . "<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp" . $post ['user'] . ", " . date ( 'l d-F-Y', $date ) . "</b></div>";
-						echo "<div align='left' style='border-radius: 0 0 4px 4px; 	word-wrap: break-word;'>" . $post ['message'] . "</div>";
-						echo "<br>";
-					}
-					?>
-						      </div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-default"
-										data-dismiss="modal" component="close-modal"
-										modalid="m<?php echo $discussionId; ?>">Close</button>
-								</div>
-							</div>
-						</div>
-					</div>
-						<?php
-				} elseif ($markid != null) {
-					echo '</center></td><td';
-					if ($data ['date'] > $lastvisit) {
-						echo ' style="font-weight:bold"><a href="#" emarkingid="' . $markid . '" component="emarking">' . $data ['title'] . '</a>
- 							</td><td style="font-size:13px; font-weight:bold;">' . $data ['from'] . '</td><td style="font-size:14px; font-weight:bold;">' . $date . '</td>';
-						// <td><button type="button" class="btn btn-primary btn-sm" style="color:#E5E3FB;">
-						// <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>&nbsp<b> share
-						// </b></button></td>
-						echo '</tr>';
-					} else {
-						echo '><a href="#" emarkingid="' . $markid . '" component="emarking">' . $data ['title'] . '</a>
- 							</td><td style="font-size:13px">' . $data ['from'] . '</td><td style="font-size:14px">' . $date . '</td>';
-						// <td><button type="button" class="btn btn-default btn-sm" style="color:#909090;">
-						// <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>&nbsp<b> share
-						// </b></button></td>
-						echo '</tr>';
-					}
-					?>
-						<!-- Modal -->
-					<div class="modal fade" id="e<?php echo $markid; ?>" tabindex="-1"
-						role="dialog" aria-labelledby="modal">
-						<div class="modal-dialog" role="document">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h4 class="modal-title"><?php $course = $DB->get_record('course', array('id' => $data['course'])); echo $course->fullname; ?></h4>
-							    	<?php echo $data['title']; ?>
-							    </div>
-								<div class="modal-body">
-									<div class="row">
-										<div class="col-md-4">
-											<b><?php echo get_string('name', 'local_facebook'); ?></b> <br>
-						  					<?php echo $data['from']; ?>
-						  				</div>
-										<div class="col-md-2">
-											<b><?php echo get_string('grade', 'local_facebook'); ?></b> <br>
-						  					<?php
-					if ($data ['status'] >= 20) {
-						echo $data ['grade'];
-					} else {
-						echo "-";
-					}
-					?>
-						  				</div>
-										<div class="col-md-3">
-											<b><?php echo get_string('status', 'local_facebook'); ?></b>
-											<br>
-						  					<?php
-					if ($data ['status'] >= 20) {
-						echo get_string ( 'published', 'local_facebook' );
-					} else if ($data ['status'] >= 10) {
-						echo get_string ( 'submitted', 'local_facebook' );
-					} else {
-						echo get_string ( 'absent', 'local_facebook' );
-					}
-					?>
-						  				</div>
-										<div class="col-md-3">
-											<br>
-						  					<?php
-					echo '<a href="' . $data ['link'] . '" target="_blank">' . get_string ( 'viewexam', 'local_facebook' ) . '</a>';
-					?>
-						  				</div>
-									</div>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-default"
-										data-dismiss="modal" component="close-modal"
-										modalid="e<?php echo $markid; ?>">Close</button>
-								</div>
-							</div>
-						</div>
-					</div>
-						<?php
-				} elseif ($assignid != null) {
-					echo '</center></td><td';
-					if ($data ['date'] > $lastvisit) {
-						echo ' style="font-weight:bold"><a href="#" assignid="' . $assignid . '" component="assign">' . $data ['title'] . '</a>
-									</td><td style="font-size:13px; font-weight:bold;"></td><td style="font-size:14px; font-weight:bold;">' . $date . '</td>';
-						// <td><button type="button" class="btn btn-primary btn-sm" style="color:#E5E3FB;">
-						// <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>&nbsp<b> share</b></button></td>
-						echo '</tr>';
-					} else {
-						echo '><a href="#" assignid="' . $assignid . '" component="assign">' . $data ['title'] . '</a>
-									</td><td style="font-size:13px"></td><td>' . $date . '</td>';
-						// <td style="font-size:14px"><button type="button" class="btn btn-default btn-sm" style="color:#909090;">
-						// <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>&nbsp<b> share</b></button></td>
-						echo '</tr>';
-					}
-					
-					?>
-						<!-- Modal -->
-					<div class="modal fade" id="a<?php echo $assignid; ?>"
-						tabindex="-1" role="dialog" aria-labelledby="modal">
-						<div class="modal-dialog" role="document">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h4 class="modal-title"><?php echo $data['title']; ?></h4>
-							    	<?php echo $data['intro']; ?>
-							    </div>
-								<div class="modal-body">
-									<div class="row">
-										<div class="col-md-6">
-											<b><?php echo get_string('submitstatus', 'local_facebook'); ?></b>
-											<br> <b><?php echo get_string('gradestatus', 'local_facebook'); ?></b>
-											<br> <b><?php echo get_string('duedate', 'local_facebook'); ?></b>
-											<br> <b><?php echo get_string('timeleft', 'local_facebook'); ?></b>
-											<br> <b><?php echo get_string('lastmodified', 'local_facebook'); ?></b>
-										</div>
-										<div class="col-md-6">
-						      			<?php
-					if ($data ['status'] != 'submitted') {
-						echo "No entregado<br>";
-					} else {
-						echo "Enviado para calificar<br>";
-					}
-					
-					if ($data ['grade'] != null) {
-						echo "Calificado<br>";
-					} else {
-						echo "Sin calificar<br>";
-					}
-					
-					$duedate = date ( 'H:i - d/m/Y', $data ['due'] );
-					echo $duedate . "<br>";
-					
-					$interval = $data ['due'] - time ();
-					if ($interval > 0) {
-						$daysleft = floor ( $interval / (60 * 60 * 24) );
-						// echo $interval;
-						$hoursleft = floor ( ($interval - ($daysleft * 24 * 60 * 60)) / (60 * 60) );
-						echo $daysleft . " días y " . $hoursleft . " horas<br>";
-					} else {
-						echo "Se ha acabado el tiempo<br>";
-					}
-					
-					$lastmodified = date ( 'H:i - d/m/Y', $data ['date'] );
-					echo $lastmodified;
-					?>
-						      			</div>
-									</div>
-								</div>
-								<div class="modal-footer">
-									<a href="<?php echo $data['link']; ?>" target="_blank">
-										<button type="button" class="btn btn-default">Ver en moodle</button>
-									</a>
-									<button type="button" class="btn btn-default"
-										data-dismiss="modal" component="close-modal"
-										modalid="a<?php echo $assignid; ?>">Close</button>
-								</div>
-							</div>
-						</div>
-					</div>
-						<?php
-				} else {
-					echo '</center></td><td';
-					if ($data ['date'] > $lastvisit) {
-						echo ' style="font-weight:bold"><a href="' . $data ['link'] . '" target="_blank" component="other">' . $data ['title'] . '</a>
- 									</td><td style="font-size:13px; font-weight:bold;">' . $data ['from'] . '</td><td style="font-size:14px; font-weight:bold;">' . $date . '</td>';
-						// <td><button type="button" class="btn btn-primary btn-sm" style="color:#E5E3FB;">
-						// <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>&nbsp<b> share
-						// </b></button></td>
-						echo '</tr>';
-					} else {
-						echo '><a href="' . $data ['link'] . '" target="_blank" component="other">' . $data ['title'] . '</a>
- 									</td><td style="font-size:13px">' . $data ['from'] . '</td><td style="font-size:14px">' . $date . '</td>';
-						// <td><button type="button" class="btn btn-default btn-sm" style="color:#909090;">
-						// <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>&nbsp<b> share
-						// </b></button></td>
-						echo '</tr>';
-					}
-				}
-			}
-		}
-		echo "</tbody></table></div><div></div></div></div>";
-	}
-	
 	?>
 	
 	<!-- Display engine -->
@@ -501,19 +188,19 @@ if ($userfacebookinfo != false) {
 			url : "https://webcursos-d.uai.cl/local/facebook/app/request.php",
 			async : false,
 			data : {
-				'moodleid' : <?php echo $USER->id;?>,
-				'courseid' : courseId,
+				'moodleid' : <?php echo $moodleid;?>,
+				'courseid' : courseid,
 				'action' : 'get_course_data'
 			},
 			success : function(response) {
-					$('.panel').append('<div>' + response + '</div>');
+					$('.panel').html('<div>' + response + '</div>');
 				}
 			
 			});
 // manera vieja			
-			$('#c' + courseId).fadeOut(300);
+//			$('#c' + courseId).fadeOut(300);
 			courseId = $(this).attr('courseid');
-			$('#c' + courseId).delay(300).fadeIn(300);
+//			$('#c' + courseId).delay(300).fadeIn(300);
 			advert.remove(); 
 			
 		}
