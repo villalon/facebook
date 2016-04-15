@@ -220,10 +220,10 @@ function get_course_data ($moodleid, $courseid) {
 	$datapostsql = "SELECT fp.id AS postid, us.firstname AS firstname, us.lastname AS lastname, fp.subject AS subject,
 			fp.modified AS modified, discussions.course AS course, discussions.id AS dis_id 
 			FROM {forum_posts} AS fp
-			INNER JOIN {forum_discussions} AS discussions ON (fp.discussion=discussions.id)
+			INNER JOIN {forum_discussions} AS discussions ON (fp.discussion=discussions.id AND discussions.course = ?)
 			INNER JOIN {forum} AS forum ON (forum.id=discussions.forum)
 			INNER JOIN {user} AS us ON (us.id=discussions.userid)
-			INNER JOIN {course_modules} AS cm ON (cm.instance=forum.id AND cm.course = ?)
+			INNER JOIN {course_modules} AS cm ON (cm.instance=forum.id)
 			WHERE cm.visible = ? 
 			GROUP BY fp.id";
 	
