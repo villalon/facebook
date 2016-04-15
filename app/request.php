@@ -541,6 +541,8 @@ switch ($action) {
 		// store buffer to variable and turn output buffering offer
 		$html = ob_get_clean();
 		
+		var_dump($html);
+		
 		// recall the buffered content
 		return $html; 
 		
