@@ -21,7 +21,7 @@
  */
 
 require_once (dirname ( dirname ( dirname ( dirname ( __FILE__ ) ) ) ) . '/config.php');
-require_once ( dirname ( __FILE__ ) . '/locallib.php');
+require_once ($CFG->dirroot . '/local/facebook/locallib.php');
 
 global $CFG, $DB, $OUTPUT, $PAGE, $USER;
 $action = required_param ( 'action', PARAM_ALPHA );
