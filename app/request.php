@@ -21,6 +21,7 @@
  */
 
 require_once (dirname ( dirname ( dirname ( dirname ( __FILE__ ) ) ) ) . '/config.php');
+require_once ( dirname ( __FILE__ ) . '/locallib.php');
 
 global $CFG, $DB, $OUTPUT, $PAGE, $USER;
 $action = required_param ( 'action', PARAM_ALPHA );
@@ -128,40 +129,7 @@ switch ($action) {
 		// Get the data from the query
 		$dataemarking = $DB->get_records_sql ( $dataemarkingsql, $paramsemarking );
 		
-		/*
-		 * $dataassignmentsql = "SELECT CONCAT(a.id,a.duedate) AS ids,
-		 * a.id,
-		 * a.name,
-		 * a.duedate AS due,
-		 * a.course,
-		 * a.intro,
-		 * a.allowsubmissionsfromdate AS date,
-		 * asub.id AS submissionid,
-		 * asub.timemodified AS submissiontime,
-		 * asub.status,
-		 * ag.grade,
-		 * cm.id AS moduleid
-		 * FROM {assign} AS a LEFT JOIN {assign_submission} AS asub ON (a.id = asub.assignment AND asub.userid = ?)
-		 * JOIN {course_modules} AS cm ON (a.course = cm.course AND a.course $sqlin AND cm.visible = ?)
-		 * JOIN {modules} AS m ON (m.id = cm.module AND m.visible = ? AND m.name = 'assign')
-		 * LEFT JOIN {assign_grades} AS ag ON (a.id = ag.assignment)
-		 * INNER JOIN {role_assignments} AS ra ON (ra.userid = ?)
-		 * INNER JOIN {context} AS ct ON (ct.id = ra.contextid)
-		 * INNER JOIN {course} AS c ON (c.id = ct.instanceid AND c.id = a.id)
-		 * INNER JOIN {role} AS r ON (r.id = ra.roleid)";
-		*/
-		/*
-		 * $userid = array($moodleid);
-		 *
-		 * $dataassignmentsql = "SELECT *
-		 * FROM mdl_assign AS a INNER JOIN mdl_assign_submission AS asub ON (a.id = asub.assignment AND asub.userid = ?)
-		 * INNER JOIN mdl_course_modules AS cm ON (a.course = cm.course AND a.course $sqlin AND cm.visible = ?)
-		 * JOIN {modules} AS m ON (m.id = cm.module AND m.visible = ? AND m.name = 'assign')
-		 * GROUP BY a.id";
-		 *
-		 * $count = $DB->count_records_sql($dataassignmentsql,array_merge($userid,$param,array(1,1)));
-		 * echo "<h3>$count</h3>";
-		*/
+
 		
 		$sqlparams = array (
 				FACEBOOK_COURSE_MODULE_VISIBLE,
@@ -262,10 +230,322 @@ switch ($action) {
 		 * }
 		 */
 		// Returns the final array ordered by date to index.php
-		return record_sort ( $totaldata, 'date', 'true' );
+		$dataarray = record_sort ( $totaldata, 'date', 'true' );
+		
+		
+
+
+// aqui parte haciendo la tabla para cada curso, osea esto es lo que hay que poner dentro de request ------------------------------------------------------------->>Z!"∑!"∑%(%$!"∑/U%&$%&/$%&∑"!LK;
+// el nombre quizas lo pueda sacar del mismo cuadradito del que se hizo click
+
+//	$fullname = $courses->fullname;
+
+		// turn output buffering on
+		ob_start();
+	?>
+<div id="c<?php echo $courseid; ?>">
+
+	<div class="panel panel-default"
+		style="margin-right: 20px; margin-top: 20px;">
+
+		<div class="panel">
+			<nav>
+				<ul>
+					<p class="small;"></p>
+					<p>
+						<b style="font-size: 120%; color: #727272;"><span class="coursefullname"></span><?php // AQUI FALTA EL NOMBRE DEL CURSOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO  OOOOOOOOOO    echo $fullname; ?></b>
+					</p>
+				</ul>
+			</nav>
+		</div>
+		<div class="scroll" style="font-size: 13px; height: 90% !important;">
+
+			<table class="tablesorter" border="0" width="100%"
+				style="font-size: 13px; margin-left: 9px;">
+				<thead>
+					<tr>
+						<th width="1%" style="border-top-left-radius: 8px;"></th>
+						<th width="5%"></th>
+						<th width="33%"><?php echo get_string('rowtittle', 'local_facebook'); ?></th>
+						<th width="30%"><?php echo get_string('rowfrom', 'local_facebook'); ?></th>
+						<th width="20%"><?php echo get_string('rowdate', 'local_facebook'); ?></th>
+						<!--  					<th width="10%" style= "border-top-right-radius: 8px;">Share</th> -->
+						<th width="1%" style="background-color: transparent"></th>
+					</tr>
+				</thead>
+				<tbody>
+			<?php
+		// foreach that gives the corresponding image to the new and old items created(resource,post,forum), and its title, how upload it and its link
+		
+			
+		//este data array es lo que se obtiene de la funcion de arriba (el return viejo)------------------------------------------------------------------------------------------------------------	
+		foreach ( $dataarray as $data ) {
+			$discussionId = null;
+			$markid = null;
+			$assignid = null;
+			if ($data ['course'] == $courseid) {
+				$date = date ( "d/m/Y H:i", $data ['date'] );
+				echo '<tr courseid="' . $courseid . '"><td';
+				if ($data ['date'] > $lastvisit) {
+					echo '><center><span class="glyphicon glyphicon-option-vertical" aria-hidden="true" style="color: #2a2a2a;"></span>&nbsp&nbsp';
+				} else {
+					echo '><center><span class="glyphicon glyphicon-option-vertical" aria-hidden="true" style="color: transparent;"></span>&nbsp&nbsp';
+				}
+				echo '</td><td> ';
+				
+				if ($data ['image'] == FACEBOOK_IMAGE_POST) {
+					echo '<img src="images/post.png">';
+					$discussionId = $data ['discussion'];
+				} else if ($data ['image'] == FACEBOOK_IMAGE_RESOURCE) {
+					echo '<img src="images/resource.png">';
+				} 
+
+				else if ($data ['image'] == FACEBOOK_IMAGE_LINK) {
+					echo '<img src="images/link.png">';
+				} 
+
+				else if ($data ['image'] == FACEBOOK_IMAGE_EMARKING) {
+					echo '<img src="images/emarking.png">';
+					$markid = $data ['id'];
+				} 
+
+				else if ($data ['image'] == FACEBOOK_IMAGE_ASSIGN) {
+					echo '<img src="images/assign.png">';
+					$assignid = $data ['id'];
+				}
+				
+				if ($discussionId != null) {
+					echo '</center></td><td';
+					if ($data ['date'] > $lastvisit) {
+						echo ' style="font-weight:bold;"><a href="#" discussionid="' . $discussionId . '" component="forum">' . $data ['title'] . '</a>
+		 									</td><td style="font-size:13px; font-weight:bold;">' . $data ['from'] . '</td><td style="font-weight:bold;">' . $date . '</td>';
+						// <td><button type="button" class="btn btn-primary btn-sm" style="color:#E5E3FB">
+						// <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>&nbsp<b> share
+						// </b></button></td>
+						echo '</tr>';
+					} else {
+						echo '><a href="#" discussionid="' . $discussionId . '" component="forum">' . $data ['title'] . '</a>
+ 									</td><td style="font-size:13px">' . $data ['from'] . '</td><td>' . $date . '</td>';
+						// <td> <button type="button" class="btn btn-default btn-sm" style="color:#909090;">
+						// <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>&nbsp<b> share
+						// </b></button></td>
+						echo '</tr>';
+					}
+					
+					$postData = get_posts_from_discussion ( $discussionId );
+					?>
+						<!-- Modal -->
+					<div class="modal fade" id="m<?php echo $discussionId; ?>"
+						tabindex="-1" role="dialog" aria-labelledby="modal">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-body">
+						      <?php
+					foreach ( $postData as $post ) {
+						$date = $post ['date'];
+						echo "<div align='left'style='background-color:#E6E6E6; border-radius: 4px 4px 0 0; padding:4px; color:#333333;'><img src='images/post.png'>
+ 									<b>&nbsp&nbsp" . $data ['title'] . "<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp" . $post ['user'] . ", " . date ( 'l d-F-Y', $date ) . "</b></div>";
+						echo "<div align='left' style='border-radius: 0 0 4px 4px; 	word-wrap: break-word;'>" . $post ['message'] . "</div>";
+						echo "<br>";
+					}
+					?>
+						      </div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-default"
+										data-dismiss="modal" component="close-modal"
+										modalid="m<?php echo $discussionId; ?>">Close</button>
+								</div>
+							</div>
+						</div>
+					</div>
+						<?php
+				} elseif ($markid != null) {
+					echo '</center></td><td';
+					if ($data ['date'] > $lastvisit) {
+						echo ' style="font-weight:bold"><a href="#" emarkingid="' . $markid . '" component="emarking">' . $data ['title'] . '</a>
+ 							</td><td style="font-size:13px; font-weight:bold;">' . $data ['from'] . '</td><td style="font-size:14px; font-weight:bold;">' . $date . '</td>';
+						// <td><button type="button" class="btn btn-primary btn-sm" style="color:#E5E3FB;">
+						// <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>&nbsp<b> share
+						// </b></button></td>
+						echo '</tr>';
+					} else {
+						echo '><a href="#" emarkingid="' . $markid . '" component="emarking">' . $data ['title'] . '</a>
+ 							</td><td style="font-size:13px">' . $data ['from'] . '</td><td style="font-size:14px">' . $date . '</td>';
+						// <td><button type="button" class="btn btn-default btn-sm" style="color:#909090;">
+						// <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>&nbsp<b> share
+						// </b></button></td>
+						echo '</tr>';
+					}
+					?>
+						<!-- Modal -->
+					<div class="modal fade" id="e<?php echo $markid; ?>" tabindex="-1"
+						role="dialog" aria-labelledby="modal">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h4 class="modal-title"><?php $course = $DB->get_record('course', array('id' => $data['course'])); echo $course->fullname; ?></h4>
+							    	<?php echo $data['title']; ?>
+							    </div>
+								<div class="modal-body">
+									<div class="row">
+										<div class="col-md-4">
+											<b><?php echo get_string('name', 'local_facebook'); ?></b> <br>
+						  					<?php echo $data['from']; ?>
+						  				</div>
+										<div class="col-md-2">
+											<b><?php echo get_string('grade', 'local_facebook'); ?></b> <br>
+						  					<?php
+					if ($data ['status'] >= 20) {
+						echo $data ['grade'];
+					} else {
+						echo "-";
+					}
+					?>
+						  				</div>
+										<div class="col-md-3">
+											<b><?php echo get_string('status', 'local_facebook'); ?></b>
+											<br>
+						  					<?php
+					if ($data ['status'] >= 20) {
+						echo get_string ( 'published', 'local_facebook' );
+					} else if ($data ['status'] >= 10) {
+						echo get_string ( 'submitted', 'local_facebook' );
+					} else {
+						echo get_string ( 'absent', 'local_facebook' );
+					}
+					?>
+						  				</div>
+										<div class="col-md-3">
+											<br>
+						  					<?php
+					echo '<a href="' . $data ['link'] . '" target="_blank">' . get_string ( 'viewexam', 'local_facebook' ) . '</a>';
+					?>
+						  				</div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-default"
+										data-dismiss="modal" component="close-modal"
+										modalid="e<?php echo $markid; ?>">Close</button>
+								</div>
+							</div>
+						</div>
+					</div>
+						<?php
+				} elseif ($assignid != null) {
+					echo '</center></td><td';
+					if ($data ['date'] > $lastvisit) {
+						echo ' style="font-weight:bold"><a href="#" assignid="' . $assignid . '" component="assign">' . $data ['title'] . '</a>
+									</td><td style="font-size:13px; font-weight:bold;"></td><td style="font-size:14px; font-weight:bold;">' . $date . '</td>';
+						// <td><button type="button" class="btn btn-primary btn-sm" style="color:#E5E3FB;">
+						// <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>&nbsp<b> share</b></button></td>
+						echo '</tr>';
+					} else {
+						echo '><a href="#" assignid="' . $assignid . '" component="assign">' . $data ['title'] . '</a>
+									</td><td style="font-size:13px"></td><td>' . $date . '</td>';
+						// <td style="font-size:14px"><button type="button" class="btn btn-default btn-sm" style="color:#909090;">
+						// <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>&nbsp<b> share</b></button></td>
+						echo '</tr>';
+					}
+					
+					?>
+						<!-- Modal -->
+					<div class="modal fade" id="a<?php echo $assignid; ?>"
+						tabindex="-1" role="dialog" aria-labelledby="modal">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h4 class="modal-title"><?php echo $data['title']; ?></h4>
+							    	<?php echo $data['intro']; ?>
+							    </div>
+								<div class="modal-body">
+									<div class="row">
+										<div class="col-md-6">
+											<b><?php echo get_string('submitstatus', 'local_facebook'); ?></b>
+											<br> <b><?php echo get_string('gradestatus', 'local_facebook'); ?></b>
+											<br> <b><?php echo get_string('duedate', 'local_facebook'); ?></b>
+											<br> <b><?php echo get_string('timeleft', 'local_facebook'); ?></b>
+											<br> <b><?php echo get_string('lastmodified', 'local_facebook'); ?></b>
+										</div>
+										<div class="col-md-6">
+						      			<?php
+					if ($data ['status'] != 'submitted') {
+						echo "No entregado<br>";
+					} else {
+						echo "Enviado para calificar<br>";
+					}
+					
+					if ($data ['grade'] != null) {
+						echo "Calificado<br>";
+					} else {
+						echo "Sin calificar<br>";
+					}
+					
+					$duedate = date ( 'H:i - d/m/Y', $data ['due'] );
+					echo $duedate . "<br>";
+					
+					$interval = $data ['due'] - time ();
+					if ($interval > 0) {
+						$daysleft = floor ( $interval / (60 * 60 * 24) );
+						// echo $interval;
+						$hoursleft = floor ( ($interval - ($daysleft * 24 * 60 * 60)) / (60 * 60) );
+						echo $daysleft . " d√≠as y " . $hoursleft . " horas<br>";
+					} else {
+						echo "Se ha acabado el tiempo<br>";
+					}
+					
+					$lastmodified = date ( 'H:i - d/m/Y', $data ['date'] );
+					echo $lastmodified;
+					?>
+						      			</div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<a href="<?php echo $data['link']; ?>" target="_blank">
+										<button type="button" class="btn btn-default">Ver en moodle</button>
+									</a>
+									<button type="button" class="btn btn-default"
+										data-dismiss="modal" component="close-modal"
+										modalid="a<?php echo $assignid; ?>">Close</button>
+								</div>
+							</div>
+						</div>
+					</div>
+						<?php
+				} else {
+					echo '</center></td><td';
+					if ($data ['date'] > $lastvisit) {
+						echo ' style="font-weight:bold"><a href="' . $data ['link'] . '" target="_blank" component="other">' . $data ['title'] . '</a>
+ 									</td><td style="font-size:13px; font-weight:bold;">' . $data ['from'] . '</td><td style="font-size:14px; font-weight:bold;">' . $date . '</td>';
+						// <td><button type="button" class="btn btn-primary btn-sm" style="color:#E5E3FB;">
+						// <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>&nbsp<b> share
+						// </b></button></td>
+						echo '</tr>';
+					} else {
+						echo '><a href="' . $data ['link'] . '" target="_blank" component="other">' . $data ['title'] . '</a>
+ 									</td><td style="font-size:13px">' . $data ['from'] . '</td><td style="font-size:14px">' . $date . '</td>';
+						// <td><button type="button" class="btn btn-default btn-sm" style="color:#909090;">
+						// <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>&nbsp<b> share
+						// </b></button></td>
+						echo '</tr>';
+					}
+				}
+			}
+		}
+		echo "</tbody></table></div><div></div></div></div>";
+		// aqui termina haciendo la tabla para cada curso, osea esto es lo que hay que poner dentro de request ------------------------------------------------------------->>Z!"∑!"∑%(%$!"∑/U%&$%&/$%&∑"!LK;
+		
+		
+		
+		// store buffer to variable and turn output buffering offer
+		$html = ob_get_clean();
+		
+		// recall the buffered content
+		return $html; 
 		
 		
 		break;
-
-}
-//end of actions
+		
+		}
+		//end of actions
+	
