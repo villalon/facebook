@@ -542,7 +542,7 @@ switch ($action) {
 		$html = ob_get_clean();
 		
 		// recall the buffered content
-		echo $html; 
+		return $html; 
 		
 		
 		break;

@@ -194,7 +194,7 @@ if ($userfacebookinfo != false) {
 				'action' : 'get_course_data'
 			},
 			success : function(response) {
-					$('#table-body').html('<div>' + response + '</div>');
+					$('#table-body').append('<div>' + response + '</div>');
 				}
 			
 			});
