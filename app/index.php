@@ -189,7 +189,7 @@ if ($userfacebookinfo != false) {
 			
 			//$('#table-body').fadeOut(300);
 			courseId = $(this).attr('courseid');
-
+			$('#table-body').empty();
 
 			// Ajax
 			jQuery.ajax({
@@ -197,7 +197,6 @@ if ($userfacebookinfo != false) {
 				async : false,
 				data : {},
 				success : function(response) {
-					$('#table-body').empty();
 					$('#table-body').append('<div>' + response + '</div>');
 				}
 			});
