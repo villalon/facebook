@@ -35,7 +35,7 @@ switch ($action) {
 
 		
 		global $DB;
-		/* caca
+		
 		// Parameters for post query
 		$paramspost = array (
 				$moodleid,
@@ -231,7 +231,6 @@ switch ($action) {
 		 */
 		// Returns the final array ordered by date to index.php
 		
-		$totaldata = get_course_data($moodleid, $courseid);
 		$dataarray = record_sort ( $totaldata, 'date', 'true' );
 		
 		
