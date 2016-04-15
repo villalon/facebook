@@ -190,7 +190,6 @@ if ($userfacebookinfo != false) {
 			//$('#table-body').fadeOut(300);
 			courseId = $(this).attr('courseid');
 
-			$('#table-body').append("<img src='https://webcursos-d.uai.cl/local/facebook/app/images/ajaxloader.gif'>");
 
 			// Ajax
 			jQuery.ajax({
