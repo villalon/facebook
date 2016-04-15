@@ -589,7 +589,7 @@ switch ($action) {
 		
 		$htmltable .= "</tbody></table>";
 		
-		return $htmltable;
+		echo $htmltable;
 		
 		// recall the buffered content
 		//return $html; 
