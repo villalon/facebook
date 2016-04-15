@@ -29,9 +29,9 @@ $moodleid = optional_param ( 'moodleid', null , PARAM_RAW_TRIMMED );
 $courseid = optional_param ( 'courseid', null , PARAM_RAW_TRIMMED );
 //$lastvisit = optional_param ( 'lastvisit', null , PARAM_RAW_TRIMMED );
 
-//switch ($action) {
+switch ($action) {
 
-	//case 'get_course_data':
+	case 'get_course_data':
 
 		
 		global $DB;
@@ -589,14 +589,14 @@ $courseid = optional_param ( 'courseid', null , PARAM_RAW_TRIMMED );
 		
 		$htmltable .= "</tbody></table>";
 		
-		echo $htmltable;
+		return $htmltable;
 		
 		// recall the buffered content
 		//return $html; 
 		
 		
-		//break;
+		break;
 		
-		//}
+		}
 		//end of actions
 	
