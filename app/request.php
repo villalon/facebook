@@ -35,7 +35,7 @@ switch ($action) {
 
 		
 		global $DB;
-		
+		/*
 		// Parameters for post query
 		$paramspost = array (
 				$moodleid,
@@ -231,7 +231,8 @@ switch ($action) {
 		 */
 		// Returns the final array ordered by date to index.php
 		
-		$dataarray = record_sort ( $totaldata, 'date', 'true' );
+		$totaldata = get_course_data($moodleid, $courseid);
+		//$dataarray = record_sort ( $totaldata, 'date', 'true' );
 		
 		
 
@@ -242,8 +243,9 @@ switch ($action) {
 //	$fullname = $courses->fullname;
 
 		// turn output buffering on
-		ob_start();
-	?>
+		//ob_start();
+		$htmltable = "";
+	/*
 <div id="c<?php echo $courseid; ?>">
 
 	<div class="panel panel-default"
@@ -539,12 +541,58 @@ switch ($action) {
 		
 		
 		// store buffer to variable and turn output buffering offer
-		$html = ob_get_clean();
+		$html = ob_get_clean();*/
 		
-		var_dump($html);
+		$htmltable .= '<table border="1" width="100%" style="font-size: 13px; margin-left: 9px;">
+						<thead>
+							<tr>
+								<th width="3%" style="border-top-left-radius: 8px;"></th>
+								<th width="34%">Título</th>
+								<th width="30%">De</th>
+								<th width="30%">Fecha</th>
+								<th width="3%" style="background-color: transparent"></th>
+							</tr>
+						</thead>
+						<tbody>';
+		
+		foreach ($totaldata as $module) {
+			$date = date ( "d/m/Y H:i", $module ['date'] );
+			$htmltable .= "<tr><td>";
+			if ($module ['image'] == FACEBOOK_IMAGE_POST) {
+				$htmltable .= $modulecount.'<img src="images/post.png">';
+				$discussionId = $module ['discussion'];
+			}
+		
+			else if ($module ['image'] == FACEBOOK_IMAGE_RESOURCE) {
+				$htmltable .= $modulecount.'<img src="images/resource.png">';
+			}
+		
+			else if ($module ['image'] == FACEBOOK_IMAGE_LINK) {
+				$htmltable .= $modulecount.'<img src="images/link.png">';
+			}
+		
+			else if ($module ['image'] == FACEBOOK_IMAGE_EMARKING) {
+				$htmltable .= $modulecount.'<img src="images/emarking.png">';
+				$markid = $module ['id'];
+			}
+		
+			else if ($module ['image'] == FACEBOOK_IMAGE_ASSIGN) {
+				$htmltable .= $modulecount.'<img src="images/assign.png">';
+				$assignid = $module ['id'];
+			}
+			$link = $module['link'];
+			$htmltable .= "</td><td><a href='".$link."'>". $module['title'] ."</a></td>
+			<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
+		
+			$modulecount++;
+		}
+		
+		$htmltable .= "</tbody></table>";
+		
+		var_dump($htmltable);
 		
 		// recall the buffered content
-		return $html; 
+		//return $html; 
 		
 		
 		break;
