@@ -29,9 +29,9 @@ $moodleid = optional_param ( 'moodleid', null , PARAM_RAW_TRIMMED );
 $courseid = optional_param ( 'courseid', null , PARAM_RAW_TRIMMED );
 //$lastvisit = optional_param ( 'lastvisit', null , PARAM_RAW_TRIMMED );
 
-switch ($action) {
+//switch ($action) {
 
-	case 'get_course_data':
+	//case 'get_course_data':
 
 		
 		global $DB;
@@ -543,7 +543,7 @@ switch ($action) {
 		// store buffer to variable and turn output buffering offer
 		$html = ob_get_clean();*/
 		
-		$htmltable .= '<table border="1" width="100%" style="font-size: 13px; margin-left: 9px;">
+		$htmltable .= '<table class="tablesorter" border="0" width="100%" style="font-size: 13px; margin-left: 9px;">
 						<thead>
 							<tr>
 								<th width="3%" style="border-top-left-radius: 8px;"></th>
@@ -595,8 +595,8 @@ switch ($action) {
 		//return $html; 
 		
 		
-		break;
+		//break;
 		
-		}
+		//}
 		//end of actions
 	
