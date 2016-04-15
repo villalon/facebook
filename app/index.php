@@ -162,7 +162,7 @@ if ($userfacebookinfo != false) {
 	
 	echo "<div class='col-md-10 col-sm-9 col-xs-12'>";
 	echo "<div class='advert'><div style='position: relative;'><img src='images/jpg_an_1.jpg'style='margin-top:10%; margin-left:8%; width:35%'><img src='images/jpg_an_2.jpg' style='margin-top:10%; margin-left:5%; width:35%'></div></div>";
-	
+	echo "<div id='table-body'></div>";
 
 	?>
 	
@@ -184,6 +184,7 @@ if ($userfacebookinfo != false) {
 
 		if(($(this).attr('component') == "button") && ($(this).attr('courseid') != courseId)) {
 //ajax
+			$('#table-body').empty();
 			jQuery.ajax({
 			url : "https://webcursos-d.uai.cl/local/facebook/app/request.php",
 			async : false,
@@ -193,7 +194,7 @@ if ($userfacebookinfo != false) {
 				'action' : 'get_course_data'
 			},
 			success : function(response) {
-					$('.panel').html('<div>' + response + '</div>');
+					$('#table-body').html('<div>' + response + '</div>');
 				}
 			
 			});

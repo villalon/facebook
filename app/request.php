@@ -16,7 +16,7 @@
 
 /**
  * @package local_facebook
- * @copyright 2016 Jorge Cabaé (jcabane@alumnos.uai.cl)
+ * @copyright 2016 Jorge Cabaï¿½ (jcabane@alumnos.uai.cl)
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -35,7 +35,7 @@ switch ($action) {
 
 		
 		global $DB;
-		
+		/* caca
 		// Parameters for post query
 		$paramspost = array (
 				$moodleid,
@@ -230,12 +230,14 @@ switch ($action) {
 		 * }
 		 */
 		// Returns the final array ordered by date to index.php
+		
+		$totaldata = get_course_data($moodleid, $courseid);
 		$dataarray = record_sort ( $totaldata, 'date', 'true' );
 		
 		
 
 
-// aqui parte haciendo la tabla para cada curso, osea esto es lo que hay que poner dentro de request ------------------------------------------------------------->>Z!"·!"·%(%$!"·/U%&$%&/$%&·"!LK;
+// aqui parte haciendo la tabla para cada curso, osea esto es lo que hay que poner dentro de request ------------------------------------------------------------->>Z!"ï¿½!"ï¿½%(%$!"ï¿½/U%&$%&/$%&ï¿½"!LK;
 // el nombre quizas lo pueda sacar del mismo cuadradito del que se hizo click
 
 //	$fullname = $courses->fullname;
@@ -533,7 +535,7 @@ switch ($action) {
 			}
 		}
 		echo "</tbody></table></div><div></div></div></div>";
-		// aqui termina haciendo la tabla para cada curso, osea esto es lo que hay que poner dentro de request ------------------------------------------------------------->>Z!"·!"·%(%$!"·/U%&$%&/$%&·"!LK;
+		// aqui termina haciendo la tabla para cada curso, osea esto es lo que hay que poner dentro de request ------------------------------------------------------------->>Z!"ï¿½!"ï¿½%(%$!"ï¿½/U%&$%&/$%&ï¿½"!LK;
 		
 		
 		
