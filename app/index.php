@@ -16,15 +16,16 @@
 
 /**
  *
- * @package local
+ * @package    local
  * @subpackage facebook
- * @copyright 2013 Francisco García Ralph (francisco.garcia.ralph@gmail.com)
- * @copyright 2015 Xiu-Fong Lin (xlin@alumnos.uai.cl)
- * @copyright 2015 Mihail Pozarski (mipozarski@alumnos.uai.cl)
- * @copyright 2015 Hans Jeria (hansjeria@gmail.com)
- * @copyright 2016 Mark Michaelsen (mmichaelsen678@gmail.com)
- * @copyright 2016 Andrea Villarroel (avillarroel@alumnos.uai.cl)
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright  2013 Francisco García Ralph (francisco.garcia.ralph@gmail.com)
+ * @copyright  2015 Xiu-Fong Lin (xlin@alumnos.uai.cl)
+ * @copyright  2015 Mihail Pozarski (mipozarski@alumnos.uai.cl)
+ * @copyright  2015 Hans Jeria (hansjeria@gmail.com)
+ * @copyright  2016 Mark Michaelsen (mmichaelsen678@gmail.com)
+ * @copyright  2016 Andrea Villarroel (avillarroel@alumnos.uai.cl)
+ * @copyright  2016 Jorge Cabané (jcabane@alumnos.uai.cl)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 require_once (dirname ( dirname ( dirname ( dirname ( __FILE__ ) ) ) ) . '/config.php');
 require_once ($CFG->dirroot . '/local/facebook/locallib.php');
@@ -184,9 +185,12 @@ if ($userfacebookinfo != false) {
 		
 
 		if(($(this).attr('component') == "button") && ($(this).attr('courseid') != courseId)) {
+			advert.remove();
+			$('#table-body').fadeOut(300);
 			courseId = $(this).attr('courseid');
-//ajax
 			$('#table-body').empty();
+
+			// Ajax
 			jQuery.ajax({
 			url : "https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_course_data&moodleid=" + moodleId + "&courseid=" + courseId,
 			async : false,
@@ -194,14 +198,9 @@ if ($userfacebookinfo != false) {
 			success : function(response) {
 					$('#table-body').append('<div>' + response + '</div>');
 				}
-			
 			});
-// manera vieja			
-//			$('#c' + courseId).fadeOut(300);
 			
-//			$('#c' + courseId).delay(300).fadeIn(300);
-			advert.remove(); 
-			
+			$('#table-body').fadeIn(300);
 		}
 
 		else if($(this).attr('component') == "forum") {

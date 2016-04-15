@@ -15,10 +15,15 @@
 // along with Moodle. If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package local_facebook
- * @copyright 2016 Jorge Caba� (jcabane@alumnos.uai.cl)
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    local
+ * @subpackage facebook
+ * @copyright  2016 Jorge Cabané (jcabane@alumnos.uai.cl)
+ * @copyright  2016 Mark Michaelsen (mmichaelsen678@gmail.com)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+ 
+define("AJAX_SCRIPT", true);
+define("NO_DEBUG_DISPLAY", true);
 
 require_once (dirname ( dirname ( dirname ( dirname ( __FILE__ ) ) ) ) . '/config.php');
 require_once ($CFG->dirroot . '/local/facebook/locallib.php');
@@ -559,32 +564,30 @@ $courseid = optional_param ( 'courseid', null , PARAM_RAW_TRIMMED );
 			$date = date ( "d/m/Y H:i", $module ['date'] );
 			$htmltable .= "<tr><td>";
 			if ($module ['image'] == FACEBOOK_IMAGE_POST) {
-				$htmltable .= $modulecount.'<img src="images/post.png">';
+				$htmltable .= '<img src="images/post.png">';
 				$discussionId = $module ['discussion'];
 			}
 		
 			else if ($module ['image'] == FACEBOOK_IMAGE_RESOURCE) {
-				$htmltable .= $modulecount.'<img src="images/resource.png">';
+				$htmltable .= '<img src="images/resource.png">';
 			}
 		
 			else if ($module ['image'] == FACEBOOK_IMAGE_LINK) {
-				$htmltable .= $modulecount.'<img src="images/link.png">';
+				$htmltable .= '<img src="images/link.png">';
 			}
 		
 			else if ($module ['image'] == FACEBOOK_IMAGE_EMARKING) {
-				$htmltable .= $modulecount.'<img src="images/emarking.png">';
+				$htmltable .= '<img src="images/emarking.png">';
 				$markid = $module ['id'];
 			}
 		
 			else if ($module ['image'] == FACEBOOK_IMAGE_ASSIGN) {
-				$htmltable .= $modulecount.'<img src="images/assign.png">';
+				$htmltable .= '<img src="images/assign.png">';
 				$assignid = $module ['id'];
 			}
 			$link = $module['link'];
 			$htmltable .= "</td><td><a href='".$link."'>". $module['title'] ."</a></td>
 			<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
-		
-			$modulecount++;
 		}
 		
 		$htmltable .= "</tbody></table>";
