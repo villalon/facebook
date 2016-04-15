@@ -589,7 +589,7 @@ switch ($action) {
 		
 		$htmltable .= "</tbody></table>";
 		
-		var_dump($htmltable);
+		echo $htmltable;
 		
 		// recall the buffered content
 		//return $html; 
