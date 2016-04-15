@@ -174,7 +174,6 @@ if ($userfacebookinfo != false) {
 	var emarkingId = null;
 	var assignId = null;
 	var moodleId = "<?php echo $moodleid; ?>";
-	var tableData = array();
 
 	$("*", document.body).click(function(event) {
 		event.stopPropagation();
