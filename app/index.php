@@ -185,18 +185,25 @@ if ($userfacebookinfo != false) {
 		
 
 		if(($(this).attr('component') == "button") && ($(this).attr('courseid') != courseId)) {
-			advert.remove();
+			
 			courseId = $(this).attr('courseid');
-			$('#table-body').fadeOut(300).empty().show();
-			$('#table-body').append("<div align='center' style='top: 200px;'><img src='https://webcursos-d.uai.cl/local/facebook/app/images/ajaxloader.gif'></div>");
+			
 
 			// Ajax
 			jQuery.ajax({
 				url : "https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_course_data&moodleid=" + moodleId + "&courseid=" + courseId,
 				async : false,
 				data : {},
+				beforeSend : function() {
+					advert.remove();
+					$('#table-body').fadeOut(300);
+					$('#table-body').empty();
+					$('#table-body').show();
+					$('#table-body').append("<div align='center' style='top: 200px;'><img src='https://webcursos-d.uai.cl/local/facebook/app/images/ajaxloader.gif'></div>");
+				},
 				success : function(response) {
-					$('#table-body').empty().hide();
+					$('#table-body').empty();
+					$('#table-body').hide();
 					$('#table-body').append('<div>' + response + '</div>');
 					$('#table-body').fadeIn(300);
 				}
