@@ -192,7 +192,7 @@ if ($userfacebookinfo != false) {
 
 			advert.remove();
 			$('#table-body').empty();
-			$('#table-body').html("<div align='center' style='top: 200px;'><img src='https://webcursos-d.uai.cl/local/facebook/app/images/ajaxloader.gif'></div>");
+			$('#table-body').append("<div align='center' style='top: 200px;'><img src='https://webcursos-d.uai.cl/local/facebook/app/images/ajaxloader.gif'></div>");
 
 			// Ajax
 			jQuery.ajax({
@@ -200,8 +200,7 @@ if ($userfacebookinfo != false) {
 				async : false,
 				data : {},
 				success : function(response) {
-					$('#table-body').empty();
-					$('#table-body').append('<div>' + response + '</div>');
+					$('#table-body').html('<div>' + response + '</div>');
 				}
 			});
 			
