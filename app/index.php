@@ -168,7 +168,7 @@ if ($userfacebookinfo != false) {
 	?>
 	
 	<!-- Display engine -->
-					<script type="text/javascript">
+	<script type="text/javascript">
 	var courseId = null;
 	var discussionId = null;
 	var emarkingId = null;
@@ -185,10 +185,10 @@ if ($userfacebookinfo != false) {
 		
 
 		if(($(this).attr('component') == "button") && ($(this).attr('courseid') != courseId)) {
-			
-			//$('#table-body').fadeOut(300);
+			advert.remove();
 			courseId = $(this).attr('courseid');
-			$('#table-body').empty();
+			$('#table-body').fadeOut(300).empty().show();
+			$('#table-body').append("<div align='center' style='top: 200px;'><img src='https://webcursos-d.uai.cl/local/facebook/app/images/ajaxloader.gif'></div>");
 
 			// Ajax
 			jQuery.ajax({
@@ -196,13 +196,11 @@ if ($userfacebookinfo != false) {
 				async : false,
 				data : {},
 				success : function(response) {
+					$('#table-body').empty().hide();
 					$('#table-body').append('<div>' + response + '</div>');
+					$('#table-body').fadeIn(300);
 				}
 			});
-
-			advert.remove();
-			
-			//$('#table-body').fadeIn(300);
 		}
 
 		else if($(this).attr('component') == "forum") {
