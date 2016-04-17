@@ -206,7 +206,7 @@ if ($userfacebookinfo != false) {
 				url : "https://webcursos-d.uai.cl/local/facebook/app/request.php",
 				async : true,
 				data : {
-					"action" : get_course_data,
+					"action" : "get_course_data",
 					"moodleid" : moodleId,
 					"courseid" : courseId
 					},
