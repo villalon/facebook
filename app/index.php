@@ -164,12 +164,17 @@ if ($userfacebookinfo != false) {
 	
 	echo "<div class='col-md-10 col-sm-9 col-xs-12'>";
 	echo "<div class='advert'><div style='position: relative;'><img src='images/jpg_an_1.jpg'style='margin-top:10%; margin-left:8%; width:35%'><img src='images/jpg_an_2.jpg' style='margin-top:10%; margin-left:5%; width:35%'></div></div>";
+<<<<<<< HEAD
 	echo "<div id='loadinggif' align='center' style='margin-top: 50%; text-align: center; display:none;'><img src='https://webcursos-d.uai.cl/local/facebook/app/images/ajaxloader.gif'></div>";
+=======
+	echo "<div id='loading-image' align='center' style='top: 200px;' hidden><img src='https://webcursos-d.uai.cl/local/facebook/app/images/ajaxloader.gif'></div>";
+>>>>>>> refs/remotes/mandrato1/master
 	echo "<div id='table-body'></div>";
 
 	?>
 	
 	<!-- Display engine -->
+<<<<<<< HEAD
 	<script>
 	$(document).ready(function () {
 	    $(document).ajaxStart(function () {
@@ -180,12 +185,23 @@ if ($userfacebookinfo != false) {
 	});
 	</script>
 	
+=======
+>>>>>>> refs/remotes/mandrato1/master
 	<script type="text/javascript">
 	var courseId = null;
 	var discussionId = null;
 	var emarkingId = null;
 	var assignId = null;
 	var moodleId = "<?php echo $moodleid; ?>";
+<<<<<<< HEAD
+=======
+
+	$('#loading-image').bind('ajaxStart', function(){
+	    $(this).show();
+	}).bind('ajaxStop', function(){
+	    $(this).hide();
+	});
+>>>>>>> refs/remotes/mandrato1/master
 
 	$("*", document.body).click(function(event) {
 		event.stopPropagation();
@@ -202,6 +218,7 @@ if ($userfacebookinfo != false) {
 			advert.remove();
 			$('#table-body').empty();
 			
+<<<<<<< HEAD
 			// Ajax
 			jQuery.ajax({
 				url : "https://webcursos-d.uai.cl/local/facebook/app/request.php",
@@ -212,6 +229,14 @@ if ($userfacebookinfo != false) {
 					"courseid" : courseId
 					},
 				dataType: "html",
+=======
+
+			// Ajax
+			jQuery.ajax({
+				url : "https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_course_data&moodleid=" + moodleId + "&courseid=" + courseId,
+				async : false,
+				data : {},
+>>>>>>> refs/remotes/mandrato1/master
 				success : function(response) {
 					$('#table-body').empty();
 					$('#table-body').hide();
