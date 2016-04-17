@@ -16,26 +16,28 @@
 
 /**
  *
- * @package local
+ * @package    local
  * @subpackage facebook
- * @copyright 2013 Francisco García Ralph (francisco.garcia.ralph@gmail.com)
- * @copyright 2015 Xiu-Fong Lin (xlin@alumnos.uai.cl)
- * @copyright 2015 Mihail Pozarski (mipozarski@alumnos.uai.cl)
- * @copyright 2015 Hans Jeria (hansjeria@gmail.com)
- * @copyright 2016 Mark Michaelsen (mmichaelsen678@gmail.com)
- * @copyright 2016 Andrea Villarroel (avillarroel@alumnos.uai.cl)
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright  2013 Francisco García Ralph (francisco.garcia.ralph@gmail.com)
+ * @copyright  2015 Xiu-Fong Lin (xlin@alumnos.uai.cl)
+ * @copyright  2015 Mihail Pozarski (mipozarski@alumnos.uai.cl)
+ * @copyright  2015 Hans Jeria (hansjeria@gmail.com)
+ * @copyright  2016 Mark Michaelsen (mmichaelsen678@gmail.com)
+ * @copyright  2016 Andrea Villarroel (avillarroel@alumnos.uai.cl)
+ * @copyright  2016 Jorge Cabané (jcabane@alumnos.uai.cl)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 require_once (dirname ( dirname ( dirname ( dirname ( __FILE__ ) ) ) ) . '/config.php');
 require_once ($CFG->dirroot . '/local/facebook/locallib.php');
 require_once ($CFG->dirroot . "/local/facebook/app/Facebook/autoload.php");
 global $DB, $USER, $CFG, $OUTPUT;
-include "config.php";
+require_once ("config.php");
 use Facebook\FacebookResponse;
 use Facebook\FacebookRedirectLoginHelper;
 use Facebook\FacebookRequire;
 
-include "htmltoinclude/bootstrap.html";
+require_once ("htmltoinclude/bootstrap.html");
+require_once ("jquery/jquery-2.1.4.js");
 
 // gets all facebook information needed
 $appid = $CFG->fbkAppID;
@@ -89,7 +91,7 @@ $userfacebookinfo = $DB->get_record ( 'facebook_user', array (
 		'status' => 1 
 ) );
 
-// if the user exist then show the app, if not tell him to connect his facebook account
+// if the user exist then show the app, if not tell him to connect to his facebook account
 if ($userfacebookinfo != false) {
 	$moodleid = $userfacebookinfo->moodleid;
 	$lastvisit = $userfacebookinfo->lasttimechecked;
@@ -162,16 +164,28 @@ if ($userfacebookinfo != false) {
 	
 	echo "<div class='col-md-10 col-sm-9 col-xs-12'>";
 	echo "<div class='advert'><div style='position: relative;'><img src='images/jpg_an_1.jpg'style='margin-top:10%; margin-left:8%; width:35%'><img src='images/jpg_an_2.jpg' style='margin-top:10%; margin-left:5%; width:35%'></div></div>";
-	
+	echo "<div id='loadinggif' align='center' style='margin-top: 50%; text-align: center; display:none;'><img src='https://webcursos-d.uai.cl/local/facebook/app/images/ajaxloader.gif'></div>";
+	echo "<div id='table-body'></div>";
 
 	?>
 	
 	<!-- Display engine -->
-					<script type="text/javascript">
+	<script>
+	$(document).ready(function () {
+	    $(document).ajaxStart(function () {
+	        $("#loadinggif").show();
+	    }).ajaxStop(function () {
+	        $("#loadinggif").hide();
+	    });
+	});
+	</script>
+	
+	<script type="text/javascript">
 	var courseId = null;
 	var discussionId = null;
 	var emarkingId = null;
 	var assignId = null;
+	var moodleId = "<?php echo $moodleid; ?>";
 
 	$("*", document.body).click(function(event) {
 		event.stopPropagation();
@@ -183,26 +197,28 @@ if ($userfacebookinfo != false) {
 		
 
 		if(($(this).attr('component') == "button") && ($(this).attr('courseid') != courseId)) {
-//ajax
-			jQuery.ajax({
-			url : "https://webcursos-d.uai.cl/local/facebook/app/request.php",
-			async : false,
-			data : {
-				'moodleid' : <?php echo $moodleid;?>,
-				'courseid' : courseid,
-				'action' : 'get_course_data'
-			},
-			success : function(response) {
-					$('.panel').html('<div>' + response + '</div>');
-				}
 			
-			});
-// manera vieja			
-//			$('#c' + courseId).fadeOut(300);
 			courseId = $(this).attr('courseid');
-//			$('#c' + courseId).delay(300).fadeIn(300);
-			advert.remove(); 
+			advert.remove();
+			$('#table-body').empty();
 			
+			// Ajax
+			jQuery.ajax({
+				url : "https://webcursos-d.uai.cl/local/facebook/app/request.php",
+				async : true,
+				data : {
+					"action" : get_course_data,
+					"moodleid" : moodleId,
+					"courseid" : courseId
+					},
+				dataType: "html",
+				success : function(response) {
+					$('#table-body').empty();
+					$('#table-body').hide();
+					$('#table-body').append('<div>' + response + '</div>');
+					$('#table-body').fadeIn(300);
+				}
+			});
 		}
 
 		else if($(this).attr('component') == "forum") {
@@ -290,7 +306,9 @@ if ($userfacebookinfo != false) {
 			}
 		}
 	});
-
+	</script>
+	<script>
+//script for searching courses
 	$("#search").on('change keyup paste', function() {
 		var searchValue = $('#search').val();
 		$("button").each(function() {
@@ -306,6 +324,9 @@ if ($userfacebookinfo != false) {
 		});
 	});
 	</script>
+	
+	
+	
 	
 	<?php
 	echo "</div></div>";

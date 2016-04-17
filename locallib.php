@@ -212,7 +212,6 @@ function get_course_data ($moodleid, $courseid) {
 	
 	// Parameters for post query
 	$paramspost = array(
-			$moodleid,
 			$courseid,
 			FACEBOOK_COURSE_MODULE_VISIBLE
 	);
@@ -221,10 +220,10 @@ function get_course_data ($moodleid, $courseid) {
 	$datapostsql = "SELECT fp.id AS postid, us.firstname AS firstname, us.lastname AS lastname, fp.subject AS subject,
 			fp.modified AS modified, discussions.course AS course, discussions.id AS dis_id 
 			FROM {forum_posts} AS fp
-			INNER JOIN {forum_discussions} AS discussions ON (fp.discussion=discussions.id)
+			INNER JOIN {forum_discussions} AS discussions ON (fp.discussion=discussions.id AND discussions.course = ?)
 			INNER JOIN {forum} AS forum ON (forum.id=discussions.forum)
-			INNER JOIN {user} AS us ON (us.id=discussions.userid AND us.id = ?)
-			INNER JOIN {course_modules} AS cm ON (cm.instance=forum.id AND cm.course = ?)
+			INNER JOIN {user} AS us ON (us.id=discussions.userid)
+			INNER JOIN {course_modules} AS cm ON (cm.instance=forum.id)
 			WHERE cm.visible = ? 
 			GROUP BY fp.id";
 	
@@ -234,7 +233,6 @@ function get_course_data ($moodleid, $courseid) {
 	// Parameters for resource query
 	$paramsresource = array(
 			$courseid,
-			$moodleid,
 			'resource',
 			FACEBOOK_COURSE_MODULE_VISIBLE
 	);
@@ -246,7 +244,7 @@ function get_course_data ($moodleid, $courseid) {
               INNER JOIN {course_modules} AS cm ON (cm.instance = r.id AND cm.course = ?)
               INNER JOIN {modules} AS m ON (cm.module = m.id)
               LEFT JOIN {logstore_standard_log} AS log ON (log.objectid = cm.id AND log.action = 'created' AND log.target = 'course_module')
-              INNER JOIN {user} AS u ON (u.id = log.userid AND u.id = ?)
+              INNER JOIN {user} AS u ON (u.id = log.userid)
 			  WHERE m.name = ? 
 			  AND cm.visible = ?
               GROUP BY cm.id";
@@ -257,7 +255,6 @@ function get_course_data ($moodleid, $courseid) {
 	// Parameters for the link query
 	$paramslink = array(
 			$courseid,
-			$moodleid,
 			'url',
 			FACEBOOK_COURSE_MODULE_VISIBLE
 	);
@@ -269,7 +266,7 @@ function get_course_data ($moodleid, $courseid) {
               INNER JOIN {course_modules} AS cm ON (cm.instance = url.id AND cm.course = ?)
               INNER JOIN {modules} AS m ON (cm.module = m.id)
               LEFT JOIN {logstore_standard_log} AS log ON (log.objectid = cm.id AND log.action = 'created' AND log.target = 'course_module')
-              INNER JOIN {user} AS u ON (u.id = log.userid AND u.id = ?)
+              INNER JOIN {user} AS u ON (u.id = log.userid)
 		      WHERE m.name = ? 
 		      AND cm.visible = ? 
               GROUP BY url.id";
