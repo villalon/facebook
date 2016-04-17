@@ -13,7 +13,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle. If not, see <http://www.gnu.org/licenses/>.
-
 /**
  * @package local
  * @subpackage facebook
@@ -39,10 +38,8 @@ define('FACEBOOK_IMAGE_RESOURCE', 'resource');
 define('FACEBOOK_IMAGE_LINK', 'link');
 define('FACEBOOK_IMAGE_EMARKING', 'emarking');
 define('FACEBOOK_IMAGE_ASSIGN', 'assign');
-
 define('MODULE_EMARKING', 24);
 define('MODULE_ASSIGN', 1);
-
 /**
  * This function gets al the notification pending since the last check.
  * @param $sqlin from get_in_or_equal used in "IN ('')" clause    
@@ -248,7 +245,6 @@ function get_course_data ($moodleid, $courseid) {
 			  WHERE m.name = ? 
 			  AND cm.visible = ?
               GROUP BY cm.id";
-
 	// Get the data from the above query
 	$dataresource = $DB->get_records_sql($dataresourcesql, $paramsresource);
 	
@@ -395,7 +391,6 @@ function get_course_data ($moodleid, $courseid) {
 	}
 	
 	foreach($dataemarking as $emarking){
-
 		$emarkingurl = new moodle_url('/mod/emarking/view.php', array(
 				'id' => $emarking->moduleid
 		));
@@ -436,26 +431,21 @@ function get_course_data ($moodleid, $courseid) {
 	// Returns the final array ordered by date to index.php
 	return record_sort($totaldata, 'date', 'true');
 }
-
 function facebook_connect_table_generator($facebook_id, $link, $first_name, $middle_name, $last_name, $appname) {
-
 	$imagetable = new html_table ();
 	$infotable = new html_table ();
-
 	$infotable->data [] = array (
 			get_string ( "fbktablename", "local_facebook" ),
 			$first_name." ".$middle_name." ".$last_name
 	);
-
 	$infotable->data [] = array (
 			get_string ( "profile", "local_facebook" ),
-			"<a href='" . $link . "' target=â€_blankâ€>" . $link . "</a>"
+			"<a href='" . $link . "' target=”_blank”>" . $link . "</a>"
 	);
-
 	if ($appname != null) {
 		$infotable->data [] = array (
 				"Link a la app",
-				"<a href='http://apps.facebook.com/" . $appname . "' target=â€_blankâ€>http://apps.facebook.com/" . $appname . "</a>"
+				"<a href='http://apps.facebook.com/" . $appname . "' target=”_blank”>http://apps.facebook.com/" . $appname . "</a>"
 		);
 	} else {
 		$infotable->data [] = array (
@@ -467,10 +457,8 @@ function facebook_connect_table_generator($facebook_id, $link, $first_name, $mid
 			"<img src='https://graph.facebook.com/" .$facebook_id . "/picture?type=large'>",
 			html_writer::table ($infotable)
 	);
-
 	echo html_writer::table ($imagetable);
 }
-
 function get_posts_from_discussion($discussionid) {
 	global $DB;
 	
@@ -497,8 +485,6 @@ function get_posts_from_discussion($discussionid) {
 	
 	return $data;
 }
-
 function cmp($a, $b){
 	return strcmp ($b->totalnotifications, $a->totalnotifications);
 }
-
