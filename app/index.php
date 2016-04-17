@@ -37,7 +37,6 @@ use Facebook\FacebookRedirectLoginHelper;
 use Facebook\FacebookRequire;
 
 require_once ("htmltoinclude/bootstrap.html");
-require_once ("jquery/jquery-2.1.4.js");
 
 // gets all facebook information needed
 $appid = $CFG->fbkAppID;
