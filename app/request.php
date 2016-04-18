@@ -21,8 +21,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
  
-//define("AJAX_SCRIPT", true);
-//define("NO_DEBUG_DISPLAY", true);
+define("AJAX_SCRIPT", true);
+define("NO_DEBUG_DISPLAY", true);
 
 require_once (dirname ( dirname ( dirname ( dirname ( __FILE__ ) ) ) ) . '/config.php');
 require_once ($CFG->dirroot . '/local/facebook/locallib.php');
@@ -33,7 +33,7 @@ $action = required_param ( 'action', PARAM_ALPHA );
 $moodleid = optional_param ( 'moodleid', null , PARAM_RAW_TRIMMED );
 $courseid = optional_param ( 'courseid', null , PARAM_RAW_TRIMMED );
 //$lastvisit = optional_param ( 'lastvisit', null , PARAM_RAW_TRIMMED );
-if ($action == 'get_course_data') {
+//if ($action == 'get_course_data') {
 	global $DB;
 	$totaldata = get_course_data($moodleid, $courseid);
 	
@@ -84,4 +84,4 @@ if ($action == 'get_course_data') {
 	$htmltable .= "</tbody></table>";
 	
 	echo $htmltable;
-}
+//}
