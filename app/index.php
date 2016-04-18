@@ -172,10 +172,8 @@ if ($userfacebookinfo != false) {
 	<script>
 	$(document).ready(function () {
 	    $(document).ajaxStart(function () {
-		    alert("empezó el ajax");
 	        $("#loadinggif").show();
 	    }).ajaxStop(function () {
-	    	alert("terminó el ajax");
 	        $("#loadinggif").hide();
 	    });
 	});
@@ -183,126 +181,126 @@ if ($userfacebookinfo != false) {
 
 	<script type="text/javascript">
 	$(document).ready(function () {
-	var courseId = null;
-	var discussionId = null;
-	var emarkingId = null;
-	var assignId = null;
-	var moodleId = "<?php echo $moodleid; ?>";
-
-	$("*", document.body).click(function(event) {
-		event.stopPropagation();
-
-		var courseid = $(this).parent().parent().attr('courseid');
-		var badgecourseid = $( "button[courseid='"+courseid+"']" ).parent().find('.badge');
-		var aclick = $(this).parent().attr('style');
-		var advert = $(this).parent().parent().parent().parent().parent().find('.advert');
-		
-
-		if(($(this).attr('component') == "button") && ($(this).attr('courseid') != courseId)) {
+		var courseId = null;
+		var discussionId = null;
+		var emarkingId = null;
+		var assignId = null;
+		var moodleId = "<?php echo $moodleid; ?>";
+	
+		$("*", document.body).click(function(event) {
+			event.stopPropagation();
+	
+			var courseid = $(this).parent().parent().attr('courseid');
+			var badgecourseid = $( "button[courseid='"+courseid+"']" ).parent().find('.badge');
+			var aclick = $(this).parent().attr('style');
+			var advert = $(this).parent().parent().parent().parent().parent().find('.advert');
 			
-			courseId = $(this).attr('courseid');
-			advert.remove();
-			$('#table-body').empty();
-
-			// Ajax fix
-			jQuery.ajax({
-				url : "https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_course_data&moodleid=" + moodleId + "&courseid=" + courseId,
-				async : false,
-				data : {},
-				success : function(response) {
-					$('#table-body').empty();
-					$('#table-body').hide();
-					$('#table-body').append('<div>' + response + '</div>');
-					$('#table-body').fadeIn(300);
-				}
-			});
-		}
-
-		else if($(this).attr('component') == "forum") {
-			
-			discussionId = $(this).attr('discussionid');
-			$('#m' + discussionId).modal('show');
-			
-			if(aclick == 'font-weight:bold;'){
+	
+			if(($(this).attr('component') == "button") && ($(this).attr('courseid') != courseId)) {
 				
-				$(this).parent().parent().children("td").css('font-weight','normal');
-//				$(this).parent().parent().children("td").children("button").removeClass("btn btn-primary");
-//				$(this).parent().parent().children("td").children("button").addClass("btn btn-default");
-				$(this).parent().parent().children("td").children("center").children("span").css('color','transparent');
-				$(this).parent().parent().children("td").children("button").css('color','#909090');
+				courseId = $(this).attr('courseid');
+				advert.remove();
+				$('#table-body').empty();
+	
+				// Ajax fix
+				jQuery.ajax({
+					url : "https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_course_data&moodleid=" + moodleId + "&courseid=" + courseId,
+					async : false,
+					data : {},
+					success : function(response) {
+						$('#table-body').empty();
+						$('#table-body').hide();
+						$('#table-body').append('<div>' + response + '</div>');
+						$('#table-body').fadeIn(300);
+					}
+				});
+			}
+	
+			else if($(this).attr('component') == "forum") {
 				
-				if(badgecourseid.text() == 1) { 
-					badgecourseid.remove(); 
-				}
-				else{ 
-					badgecourseid.text(badgecourseid.text()-1); 
+				discussionId = $(this).attr('discussionid');
+				$('#m' + discussionId).modal('show');
+				
+				if(aclick == 'font-weight:bold;'){
+					
+					$(this).parent().parent().children("td").css('font-weight','normal');
+	//				$(this).parent().parent().children("td").children("button").removeClass("btn btn-primary");
+	//				$(this).parent().parent().children("td").children("button").addClass("btn btn-default");
+					$(this).parent().parent().children("td").children("center").children("span").css('color','transparent');
+					$(this).parent().parent().children("td").children("button").css('color','#909090');
+					
+					if(badgecourseid.text() == 1) { 
+						badgecourseid.remove(); 
+					}
+					else{ 
+						badgecourseid.text(badgecourseid.text()-1); 
+					}
 				}
 			}
-		}
-
-		else if($(this).attr('component') == "close-modal") {
-			modalId = $(this).attr('modalid');
-			$('#' + modalId).modal('hide');
-		}
-
-		else if($(this).attr('component') == "emarking") {
-			emarkingId = $(this).attr('emarkingid');
-			$('#e' + emarkingId).modal('show');
-
-			if(aclick == 'font-weight:bold'){			
-				 $(this).parent().parent().children("td").css('font-weight','normal');
-//				 $(this).parent().parent().children("td").children("button").removeClass("btn btn-primary");
-//				 $(this).parent().parent().children("td").children("button").addClass("btn btn-default");
-				 $(this).parent().parent().children("td").children("center").children("span").css('color','transparent');
-				 $(this).parent().parent().children("td").children("button").css('color','#909090');
-				 				
-				 if(badgecourseid.text() == 1) { 
-				 	badgecourseid.remove(); 
-				 }
-				 else{ 
-				 	badgecourseid.text(badgecourseid.text()-1); 
-				 }
+	
+			else if($(this).attr('component') == "close-modal") {
+				modalId = $(this).attr('modalid');
+				$('#' + modalId).modal('hide');
 			}
-		}
-
-		else if($(this).attr('component') == "assign") {
-			assignId = $(this).attr('assignid');
-			$('#a' + assignId).modal('show');
-
-			if(aclick == 'font-weight:bold'){			
-				 $(this).parent().parent().children("td").css('font-weight','normal');
-//				 $(this).parent().parent().children("td").children("button").removeClass("btn btn-primary");
-//				 $(this).parent().parent().children("td").children("button").addClass("btn btn-default");
-				 $(this).parent().parent().children("td").children("center").children("span").css('color','transparent');
-				 $(this).parent().parent().children("td").children("button").css('color','#909090');
-				 				
-				 if(badgecourseid.text() == 1) { 
-				 	badgecourseid.remove(); 
-				 }
-				 else{ 
-				 	badgecourseid.text(badgecourseid.text()-1); 
-				 }
-			}
-		}
-		else if($(this).attr('component') == "other") {
-			
-			if(aclick == 'font-weight:bold'){
-				
-				$(this).parent().parent().children("td").css('font-weight','normal');
-//				$(this).parent().parent().children("td").children("button").removeClass("btn btn-primary");
-//				$(this).parent().parent().children("td").children("button").addClass("btn btn-default");
-				$(this).parent().parent().children("td").children("center").children("span").css('color','transparent');
-				$(this).parent().parent().children("td").children("button").css('color','#909090');
-				
-				if(badgecourseid.text() == 1) { 
-					badgecourseid.remove(); 
-				}
-				else{ 
-					badgecourseid.text(badgecourseid.text()-1); 
+	
+			else if($(this).attr('component') == "emarking") {
+				emarkingId = $(this).attr('emarkingid');
+				$('#e' + emarkingId).modal('show');
+	
+				if(aclick == 'font-weight:bold'){			
+					 $(this).parent().parent().children("td").css('font-weight','normal');
+	//				 $(this).parent().parent().children("td").children("button").removeClass("btn btn-primary");
+	//				 $(this).parent().parent().children("td").children("button").addClass("btn btn-default");
+					 $(this).parent().parent().children("td").children("center").children("span").css('color','transparent');
+					 $(this).parent().parent().children("td").children("button").css('color','#909090');
+					 				
+					 if(badgecourseid.text() == 1) { 
+					 	badgecourseid.remove(); 
+					 }
+					 else{ 
+					 	badgecourseid.text(badgecourseid.text()-1); 
+					 }
 				}
 			}
-		}
-	});
+	
+			else if($(this).attr('component') == "assign") {
+				assignId = $(this).attr('assignid');
+				$('#a' + assignId).modal('show');
+	
+				if(aclick == 'font-weight:bold'){			
+					 $(this).parent().parent().children("td").css('font-weight','normal');
+	//				 $(this).parent().parent().children("td").children("button").removeClass("btn btn-primary");
+	//				 $(this).parent().parent().children("td").children("button").addClass("btn btn-default");
+					 $(this).parent().parent().children("td").children("center").children("span").css('color','transparent');
+					 $(this).parent().parent().children("td").children("button").css('color','#909090');
+					 				
+					 if(badgecourseid.text() == 1) { 
+					 	badgecourseid.remove(); 
+					 }
+					 else{ 
+					 	badgecourseid.text(badgecourseid.text()-1); 
+					 }
+				}
+			}
+			else if($(this).attr('component') == "other") {
+				
+				if(aclick == 'font-weight:bold'){
+					
+					$(this).parent().parent().children("td").css('font-weight','normal');
+	//				$(this).parent().parent().children("td").children("button").removeClass("btn btn-primary");
+	//				$(this).parent().parent().children("td").children("button").addClass("btn btn-default");
+					$(this).parent().parent().children("td").children("center").children("span").css('color','transparent');
+					$(this).parent().parent().children("td").children("button").css('color','#909090');
+					
+					if(badgecourseid.text() == 1) { 
+						badgecourseid.remove(); 
+					}
+					else{ 
+						badgecourseid.text(badgecourseid.text()-1); 
+					}
+				}
+			}
+		});
 	});
 	</script>
 	<script>
