@@ -235,7 +235,7 @@ function get_course_data ($moodleid, $courseid) {
 	);
 	
 	// Query for the resource information
-	$dataresourcesql = "SELECT cm.id AS coursemoduleid, r.id AS resourceid, r.name AS resourcename, r.timemodified, 
+	$dataresourcesql = "SELECT cm.id AS coursemoduleid, r.id AS resourceid, r.name AS title, r.timemodified AS date, 
 			  r.course AS resourcecourse, cm.visible, cm.visibleold
 			  FROM {resource} AS r 
               INNER JOIN {course_modules} AS cm ON (cm.instance = r.id AND cm.course = ? AND cm.visible = ?)
