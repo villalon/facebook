@@ -33,13 +33,11 @@ $action = required_param ( 'action', PARAM_ALPHA );
 $moodleid = optional_param ( 'moodleid', null , PARAM_RAW_TRIMMED );
 $courseid = optional_param ( 'courseid', null , PARAM_RAW_TRIMMED );
 //$lastvisit = optional_param ( 'lastvisit', null , PARAM_RAW_TRIMMED );
-switch ($action) {
-	case 'get_course_data':
-		echo "Dentro del switch<br>";
+//switch ($action) {
+	//case 'get_course_data':
 		global $DB;
 		$totaldata = get_course_data($moodleid, $courseid);
 		
-		var_dump($totaldata);
 		$htmltable = "";
 		
 		$htmltable .= '<table class="tablesorter" border="0" width="100%" style="font-size: 13px; margin-left: 9px;">
@@ -88,7 +86,7 @@ switch ($action) {
 		
 		echo $htmltable;
 		
-		break;
+		//break;
 		
-		}
+		//}
 		//end of actions
