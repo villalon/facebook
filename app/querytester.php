@@ -151,20 +151,16 @@ $querystart = microtime(TRUE);
 	// Parameters for the link query
 	$paramslink = array(
 			$course->id,
-			'url',
-			FACEBOOK_COURSE_MODULE_VISIBLE
+			FACEBOOK_COURSE_MODULE_VISIBLE,
+			'url'
 	);
 	
 	//query for the link information
 	$datalinksql="SELECT url.id AS id, url.name AS title, url.externalurl AS externalurl, url.timemodified AS date,
-	          url.course AS urlcourse, cm.visible AS visible, cm.visibleold AS visibleold, CONCAT(u.firstname,' ',u.lastname) AS user
+	          url.course AS urlcourse, cm.visible AS visible, cm.visibleold AS visibleold
 		      FROM {url} AS url
-              INNER JOIN {course_modules} AS cm ON (cm.instance = url.id AND cm.course = ?)
-              INNER JOIN {modules} AS m ON (cm.module = m.id)
-              LEFT JOIN {logstore_standard_log} AS log ON (log.objectid = cm.id AND log.action = 'created' AND log.target = 'course_module')
-              INNER JOIN {user} AS u ON (u.id = log.userid)
-		      WHERE m.name = ? 
-		      AND cm.visible = ? 
+              INNER JOIN {course_modules} AS cm ON (cm.instance = url.id AND cm.course = ? AND cm.visible = ?)
+              INNER JOIN {modules} AS m ON (cm.module = m.id AND m.name = ?)
               GROUP BY url.id";
 	
 	// Get the data from the above query
@@ -193,7 +189,7 @@ foreach ($datalink as $url) {
 	$date = date ( "d/m/Y H:i", $url->date );
 	echo "<tr><td>";
 	echo "</td><td>". $url->title ."</td>
-			<td>". $url->user ."</td><td>". $date ."</td></tr>";
+			<td> </td><td>". $date ."</td></tr>";
 }
 
 echo "</tbody></table> <br>";
