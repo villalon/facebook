@@ -81,7 +81,7 @@ switch ($action) {
 		
 		$htmltable .= "</tbody></table>";
 		
-		echo $htmltable;
+		return $htmltable;
 		
 		break;
 		
