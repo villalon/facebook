@@ -16,7 +16,7 @@
 /**
  * @package    local
  * @subpackage facebook
- * @copyright  2016 Jorge Cabané (jcabane@alumnos.uai.cl)
+ * @copyright  2016 Jorge Cabanï¿½ (jcabane@alumnos.uai.cl)
  * @copyright  2016 Mark Michaelsen (mmichaelsen678@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -35,16 +35,18 @@ $courseid = optional_param ( 'courseid', null , PARAM_RAW_TRIMMED );
 //$lastvisit = optional_param ( 'lastvisit', null , PARAM_RAW_TRIMMED );
 switch ($action) {
 	case 'get_course_data':
-		
+		echo "Dentro del switch<br>";
 		global $DB;
 		$totaldata = get_course_data($moodleid, $courseid);
+		
+		var_dump($totaldata);
 		$htmltable = "";
 		
 		$htmltable .= '<table class="tablesorter" border="0" width="100%" style="font-size: 13px; margin-left: 9px;">
 						<thead>
 							<tr>
 								<th width="3%" style="border-top-left-radius: 8px;"></th>
-								<th width="34%">Título</th>
+								<th width="34%">Tï¿½tulo</th>
 								<th width="30%">De</th>
 								<th width="30%">Fecha</th>
 								<th width="3%" style="background-color: transparent"></th>
