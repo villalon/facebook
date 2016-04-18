@@ -14,13 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle. If not, see <http://www.gnu.org/licenses/>.
 /**
- * @package local
+ * @package    local
  * @subpackage facebook
- * @copyright 2015 Xiu-Fong Lin (xlin@alumnos.uai.cl)
- * @copyright 2015 Mihail Pozarski (mipozarski@alumnos.uai.cl)
- * @copyright 2015 Hans Jeria (hansjeria@gmail.com)
- * @copyright 2016 Mark Michaelsen (mmichaelsen678@gmail.com)
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright  2015 Xiu-Fong Lin (xlin@alumnos.uai.cl)
+ * @copyright  2015 Mihail Pozarski (mipozarski@alumnos.uai.cl)
+ * @copyright  2015 Hans Jeria (hansjeria@gmail.com)
+ * @copyright  2016 Mark Michaelsen (mmichaelsen678@gmail.com)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
 /**
@@ -440,12 +440,12 @@ function facebook_connect_table_generator($facebook_id, $link, $first_name, $mid
 	);
 	$infotable->data [] = array (
 			get_string ( "profile", "local_facebook" ),
-			"<a href='" . $link . "' target=”_blank”>" . $link . "</a>"
+			"<a href='" . $link . "' target=ï¿½_blankï¿½>" . $link . "</a>"
 	);
 	if ($appname != null) {
 		$infotable->data [] = array (
 				"Link a la app",
-				"<a href='http://apps.facebook.com/" . $appname . "' target=”_blank”>http://apps.facebook.com/" . $appname . "</a>"
+				"<a href='http://apps.facebook.com/" . $appname . "' target=ï¿½_blankï¿½>http://apps.facebook.com/" . $appname . "</a>"
 		);
 	} else {
 		$infotable->data [] = array (

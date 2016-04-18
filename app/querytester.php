@@ -84,33 +84,11 @@ echo '<table border="1" width="100%" style="font-size: 13px; margin-left: 9px;">
 				<tbody>';
 
 foreach ($datapost as $post) {
-	$date = date ( "d/m/Y H:i", $post ['date'] );
+	$date = date ( "d/m/Y H:i", $post->date );
 	echo "<tr><td>";
-	if ($post ['image'] == FACEBOOK_IMAGE_POST) {
-		echo '<img src="images/post.png">';
-		$discussionId = $post ['discussion'];
-	}
-	
-	else if ($post ['image'] == FACEBOOK_IMAGE_RESOURCE) {
-		echo '<img src="images/resource.png">';
-	}
-	
-	else if ($post ['image'] == FACEBOOK_IMAGE_LINK) {
-		echo '<img src="images/link.png">';
-	}
-	
-	else if ($post ['image'] == FACEBOOK_IMAGE_EMARKING) {
-		echo '<img src="images/emarking.png">';
-		$markid = $post ['id'];
-	}
-	
-	else if ($post ['image'] == FACEBOOK_IMAGE_ASSIGN) {
-		echo '<img src="images/assign.png">';
-		$assignid = $post ['id'];
-	}
-	$link = $post['link'];
-	echo "</td><td><a href='".$link."'>". $post['title'] ."</a></td>
-			<td>". $post['from'] ."</td><td>". $date ."</td></tr>";
+	$link = $post->link;
+	echo "</td><td><a href='".$link."'>". $post->title ."</a></td>
+			<td>". $post->from ."</td><td>". $date ."</td></tr>";
 }
 
 echo "</tbody></table> <br>";
@@ -162,33 +140,11 @@ echo '<table border="1" width="100%" style="font-size: 13px; margin-left: 9px;">
 				<tbody>';
 
 foreach ($dataresource as $resource) {
-	$date = date ( "d/m/Y H:i", $resource ['date'] );
+	$date = date ( "d/m/Y H:i", $resource->date );
 	echo "<tr><td>";
-	if ($resource ['image'] == FACEBOOK_IMAGE_POST) {
-		echo '<img src="images/post.png">';
-		$discussionId = $resource ['discussion'];
-	}
-
-	else if ($resource ['image'] == FACEBOOK_IMAGE_RESOURCE) {
-		echo '<img src="images/resource.png">';
-	}
-
-	else if ($resource ['image'] == FACEBOOK_IMAGE_LINK) {
-		echo '<img src="images/link.png">';
-	}
-
-	else if ($resource ['image'] == FACEBOOK_IMAGE_EMARKING) {
-		echo '<img src="images/emarking.png">';
-		$markid = $resource ['id'];
-	}
-
-	else if ($resource ['image'] == FACEBOOK_IMAGE_ASSIGN) {
-		echo '<img src="images/assign.png">';
-		$assignid = $resource ['id'];
-	}
-	$link = $resource['link'];
-	echo "</td><td><a href='".$link."'>". $resource['title'] ."</a></td>
-			<td>". $resource['from'] ."</td><td>". $date ."</td></tr>";
+	$link = $resource->link;
+	echo "</td><td><a href='".$link."'>". $resource->title ."</a></td>
+			<td>". $resource->from ."</td><td>". $date ."</td></tr>";
 }
 
 echo "</tbody></table> <br>";
@@ -239,34 +195,12 @@ echo '<table border="1" width="100%" style="font-size: 13px; margin-left: 9px;">
 				</thead>
 				<tbody>';
 
-foreach ($datalink as $link) {
-	$date = date ( "d/m/Y H:i", $link ['date'] );
+foreach ($datalink as $url) {
+	$date = date ( "d/m/Y H:i", $url->date );
 	echo "<tr><td>";
-	if ($link ['image'] == FACEBOOK_IMAGE_POST) {
-		echo '<img src="images/post.png">';
-		$discussionId = $link ['discussion'];
-	}
-
-	else if ($link ['image'] == FACEBOOK_IMAGE_RESOURCE) {
-		echo '<img src="images/resource.png">';
-	}
-
-	else if ($link ['image'] == FACEBOOK_IMAGE_LINK) {
-		echo '<img src="images/link.png">';
-	}
-
-	else if ($link ['image'] == FACEBOOK_IMAGE_EMARKING) {
-		echo '<img src="images/emarking.png">';
-		$markid = $link ['id'];
-	}
-
-	else if ($link ['image'] == FACEBOOK_IMAGE_ASSIGN) {
-		echo '<img src="images/assign.png">';
-		$assignid = $link ['id'];
-	}
-	$link = $link['link'];
-	echo "</td><td><a href='".$link."'>". $link['title'] ."</a></td>
-			<td>". $link['from'] ."</td><td>". $date ."</td></tr>";
+	$link = $url->link;
+	echo "</td><td><a href='".$link."'>". $url->title ."</a></td>
+			<td>". $url->from ."</td><td>". $date ."</td></tr>";
 }
 
 echo "</tbody></table> <br>";
@@ -306,7 +240,7 @@ $querystart = microtime(TRUE);
 $queryend = microtime(TRUE);
 $querytime = $queryend - $querystart;
 
-echo "Emarkings found: ".count($datalink)."<br>";
+echo "Emarkings found: ".count($dataemarking)."<br>";
 
 echo "Query time: ".$querytime." s <br>";
 
@@ -323,33 +257,11 @@ echo '<table border="1" width="100%" style="font-size: 13px; margin-left: 9px;">
 				<tbody>';
 
 foreach ($dataemarking as $emarking) {
-	$date = date ( "d/m/Y H:i", $emarking ['date'] );
+	$date = date ( "d/m/Y H:i", $emarking->date );
 	echo "<tr><td>";
-	if ($emarking ['image'] == FACEBOOK_IMAGE_POST) {
-		echo '<img src="images/post.png">';
-		$discussionId = $emarking ['discussion'];
-	}
-
-	else if ($emarking ['image'] == FACEBOOK_IMAGE_RESOURCE) {
-		echo '<img src="images/resource.png">';
-	}
-
-	else if ($emarking ['image'] == FACEBOOK_IMAGE_LINK) {
-		echo '<img src="images/link.png">';
-	}
-
-	else if ($emarking ['image'] == FACEBOOK_IMAGE_EMARKING) {
-		echo '<img src="images/emarking.png">';
-		$markid = $emarking ['id'];
-	}
-
-	else if ($emarking ['image'] == FACEBOOK_IMAGE_ASSIGN) {
-		echo '<img src="images/assign.png">';
-		$assignid = $emarking ['id'];
-	}
-	$link = $emarking['link'];
-	echo "</td><td><a href='".$emarking."'>". $emarking['title'] ."</a></td>
-			<td>". $emarking['from'] ."</td><td>". $date ."</td></tr>";
+	$link = $emarking->link;
+	echo "</td><td><a href='".$link."'>". $emarking->title ."</a></td>
+			<td>". $emarking->from ."</td><td>". $date ."</td></tr>";
 }
 
 echo "</tbody></table> <br>";
