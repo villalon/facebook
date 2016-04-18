@@ -51,8 +51,8 @@ $querystart = microtime(TRUE);
 	);
 	
 	// Query for the posts information
-	$datapostsql = "SELECT fp.id AS postid, us.firstname AS firstname, us.lastname AS lastname, fp.subject AS subject,
-				fp.modified AS modified, discussions.course AS course, discussions.id AS dis_id
+	$datapostsql = "SELECT fp.id AS postid, CONCAT(us.firstname, ' ', us.lastname) AS from, fp.subject AS title,
+				fp.modified AS date, discussions.course AS course, discussions.id AS dis_id
 				FROM {forum_posts} AS fp
 				INNER JOIN {forum_discussions} AS discussions ON (fp.discussion=discussions.id AND discussions.course = ?)
 				INNER JOIN {forum} AS forum ON (forum.id=discussions.forum)
@@ -86,8 +86,7 @@ echo '<table border="1" width="100%" style="font-size: 13px; margin-left: 9px;">
 foreach ($datapost as $post) {
 	$date = date ( "d/m/Y H:i", $post->date );
 	echo "<tr><td>";
-	$link = $post->link;
-	echo "</td><td><a href='".$link."'>". $post->title ."</a></td>
+	echo "</td><td>". $post->title ."</td>
 			<td>". $post->from ."</td><td>". $date ."</td></tr>";
 }
 
@@ -106,8 +105,8 @@ $querystart = microtime(TRUE);
 	);
 	
 	// Query for the resource information
-	$dataresourcesql = "SELECT cm.id AS coursemoduleid, r.id AS resourceid, r.name AS resourcename, r.timemodified,
-				  r.course AS resourcecourse, cm.visible, cm.visibleold, CONCAT(u.firstname,' ',u.lastname) as user
+	$dataresourcesql = "SELECT cm.id AS coursemoduleid, r.id AS resourceid, r.name AS title, r.timemodified AS date,
+				  r.course AS resourcecourse, cm.visible, cm.visibleold, CONCAT(u.firstname,' ',u.lastname) AS from
 				  FROM {resource} AS r
 	              INNER JOIN {course_modules} AS cm ON (cm.instance = r.id AND cm.course = ?)
 	              INNER JOIN {modules} AS m ON (cm.module = m.id)
@@ -142,8 +141,7 @@ echo '<table border="1" width="100%" style="font-size: 13px; margin-left: 9px;">
 foreach ($dataresource as $resource) {
 	$date = date ( "d/m/Y H:i", $resource->date );
 	echo "<tr><td>";
-	$link = $resource->link;
-	echo "</td><td><a href='".$link."'>". $resource->title ."</a></td>
+	echo "</td><td>". $resource->title ."</td>
 			<td>". $resource->from ."</td><td>". $date ."</td></tr>";
 }
 
@@ -162,8 +160,8 @@ $querystart = microtime(TRUE);
 	);
 	
 	//query for the link information
-	$datalinksql="SELECT url.id AS id, url.name AS urlname, url.externalurl AS externalurl, url.timemodified AS timemodified,
-	          url.course AS urlcourse, cm.visible AS visible, cm.visibleold AS visibleold, CONCAT(u.firstname,' ',u.lastname) as user
+	$datalinksql="SELECT url.id AS id, url.name AS title, url.externalurl AS externalurl, url.timemodified AS date,
+	          url.course AS urlcourse, cm.visible AS visible, cm.visibleold AS visibleold, CONCAT(u.firstname,' ',u.lastname) AS from
 		      FROM {url} AS url
               INNER JOIN {course_modules} AS cm ON (cm.instance = url.id AND cm.course = ?)
               INNER JOIN {modules} AS m ON (cm.module = m.id)
@@ -198,8 +196,7 @@ echo '<table border="1" width="100%" style="font-size: 13px; margin-left: 9px;">
 foreach ($datalink as $url) {
 	$date = date ( "d/m/Y H:i", $url->date );
 	echo "<tr><td>";
-	$link = $url->link;
-	echo "</td><td><a href='".$link."'>". $url->title ."</a></td>
+	echo "</td><td>". $url->title ."</td>
 			<td>". $url->from ."</td><td>". $date ."</td></tr>";
 }
 
@@ -215,13 +212,13 @@ $querystart = microtime(TRUE);
 			s.id AS id, 
 			e.id AS emarkingid, 
 			e.course AS course,
-			e.name AS testname,
+			e.name AS title,
 			d.grade AS grade,
 			d.status AS status,
 			d.timemodified AS date,
 			s.teacher AS teacher,
 			cm.id as moduleid,
-			CONCAT(u.firstname,' ',u.lastname) AS user
+			CONCAT(u.firstname,' ',u.lastname) AS from
 			FROM {emarking_draft} AS d JOIN {emarking} AS e ON (e.id = d.emarkingid AND e.type in (1,5,0))
 			INNER JOIN {emarking_submission} AS s ON (d.submissionid = s.id AND d.status IN (20,30,35,40) AND s.student = ?)
 			INNER JOIN {user} AS u ON (u.id = s.student)
@@ -259,8 +256,7 @@ echo '<table border="1" width="100%" style="font-size: 13px; margin-left: 9px;">
 foreach ($dataemarking as $emarking) {
 	$date = date ( "d/m/Y H:i", $emarking->date );
 	echo "<tr><td>";
-	$link = $emarking->link;
-	echo "</td><td><a href='".$link."'>". $emarking->title ."</a></td>
+	echo "</td><td>". $emarking->title ."</td>
 			<td>". $emarking->from ."</td><td>". $date ."</td></tr>";
 }
 
