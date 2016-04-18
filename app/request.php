@@ -23,9 +23,12 @@
  
 //define("AJAX_SCRIPT", true);
 //define("NO_DEBUG_DISPLAY", true);
+
 require_once (dirname ( dirname ( dirname ( dirname ( __FILE__ ) ) ) ) . '/config.php');
 require_once ($CFG->dirroot . '/local/facebook/locallib.php');
-global $CFG, $DB;
+require_once $CFG->libdir . '/accesslib.php';
+global $CFG, $DB, $OUTPUT, $PAGE, $USER;
+
 $action = required_param ( 'action', PARAM_ALPHA );
 $moodleid = optional_param ( 'moodleid', null , PARAM_RAW_TRIMMED );
 $courseid = optional_param ( 'courseid', null , PARAM_RAW_TRIMMED );

@@ -16,16 +16,16 @@
 
 /**
  *
- * @package local
+ * @package    local
  * @subpackage facebook
- * @copyright 2013 Francisco García Ralph (francisco.garcia.ralph@gmail.com)
- * @copyright 2015 Xiu-Fong Lin (xlin@alumnos.uai.cl)
- * @copyright 2015 Mihail Pozarski (mipozarski@alumnos.uai.cl)
- * @copyright 2015 Hans Jeria (hansjeria@gmail.com)
- * @copyright 2016 Mark Michaelsen (mmichaelsen678@gmail.com)
- * @copyright 2016 Andrea Villarroel (avillarroel@alumnos.uai.cl)
- * @copyright 2016 Jorge Cabané (jcabane@alumnos.uai.cl)
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright  2013 Francisco García Ralph (francisco.garcia.ralph@gmail.com)
+ * @copyright  2015 Xiu-Fong Lin (xlin@alumnos.uai.cl)
+ * @copyright  2015 Mihail Pozarski (mipozarski@alumnos.uai.cl)
+ * @copyright  2015 Hans Jeria (hansjeria@gmail.com)
+ * @copyright  2016 Mark Michaelsen (mmichaelsen678@gmail.com)
+ * @copyright  2016 Andrea Villarroel (avillarroel@alumnos.uai.cl)
+ * @copyright  2016 Jorge Cabané (jcabane@alumnos.uai.cl)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 require_once (dirname ( dirname ( dirname ( dirname ( __FILE__ ) ) ) ) . '/config.php');
 require_once ($CFG->dirroot . '/local/facebook/locallib.php');
@@ -110,7 +110,7 @@ if ($userfacebookinfo != false) {
 	
 	// list the 3 arrays returned from the funtion
 	list ( $totalresource, $totalurl, $totalpost, $totalemarkingperstudent ) = get_total_notification ( $sqlin, $param, $lastvisit, $moodleid );
-	// $dataarray = get_data_post_resource_link ( $sqlin, $param, $moodleid );
+	//$dataarray = get_data_post_resource_link ( $sqlin, $param, $moodleid );
 	
 	// foreach that reorganizes array
 	foreach ( $usercourse as $courses ) {
@@ -165,11 +165,11 @@ if ($userfacebookinfo != false) {
 	echo "<div class='advert'><div style='position: relative;'><img src='images/jpg_an_1.jpg'style='margin-top:10%; margin-left:8%; width:35%'><img src='images/jpg_an_2.jpg' style='margin-top:10%; margin-left:5%; width:35%'></div></div>";
 	echo "<div id='loadinggif' align='center' style='margin-top: 10%; text-align: center; display:none;'><img src='https://webcursos-d.uai.cl/local/facebook/app/images/ajaxloader.gif'></div>";
 	echo "<div id='table-body'></div>";
-	
-	?>
 
-<!-- Display engine -->
-<script>
+	?>
+	
+	<!-- Display engine -->
+	<script>
 	$(document).ready(function () {
 	    $(document).ajaxStart(function () {
 	        $("#loadinggif").show();
@@ -179,7 +179,7 @@ if ($userfacebookinfo != false) {
 	});
 	</script>
 
-<script type="text/javascript">
+	<script type="text/javascript">
 	$(document).ready(function () {
 	var courseId = null;
 	var discussionId = null;
@@ -207,11 +207,6 @@ if ($userfacebookinfo != false) {
 				url : "https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_course_data&moodleid=" + moodleId + "&courseid=" + courseId,
 				async : false,
 				data : {},
-				beforeSend : function() {
-					$('#table-body').fadeOut(300);
-					$('#table-body').empty();
-					$('#table-body').show();
-				},
 				success : function(response) {
 					$('#table-body').empty();
 					$('#table-body').hide();
@@ -308,7 +303,7 @@ if ($userfacebookinfo != false) {
 	});
 	});
 	</script>
-<script>
+	<script>
 //script for searching courses
 	$("#search").on('change keyup paste', function() {
 		var searchValue = $('#search').val();
@@ -325,11 +320,11 @@ if ($userfacebookinfo != false) {
 		});
 	});
 	</script>
-
-
-
-
-<?php
+	
+	
+	
+	
+	<?php
 	echo "</div></div>";
 	include 'htmltoinclude/spacer.html';
 	
