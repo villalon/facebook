@@ -51,7 +51,7 @@ $querystart = microtime(TRUE);
 	);
 	
 	// Query for the posts information
-	$datapostsql = "SELECT fp.id AS postid, CONCAT(us.firstname, ' ', us.lastname) AS from, fp.subject AS title,
+	$datapostsql = "SELECT fp.id AS postid, CONCAT(us.firstname, ' ', us.lastname) AS user, fp.subject AS title,
 				fp.modified AS date, discussions.course AS course, discussions.id AS dis_id
 				FROM {forum_posts} AS fp
 				INNER JOIN {forum_discussions} AS discussions ON (fp.discussion=discussions.id AND discussions.course = ?)
@@ -87,7 +87,7 @@ foreach ($datapost as $post) {
 	$date = date ( "d/m/Y H:i", $post->date );
 	echo "<tr><td>";
 	echo "</td><td>". $post->title ."</td>
-			<td>". $post->from ."</td><td>". $date ."</td></tr>";
+			<td>". $post->user ."</td><td>". $date ."</td></tr>";
 }
 
 echo "</tbody></table> <br>";
@@ -106,7 +106,7 @@ $querystart = microtime(TRUE);
 	
 	// Query for the resource information
 	$dataresourcesql = "SELECT cm.id AS coursemoduleid, r.id AS resourceid, r.name AS title, r.timemodified AS date,
-				  r.course AS resourcecourse, cm.visible, cm.visibleold, CONCAT(u.firstname,' ',u.lastname) AS from
+				  r.course AS resourcecourse, cm.visible, cm.visibleold, CONCAT(u.firstname,' ',u.lastname) AS user
 				  FROM {resource} AS r
 	              INNER JOIN {course_modules} AS cm ON (cm.instance = r.id AND cm.course = ?)
 	              INNER JOIN {modules} AS m ON (cm.module = m.id)
@@ -142,7 +142,7 @@ foreach ($dataresource as $resource) {
 	$date = date ( "d/m/Y H:i", $resource->date );
 	echo "<tr><td>";
 	echo "</td><td>". $resource->title ."</td>
-			<td>". $resource->from ."</td><td>". $date ."</td></tr>";
+			<td>". $resource->user ."</td><td>". $date ."</td></tr>";
 }
 
 echo "</tbody></table> <br>";
@@ -161,7 +161,7 @@ $querystart = microtime(TRUE);
 	
 	//query for the link information
 	$datalinksql="SELECT url.id AS id, url.name AS title, url.externalurl AS externalurl, url.timemodified AS date,
-	          url.course AS urlcourse, cm.visible AS visible, cm.visibleold AS visibleold, CONCAT(u.firstname,' ',u.lastname) AS from
+	          url.course AS urlcourse, cm.visible AS visible, cm.visibleold AS visibleold, CONCAT(u.firstname,' ',u.lastname) AS user
 		      FROM {url} AS url
               INNER JOIN {course_modules} AS cm ON (cm.instance = url.id AND cm.course = ?)
               INNER JOIN {modules} AS m ON (cm.module = m.id)
@@ -197,7 +197,7 @@ foreach ($datalink as $url) {
 	$date = date ( "d/m/Y H:i", $url->date );
 	echo "<tr><td>";
 	echo "</td><td>". $url->title ."</td>
-			<td>". $url->from ."</td><td>". $date ."</td></tr>";
+			<td>". $url->user ."</td><td>". $date ."</td></tr>";
 }
 
 echo "</tbody></table> <br>";
@@ -218,7 +218,7 @@ $querystart = microtime(TRUE);
 			d.timemodified AS date,
 			s.teacher AS teacher,
 			cm.id as moduleid,
-			CONCAT(u.firstname,' ',u.lastname) AS from
+			CONCAT(u.firstname,' ',u.lastname) AS user
 			FROM {emarking_draft} AS d JOIN {emarking} AS e ON (e.id = d.emarkingid AND e.type in (1,5,0))
 			INNER JOIN {emarking_submission} AS s ON (d.submissionid = s.id AND d.status IN (20,30,35,40) AND s.student = ?)
 			INNER JOIN {user} AS u ON (u.id = s.student)
@@ -257,7 +257,7 @@ foreach ($dataemarking as $emarking) {
 	$date = date ( "d/m/Y H:i", $emarking->date );
 	echo "<tr><td>";
 	echo "</td><td>". $emarking->title ."</td>
-			<td>". $emarking->from ."</td><td>". $date ."</td></tr>";
+			<td>". $emarking->user ."</td><td>". $date ."</td></tr>";
 }
 
 echo "</tbody></table> <br>";
