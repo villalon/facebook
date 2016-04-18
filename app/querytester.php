@@ -100,21 +100,17 @@ $querystart = microtime(TRUE);
 	// Parameters for resource query
 	$paramsresource = array(
 			$course->id,
-			'resource',
-			FACEBOOK_COURSE_MODULE_VISIBLE
+			FACEBOOK_COURSE_MODULE_VISIBLE,
+			'resource'
 	);
 	
 	// Query for the resource information
-	$dataresourcesql = "SELECT cm.id AS coursemoduleid, r.id AS resourceid, r.name AS title, r.timemodified AS date,
-				  r.course AS resourcecourse, cm.visible, cm.visibleold, CONCAT(u.firstname,' ',u.lastname) AS user
-				  FROM {resource} AS r
-	              INNER JOIN {course_modules} AS cm ON (cm.instance = r.id AND cm.course = ?)
-	              INNER JOIN {modules} AS m ON (cm.module = m.id)
-	              LEFT JOIN {logstore_standard_log} AS log ON (log.objectid = cm.id AND log.action = 'created' AND log.target = 'course_module')
-	              INNER JOIN {user} AS u ON (u.id = log.userid)
-				  WHERE m.name = ?
-				  AND cm.visible = ?
-	              GROUP BY cm.id";
+	$dataresourcesql = "SELECT cm.id AS coursemoduleid, r.id AS resourceid, r.name AS resourcename, r.timemodified, 
+			  r.course AS resourcecourse, cm.visible, cm.visibleold
+			  FROM {resource} AS r 
+              INNER JOIN {course_modules} AS cm ON (cm.instance = r.id AND cm.course = ? AND cm.visible = ?)
+              INNER JOIN {modules} AS m ON (cm.module = m.id AND m.name = ?)
+              GROUP BY cm.id";
 	
 	// Get the data from the above query
 	$dataresource = $DB->get_records_sql($dataresourcesql, $paramsresource);
@@ -142,7 +138,7 @@ foreach ($dataresource as $resource) {
 	$date = date ( "d/m/Y H:i", $resource->date );
 	echo "<tr><td>";
 	echo "</td><td>". $resource->title ."</td>
-			<td>". $resource->user ."</td><td>". $date ."</td></tr>";
+			<td> </td><td>". $date ."</td></tr>";
 }
 
 echo "</tbody></table> <br>";
