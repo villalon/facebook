@@ -440,12 +440,12 @@ function facebook_connect_table_generator($facebook_id, $link, $first_name, $mid
 	);
 	$infotable->data [] = array (
 			get_string ( "profile", "local_facebook" ),
-			"<a href='" . $link . "' target=�_blank�>" . $link . "</a>"
+			"<a href='" . $link . "' target='_blank'>" . $link . "</a>"
 	);
 	if ($appname != null) {
 		$infotable->data [] = array (
 				"Link a la app",
-				"<a href='http://apps.facebook.com/" . $appname . "' target=�_blank�>http://apps.facebook.com/" . $appname . "</a>"
+				"<a href='http://apps.facebook.com/" . $appname . "' target='_blank'>http://apps.facebook.com/" . $appname . "</a>"
 		);
 	} else {
 		$infotable->data [] = array (
