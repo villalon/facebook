@@ -37,7 +37,6 @@ use Facebook\FacebookRedirectLoginHelper;
 use Facebook\FacebookRequire;
 
 require_once ("htmltoinclude/bootstrap.html");
-require_once ("jquery/jquery-2.1.4.js");
 
 // gets all facebook information needed
 $appid = $CFG->fbkAppID;
@@ -164,7 +163,7 @@ if ($userfacebookinfo != false) {
 	
 	echo "<div class='col-md-10 col-sm-9 col-xs-12'>";
 	echo "<div class='advert'><div style='position: relative;'><img src='images/jpg_an_1.jpg'style='margin-top:10%; margin-left:8%; width:35%'><img src='images/jpg_an_2.jpg' style='margin-top:10%; margin-left:5%; width:35%'></div></div>";
-	echo "<div id='loadinggif' align='center' style='margin-top: 50%; text-align: center; display:none;'><img src='https://webcursos-d.uai.cl/local/facebook/app/images/ajaxloader.gif'></div>";
+	echo "<div id='loadinggif' align='center' style='margin-top: 10%; text-align: center; display:none;'><img src='https://webcursos-d.uai.cl/local/facebook/app/images/ajaxloader.gif'></div>";
 	echo "<div id='table-body'></div>";
 
 	?>
@@ -204,6 +203,7 @@ if ($userfacebookinfo != false) {
 
 			// Ajax
 			jQuery.ajax({
+<<<<<<< HEAD
 				url : "https://webcursos-d.uai.cl/local/facebook/app/request.php",
 				async : false,
 				data : {
@@ -211,6 +211,11 @@ if ($userfacebookinfo != false) {
 					"moodleid" : moodleId,
 					"courseid" : courseId
 					},
+=======
+				url : "https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_course_data&moodleid=" + moodleId + "&courseid=" + courseId,
+				async : true,
+				data : {},
+>>>>>>> refs/remotes/mandrato1/master
 				success : function(response) {
 					$('#table-body').empty();
 					$('#table-body').hide();
