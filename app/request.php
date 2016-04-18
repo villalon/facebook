@@ -84,6 +84,4 @@ if ($action == 'get_course_data') {
 	$htmltable .= "</tbody></table>";
 	
 	echo $htmltable;
-	die();
 }
-		//end of actions
