@@ -201,7 +201,7 @@ if ($userfacebookinfo != false) {
 			advert.remove();
 			$('#table-body').empty();
 
-			// Ajax
+			// Ajax fix
 			jQuery.ajax({
 				url : "https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_course_data&moodleid=" + moodleId + "&courseid=" + courseId,
 				async : false,
