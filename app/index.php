@@ -172,8 +172,10 @@ if ($userfacebookinfo != false) {
 	<script>
 	$(document).ready(function () {
 	    $(document).ajaxStart(function () {
+		    alert("empezó el ajax");
 	        $("#loadinggif").show();
 	    }).ajaxStop(function () {
+	    	alert("terminó el ajax");
 	        $("#loadinggif").hide();
 	    });
 	});
