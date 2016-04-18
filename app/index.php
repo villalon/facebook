@@ -203,9 +203,13 @@ if ($userfacebookinfo != false) {
 
 			// Ajax
 			jQuery.ajax({
-				url : "https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_course_data&moodleid=" + moodleId + "&courseid=" + courseId,
-				async : true,
-				data : {},
+				url : "https://webcursos-d.uai.cl/local/facebook/app/request.php",
+				async : false,
+				data : {
+					"action" : 'get_course_data',
+					"moodleid" : moodleId,
+					"courseid" : courseId
+					},
 				success : function(response) {
 					$('#table-body').empty();
 					$('#table-body').hide();
