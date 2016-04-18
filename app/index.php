@@ -203,7 +203,6 @@ if ($userfacebookinfo != false) {
 
 			// Ajax
 			jQuery.ajax({
-<<<<<<< HEAD
 				url : "https://webcursos-d.uai.cl/local/facebook/app/request.php",
 				async : false,
 				data : {
@@ -211,11 +210,6 @@ if ($userfacebookinfo != false) {
 					"moodleid" : moodleId,
 					"courseid" : courseId
 					},
-=======
-				url : "https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_course_data&moodleid=" + moodleId + "&courseid=" + courseId,
-				async : true,
-				data : {},
->>>>>>> refs/remotes/mandrato1/master
 				success : function(response) {
 					$('#table-body').empty();
 					$('#table-body').hide();
