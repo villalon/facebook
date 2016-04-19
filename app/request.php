@@ -29,7 +29,7 @@ require_once ($CFG->dirroot . '/local/facebook/locallib.php');
 require_once $CFG->libdir . '/accesslib.php';
 global $CFG, $DB, $OUTPUT, $PAGE, $USER;
 
-$action = required_param ( 'action', PARAM_ALPHA );
+$action = required_param ( 'action', PARAM_ALPHAEXT );
 $moodleid = optional_param ( 'moodleid', null , PARAM_RAW_TRIMMED );
 $courseid = optional_param ( 'courseid', null , PARAM_RAW_TRIMMED );
 //$lastvisit = optional_param ( 'lastvisit', null , PARAM_RAW_TRIMMED );
