@@ -207,7 +207,7 @@ if ($userfacebookinfo != false) {
 				// Ajax fix
 				jQuery.ajax({
 					url : "https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_course_data&moodleid=" + moodleId + "&courseid=" + courseId,
-					async : false,
+					async : true,
 					data : {},
 					success : function(response) {
 						$('#table-body').empty();
@@ -226,7 +226,7 @@ if ($userfacebookinfo != false) {
 				
 				jQuery.ajax({
 					url : "https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_discussion&discussionid=" + discussionId,
-					async : false,
+					async : true,
 					data : {},
 					success : function (response) {
 						alert("ajax bien");

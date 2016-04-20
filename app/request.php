@@ -63,6 +63,7 @@ if ($action == 'get_course_data') {
 		if ($module ['image'] == FACEBOOK_IMAGE_POST) {
 			$htmltable .= '<img src="images/post.png">';
 			$component = 'forum';
+			$link = "href=''";
 			$id = $module ['discussion'];
 		}
 	
@@ -81,6 +82,7 @@ if ($action == 'get_course_data') {
 		else if ($module ['image'] == FACEBOOK_IMAGE_EMARKING) {
 			$htmltable .= '<img src="images/emarking.png">';
 			$component = 'emarking';
+			$link = "href=''";
 			$id = $module ['id'];
 		}
 	
