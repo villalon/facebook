@@ -29,59 +29,103 @@ require_once ($CFG->dirroot . '/local/facebook/locallib.php');
 require_once $CFG->libdir . '/accesslib.php';
 global $CFG, $DB, $OUTPUT, $PAGE, $USER;
 
-$action = required_param ( 'action', PARAM_ALPHAEXT );
-$moodleid = optional_param ( 'moodleid', null , PARAM_RAW_TRIMMED );
-$courseid = optional_param ( 'courseid', null , PARAM_RAW_TRIMMED );
+$action 	  = required_param ('action', PARAM_ALPHAEXT);
+$moodleid	  = optional_param ('moodleid', null , PARAM_RAW_TRIMMED);
+$courseid 	  = optional_param ('courseid', null , PARAM_RAW_TRIMMED);
+$discussionid = optional_param ('discussionid', null, PARAM_RAW_TRIMMED);
 //$lastvisit = optional_param ( 'lastvisit', null , PARAM_RAW_TRIMMED );
-if ($action == 'get_course_data') {
-	global $DB;
-	$totaldata = get_course_data($moodleid, $courseid);
-	
-	$htmltable = "";
-	
-	$htmltable .= '<table class="tablesorter" border="0" width="100%" style="font-size: 13px; margin-left: 9px;">
-					<thead>
-						<tr>
-							<th width="3%" style="border-top-left-radius: 8px;"></th>
-							<th width="34%">T�tulo</th>
-							<th width="30%">De</th>
-							<th width="30%">Fecha</th>
-							<th width="3%" style="background-color: transparent"></th>
-						</tr>
-					</thead>
-					<tbody>';
-	
-	foreach ($totaldata as $module) {
-		$date = date ( "d/m/Y H:i", $module ['date'] );
-		$htmltable .= "<tr><td>";
-		if ($module ['image'] == FACEBOOK_IMAGE_POST) {
-			$htmltable .= '<img src="images/post.png">';
-			$discussionId = $module ['discussion'];
+
+switch ($action) {
+	case 'get_course_data' :
+		global $DB;
+		$totaldata = get_course_data($moodleid, $courseid);
+		
+		$htmltable = "";
+		
+		$htmltable .= '<table class="tablesorter" border="0" width="100%" style="font-size: 13px; margin-left: 9px;">
+						<thead>
+							<tr>
+								<th width="3%" style="border-top-left-radius: 8px;"></th>
+								<th width="34%">T�tulo</th>
+								<th width="30%">De</th>
+								<th width="30%">Fecha</th>
+								<th width="3%" style="background-color: transparent"></th>
+							</tr>
+						</thead>
+						<tbody>';
+		
+		foreach ($totaldata as $module) {
+			$date = date ( "d/m/Y H:i", $module ['date'] );
+			$component = '';
+			$link = '#';
+			$id = 0;
+			
+			$htmltable .= "<tr><td>";
+			if ($module ['image'] == FACEBOOK_IMAGE_POST) {
+				$htmltable .= '<img src="images/post.png">';
+				$component = 'forum';
+				$id = $module ['discussion'];
+			}
+		
+			else if ($module ['image'] == FACEBOOK_IMAGE_RESOURCE) {
+				$htmltable .= '<img src="images/resource.png">';
+				$link = $module['link'];
+			}
+		
+			else if ($module ['image'] == FACEBOOK_IMAGE_LINK) {
+				$htmltable .= '<img src="images/link.png">';
+				$link = $module['link'];
+			}
+		
+			else if ($module ['image'] == FACEBOOK_IMAGE_EMARKING) {
+				$htmltable .= '<img src="images/emarking.png">';
+				$component = 'emarking';
+				$id = $module ['id'];
+			}
+		
+			else if ($module ['image'] == FACEBOOK_IMAGE_ASSIGN) {
+				$htmltable .= '<img src="images/assign.png">';
+				$assignid = $module ['id'];
+			}
+			$htmltable .= "</td><td><a href='$link' component='$component' id='$id'>". $module['title'] ."</a></td>
+			<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
 		}
-	
-		else if ($module ['image'] == FACEBOOK_IMAGE_RESOURCE) {
-			$htmltable .= '<img src="images/resource.png">';
+		
+		$htmltable .= "</tbody></table>";
+		
+		echo $htmltable;
+		
+		break;
+		
+	case 'get_discussion' :
+		global $DB;
+		
+		$discussionposts = get_posts_from_discussion($discussionid);
+		$htmlmodal = '';
+		
+		$htmlmodal .= '<div class="modal fade" id="m'.$discussionId.'" tabindex="-1" role="dialog" aria-labelledby="modal">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-body">';
+		
+		foreach ($discussionposts as $post) {
+			$date = $post['date'];
+			$htmlmodal .= "<div align='left' style='background-color: #E6E6E6; border-radius: 4px 4px 0 0; padding: 4px; color: #333333;'>
+							<img src='images/post.png'>
+ 								<b>&nbsp&nbsp".$data['title']."<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".$post['user'].", ".date('l d-F-Y', $date)."</b>
+ 						   </div>
+						   <div align='left' style='border-radius: 0 0 4px 4px; word-wrap: break-word;'>".$post['message']."</div><br>";
 		}
-	
-		else if ($module ['image'] == FACEBOOK_IMAGE_LINK) {
-			$htmltable .= '<img src="images/link.png">';
-		}
-	
-		else if ($module ['image'] == FACEBOOK_IMAGE_EMARKING) {
-			$htmltable .= '<img src="images/emarking.png">';
-			$markid = $module ['id'];
-		}
-	
-		else if ($module ['image'] == FACEBOOK_IMAGE_ASSIGN) {
-			$htmltable .= '<img src="images/assign.png">';
-			$assignid = $module ['id'];
-		}
-		$link = $module['link'];
-		$htmltable .= "</td><td><a href='".$link."'>". $module['title'] ."</a></td>
-		<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
-	}
-	
-	$htmltable .= "</tbody></table>";
-	
-	echo $htmltable;
+		
+		$htmlmodal .= '</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal" component="close-modal" modalid="m'.$discussionid.'">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>';
+		
+		echo $htmlmodal;
+		
+		break;
 }

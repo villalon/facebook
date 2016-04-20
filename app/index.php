@@ -218,8 +218,18 @@ if ($userfacebookinfo != false) {
 	
 			else if($(this).attr('component') == "forum") {
 				
-				discussionId = $(this).attr('discussionid');
-				$('#m' + discussionId).modal('show');
+				discussionId = $(this).attr('id');
+				//$('#m' + discussionId).modal('show');
+				
+				jQuery.ajax({
+					url : "https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_discussion&discussionid=" + discussionId,
+					async : false,
+					data : {},
+					success : function (response) {
+						$('#table-body').append(response);
+						$('#m' + discussionId).modal('show');
+					}
+				});
 				
 				if(aclick == 'font-weight:bold;'){
 					
