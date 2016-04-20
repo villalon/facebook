@@ -88,7 +88,7 @@ if ($action == 'get_course_data') {
 			$htmltable .= '<img src="images/assign.png">';
 			$assignid = $module ['id'];
 		}
-		$htmltable .= "</td><td><div component='$component' $id><a $link>".$module['title']."</a></div></td>
+		$htmltable .= "</td><td><div component=$component $id><a $link>".$module['title']."</a></div></td>
 		<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
 	}
 	
