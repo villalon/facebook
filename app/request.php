@@ -59,7 +59,7 @@ if ($action == 'get_course_data') {
 		$link = '';
 		$id = 0;
 		
-		
+		$htmltable .= "<tr><td>";
 		if ($module ['image'] == FACEBOOK_IMAGE_POST) {
 			$htmltable .= '<img src="images/post.png">';
 			$component = 'forum';
@@ -88,8 +88,7 @@ if ($action == 'get_course_data') {
 			$htmltable .= '<img src="images/assign.png">';
 			$assignid = $module ['id'];
 		}
-		$htmltable .= "<tr component=$component $id><td>";
-		$htmltable .= "</td><td component=$component $id><a $link component=$component $id>".$module['title']."</a></td>
+		$htmltable .= "</td><td component=$component $id><a $link>".$module['title']."</a></td>
 		<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
 	}
 	

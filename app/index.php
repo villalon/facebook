@@ -220,7 +220,7 @@ if ($userfacebookinfo != false) {
 				});
 			}
 	
-			if($(this).attr('component') == "forum") {
+			else if($(this).attr('component') == "forum") {
 				
 				discussionId = $(this).attr('discussionid');
 				alert(discussionId);
