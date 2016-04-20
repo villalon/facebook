@@ -218,7 +218,7 @@ if ($userfacebookinfo != false) {
 				});
 			}
 	
-			else if($(this).attr('component') == "forum") {
+			if($(this).attr('component') == "forum") {
 				
 				discussionId = $(this).attr('discussionid');
 				alert(discussionId);
