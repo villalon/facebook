@@ -56,7 +56,7 @@ if ($action == 'get_course_data') {
 	foreach ($totaldata as $module) {
 		$date = date ( "d/m/Y H:i", $module ['date'] );
 		$component = '';
-		$link = '#';
+		$link = '';
 		$id = 0;
 		
 		$htmltable .= "<tr><td>";
@@ -69,11 +69,13 @@ if ($action == 'get_course_data') {
 		else if ($module ['image'] == FACEBOOK_IMAGE_RESOURCE) {
 			$htmltable .= '<img src="images/resource.png">';
 			$link = $module['link'];
+			$link = "href='".$link."' target='_blank'";
 		}
 	
 		else if ($module ['image'] == FACEBOOK_IMAGE_LINK) {
 			$htmltable .= '<img src="images/link.png">';
 			$link = $module['link'];
+			$link = "href='".$link."' target='_blank'";
 		}
 	
 		else if ($module ['image'] == FACEBOOK_IMAGE_EMARKING) {
@@ -86,7 +88,7 @@ if ($action == 'get_course_data') {
 			$htmltable .= '<img src="images/assign.png">';
 			$assignid = $module ['id'];
 		}
-		$htmltable .= "</td><td><a href='$link' component='$component' id='$id'>". $module['title'] ."</a></td>
+		$htmltable .= "</td><td><a $link component='$component' id='$id'>". $module['title'] ."</a></td>
 		<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
 	}
 	
