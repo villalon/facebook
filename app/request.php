@@ -63,22 +63,17 @@ if ($action == 'get_course_data') {
 		if ($module ['image'] == FACEBOOK_IMAGE_POST) {
 			$htmltable .= '<img src="images/post.png">';
 			$component = 'forum';
-			$starttag = "<p";
-			$endtag = "</p>";
+			$link = "href=''";
 			$id = "discussionid='".$module ['discussion']."'";
 		}
 	
 		else if ($module ['image'] == FACEBOOK_IMAGE_RESOURCE) {
 			$htmltable .= '<img src="images/resource.png">';
-			$starttag = "<a";
-			$endtag = "</a>";
 			$link = "href='".$module['link']."' target='_blank'";
 		}
 	
 		else if ($module ['image'] == FACEBOOK_IMAGE_LINK) {
 			$htmltable .= '<img src="images/link.png">';
-			$starttag = "<a";
-			$endtag = "</a>";
 			$link = "href='".$module['link']."' target='_blank'";
 		}
 	
@@ -86,8 +81,6 @@ if ($action == 'get_course_data') {
 			$htmltable .= '<img src="images/emarking.png">';
 			$component = 'emarking';
 			$link = "href=''";
-			$starttag = "<p";
-			$endtag = "</p>";
 			$id = "emarkingid='".$module['id']."'";
 		}
 	
@@ -95,7 +88,7 @@ if ($action == 'get_course_data') {
 			$htmltable .= '<img src="images/assign.png">';
 			$assignid = $module ['id'];
 		}
-		$htmltable .= "</td><td> $starttag $link component='$component' $id>".$module['title']."$endtag</td>
+		$htmltable .= "</td><td><div component='$component' $id><a $link>".$module['title']."</a></div></td>
 		<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
 	}
 	
