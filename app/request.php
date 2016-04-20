@@ -16,7 +16,7 @@
 /**
  * @package    local
  * @subpackage facebook
- * @copyright  2016 Jorge Caban� (jcabane@alumnos.uai.cl)
+ * @copyright  2016 Jorge Cabané (jcabane@alumnos.uai.cl)
  * @copyright  2016 Mark Michaelsen (mmichaelsen678@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -46,7 +46,7 @@ switch ($action) {
 						<thead>
 							<tr>
 								<th width="3%" style="border-top-left-radius: 8px;"></th>
-								<th width="34%">T�tulo</th>
+								<th width="34%">Título</th>
 								<th width="30%">De</th>
 								<th width="30%">Fecha</th>
 								<th width="3%" style="background-color: transparent"></th>
@@ -103,7 +103,7 @@ switch ($action) {
 		$discussionposts = get_posts_from_discussion($discussionid);
 		$htmlmodal = '';
 		
-		$htmlmodal .= '<div class="modal fade" id="m'.$discussionId.'" tabindex="-1" role="dialog" aria-labelledby="modal">
+		$htmlmodal .= '<div class="modal fade" id="m'.$discussionid.'" tabindex="-1" role="dialog" aria-labelledby="modal">
 						<div class="modal-dialog" role="document">
 							<div class="modal-content">
 								<div class="modal-body">';
@@ -112,7 +112,7 @@ switch ($action) {
 			$date = $post['date'];
 			$htmlmodal .= "<div align='left' style='background-color: #E6E6E6; border-radius: 4px 4px 0 0; padding: 4px; color: #333333;'>
 							<img src='images/post.png'>
- 								<b>&nbsp&nbsp".$data['title']."<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".$post['user'].", ".date('l d-F-Y', $date)."</b>
+ 								<b>&nbsp&nbsp".$post['title']."<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".$post['user'].", ".date('l d-F-Y', $date)."</b>
  						   </div>
 						   <div align='left' style='border-radius: 0 0 4px 4px; word-wrap: break-word;'>".$post['message']."</div><br>";
 		}
