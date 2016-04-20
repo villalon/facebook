@@ -191,8 +191,6 @@ if ($userfacebookinfo != false) {
 	
 		$("*", document.body).click(function(event) {
 			event.stopPropagation();
-
-			alert($(this).attr('component'));
 	
 			var courseid = $(this).parent().parent().attr('courseid');
 			var badgecourseid = $( "button[courseid='"+courseid+"']" ).parent().find('.badge');
@@ -200,7 +198,7 @@ if ($userfacebookinfo != false) {
 			var advert = $(this).parent().parent().parent().parent().parent().find('.advert');
 			
 	
-			if(($(this).attr('component') == "button") && ($(this).attr('courseid') != courseId)) {
+			if (($(this).attr('component') == "button") && ($(this).attr('courseid') != courseId)) {
 				
 				courseId = $(this).attr('courseid');
 				advert.remove();
@@ -220,7 +218,7 @@ if ($userfacebookinfo != false) {
 				});
 			}
 	
-			else if($(this).attr('component') == "forum") {
+			else if ($(this).attr('component') == "forum") {
 				
 				discussionId = $(this).attr('discussionid');
 				alert(discussionId);
@@ -318,6 +316,10 @@ if ($userfacebookinfo != false) {
 				}
 			}
 		});
+
+		$("#table-body").click(function(event) {
+			alert($(this).children().children().children().children().children().attr('component'));
+		}
 	});
 	</script>
 	<script>
