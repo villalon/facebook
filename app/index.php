@@ -220,7 +220,7 @@ if ($userfacebookinfo != false) {
 	
 			if($(this).attr('component') == "forum") {
 				
-				discussionId = $(this).parent().attr('discussionid');
+				discussionId = $(this).attr('discussionid');
 				alert(discussionId);
 				//$('#m' + discussionId).modal('show');
 				
