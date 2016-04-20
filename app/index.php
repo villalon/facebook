@@ -165,6 +165,8 @@ if ($userfacebookinfo != false) {
 	echo "<div class='advert'><div style='position: relative;'><img src='images/jpg_an_1.jpg'style='margin-top:10%; margin-left:8%; width:35%'><img src='images/jpg_an_2.jpg' style='margin-top:10%; margin-left:5%; width:35%'></div></div>";
 	echo "<div id='loadinggif' align='center' style='margin-top: 10%; text-align: center; display:none;'><img src='https://webcursos-d.uai.cl/local/facebook/app/images/ajaxloader.gif'></div>";
 	echo "<div id='table-body'></div>";
+	
+	echo "<div id='modal-body'></div>";
 
 	?>
 	
@@ -227,7 +229,7 @@ if ($userfacebookinfo != false) {
 					async : false,
 					data : {},
 					success : function (response) {
-						$('#table-body').append('<div>' + response + '</div>');
+						$('#modal-body').append('<div>' + response + '</div>');
 						$('#m' + discussionId).modal('show');
 					}
 				});
