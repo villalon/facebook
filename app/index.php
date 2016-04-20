@@ -229,10 +229,12 @@ if ($userfacebookinfo != false) {
 					async : false,
 					data : {},
 					success : function (response) {
+						alert("ajax bien");
 						$('#modal-body').append('<div>' + response + '</div>');
-						$('#m' + discussionId).modal('show');
 					}
 				});
+
+				$('#m' + discussionId).modal('show');
 				
 				if(aclick == 'font-weight:bold;'){
 					
