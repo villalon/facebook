@@ -219,6 +219,7 @@ if ($userfacebookinfo != false) {
 			else if($(this).attr('component') == "forum") {
 				
 				discussionId = $(this).attr('id');
+				alert(discussionId);
 				//$('#m' + discussionId).modal('show');
 				
 				jQuery.ajax({
@@ -226,7 +227,7 @@ if ($userfacebookinfo != false) {
 					async : false,
 					data : {},
 					success : function (response) {
-						$('#table-body').append(response);
+						$('#table-body').append('<div>' + response + '</div>');
 						$('#m' + discussionId).modal('show');
 					}
 				});
