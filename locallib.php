@@ -230,20 +230,16 @@ function get_course_data ($moodleid, $courseid) {
 	// Parameters for resource query
 	$paramsresource = array(
 			$courseid,
-			'resource',
-			FACEBOOK_COURSE_MODULE_VISIBLE
+			FACEBOOK_COURSE_MODULE_VISIBLE,
+			'resource'
 	);
 	
 	// Query for the resource information
 	$dataresourcesql = "SELECT cm.id AS coursemoduleid, r.id AS resourceid, r.name AS resourcename, r.timemodified, 
-			  r.course AS resourcecourse, cm.visible, cm.visibleold, CONCAT(u.firstname,' ',u.lastname) as user
+			  r.course AS resourcecourse, cm.visible, cm.visibleold
 			  FROM {resource} AS r 
-              INNER JOIN {course_modules} AS cm ON (cm.instance = r.id AND cm.course = ?)
-              INNER JOIN {modules} AS m ON (cm.module = m.id)
-              LEFT JOIN {logstore_standard_log} AS log ON (log.objectid = cm.id AND log.action = 'created' AND log.target = 'course_module')
-              INNER JOIN {user} AS u ON (u.id = log.userid)
-			  WHERE m.name = ? 
-			  AND cm.visible = ?
+              INNER JOIN {course_modules} AS cm ON (cm.instance = r.id AND cm.course = ? AND cm.visible = ?)
+              INNER JOIN {modules} AS m ON (cm.module = m.id AND m.name = ?)
               GROUP BY cm.id";
 	// Get the data from the above query
 	$dataresource = $DB->get_records_sql($dataresourcesql, $paramsresource);
@@ -251,20 +247,16 @@ function get_course_data ($moodleid, $courseid) {
 	// Parameters for the link query
 	$paramslink = array(
 			$courseid,
-			'url',
-			FACEBOOK_COURSE_MODULE_VISIBLE
+			FACEBOOK_COURSE_MODULE_VISIBLE,
+			'url'
 	);
 	
 	//query for the link information
 	$datalinksql="SELECT url.id AS id, url.name AS urlname, url.externalurl AS externalurl, url.timemodified AS timemodified,
-	          url.course AS urlcourse, cm.visible AS visible, cm.visibleold AS visibleold, CONCAT(u.firstname,' ',u.lastname) as user
+	          url.course AS urlcourse, cm.visible AS visible, cm.visibleold AS visibleold
 		      FROM {url} AS url
-              INNER JOIN {course_modules} AS cm ON (cm.instance = url.id AND cm.course = ?)
-              INNER JOIN {modules} AS m ON (cm.module = m.id)
-              LEFT JOIN {logstore_standard_log} AS log ON (log.objectid = cm.id AND log.action = 'created' AND log.target = 'course_module')
-              INNER JOIN {user} AS u ON (u.id = log.userid)
-		      WHERE m.name = ? 
-		      AND cm.visible = ? 
+              INNER JOIN {course_modules} AS cm ON (cm.instance = url.id AND cm.course = ? AND cm.visible = ?)
+              INNER JOIN {modules} AS m ON (cm.module = m.id AND m.name = ?)
               GROUP BY url.id";
 	
 	// Get the data from the above query
@@ -368,7 +360,7 @@ function get_course_data ($moodleid, $courseid) {
 					'image'=>FACEBOOK_IMAGE_RESOURCE,
 					'link'=>$resourceurl,
 					'title'=>$resource->resourcename,
-					'from'=>$resource->user,
+					'from'=>'',
 					'date'=>$resource->timemodified,
 					'course'=>$resource->resourcecourse 
 			);
@@ -383,7 +375,7 @@ function get_course_data ($moodleid, $courseid) {
 					'image'=>FACEBOOK_IMAGE_LINK,
 					'link'=>$link->externalurl,
 					'title'=>$link->urlname,
-					'from'=>$link->user,
+					'from'=>'',
 					'date'=>$link->timemodified,
 					'course'=>$link->urlcourse 
 			);
@@ -440,12 +432,12 @@ function facebook_connect_table_generator($facebook_id, $link, $first_name, $mid
 	);
 	$infotable->data [] = array (
 			get_string ( "profile", "local_facebook" ),
-			"<a href='" . $link . "' target=�_blank�>" . $link . "</a>"
+			"<a href='" . $link . "' target=_blank>" . $link . "</a>"
 	);
 	if ($appname != null) {
 		$infotable->data [] = array (
 				"Link a la app",
-				"<a href='http://apps.facebook.com/" . $appname . "' target=�_blank�>http://apps.facebook.com/" . $appname . "</a>"
+				"<a href='http://apps.facebook.com/" . $appname . "' target=_blank>http://apps.facebook.com/" . $appname . "</a>"
 		);
 	} else {
 		$infotable->data [] = array (
