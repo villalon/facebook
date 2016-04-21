@@ -38,10 +38,12 @@ $discussionid = optional_param ('discussionid', null, PARAM_RAW_TRIMMED);
 if ($action == 'get_course_data') {
 	global $DB;
 	$totaldata = get_course_data($moodleid, $courseid);
+	$course = $DB->get_record('course', array('id' => $courseid));
 	
 	$htmltable = "";
 	
-	$htmltable .= '<table class="tablesorter" border="0" width="100%" style="font-size: 13px; margin-left: 9px;">
+	$htmltable .= '<div align="center"><h2>'.$course->name.'</h2></div>
+				<table class="tablesorter" border="0" width="100%" style="font-size: 13px; margin-left: 9px;">
 					<thead>
 						<tr>
 							<th width="3%" style="border-top-left-radius: 8px;"></th>
