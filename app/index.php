@@ -300,7 +300,7 @@ if ($userfacebookinfo != false) {
 	});
 	</script>
 	<script>
-	$('.modal').click(function(event) {
+	$('.forum').click(function(event) {
 
 		var discussionId = $(this).parent().attr('discussionid');
 		alert(discussionId);
