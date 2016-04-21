@@ -1,9 +1,0 @@
-$(document).ready(function(){							
-		$(window).resize(function(){
-			$("#container1").width($(document).width()-10);
-			$("#cuerpo").width($(document).width()-10);
-			});
-		$("#container1").width($(document).width()-10);
-		$("#cuerpo").width($(document).width()-10);
-		$("#wrapper,#lateral,#cuerpo").height($(document).height()-100);
-		});
