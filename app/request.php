@@ -88,7 +88,7 @@ if ($action == 'get_course_data') {
 			$htmltable .= '<img src="images/assign.png">';
 			$assignid = $module ['id'];
 		}
-		$htmltable .= "</td><td component=$component $id><a $link class='forum'>".$module['title']."</a></td>
+		$htmltable .= "</td><td component=$component $id><a $link component=$component>".$module['title']."</a></td>
 		<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
 	}
 	
@@ -101,11 +101,6 @@ if ($action == 'get_course_data') {
 	$discussionposts = get_posts_from_discussion($discussionid);
 	$htmlmodal = '';
 		
-	$htmlmodal .= '<div class="modal fade" id="m'.$discussionid.'" tabindex="-1" role="dialog" aria-labelledby="modal">
-					<div class="modal-dialog" role="document">
-						<div class="modal-content">
-							<div class="modal-body">';
-		
 	foreach ($discussionposts as $post) {
 		$date = $post['date'];
 		$htmlmodal .= "<div align='left' style='background-color: #E6E6E6; border-radius: 4px 4px 0 0; padding: 4px; color: #333333;'>
@@ -114,14 +109,6 @@ if ($action == 'get_course_data') {
 					   </div>
 					   <div align='left' style='border-radius: 0 0 4px 4px; word-wrap: break-word;'>".$post['message']."</div><br>";
 	}
-		
-	$htmlmodal .= '</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal" component="close-modal" modalid="m'.$discussionid.'">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>';
 		
 	echo $htmlmodal;
 }

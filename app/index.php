@@ -166,7 +166,17 @@ if ($userfacebookinfo != false) {
 	echo "<div id='loadinggif' align='center' style='margin-top: 10%; text-align: center; display:none;'><img src='https://webcursos-d.uai.cl/local/facebook/app/images/ajaxloader.gif'></div>";
 	echo "<div id='table-body'></div>";
 	
-	echo "<div id='modal-body'></div>";
+	// Define the modal
+	echo "<div class='modal fade' id='modal' tabindex='-1' role='dialog' aria-labelledby='modal'>
+			<div class='modal-dialog' role='document'>
+				<div class='modal-content'>
+					<div class='modal-body'></div>
+					<div class='modal-footer'>
+						<button type='button' class='btn btn-default' data-dismiss='modal' component='close-modal'>Close</button>
+					</div>
+				</div>
+			</div>
+		</div>";
 
 	?>
 	
@@ -192,7 +202,8 @@ if ($userfacebookinfo != false) {
 		$("*", document.body).click(function(event) {
 			event.stopPropagation();
 
-			alert("clicked: " + event.target.nodeName);
+			alert("clicked: " + event.target.nodeName + ", component: " + $(this).attr("component"));
+			
 	
 			var courseid = $(this).parent().parent().attr('courseid');
 			var badgecourseid = $( "button[courseid='"+courseid+"']" ).parent().find('.badge');
@@ -219,9 +230,48 @@ if ($userfacebookinfo != false) {
 					}
 				});
 			}
-	
 
-	
+			else if ($(this).attr('component') == "forum") {		
+				 						
+ 				discussionId = $(this).attr('discussionid');		
+ 				alert(discussionId);		
+ 				//$('#m' + discussionId).modal('show');		
+ 						
+ 				jQuery.ajax({		
+ 					url : "https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_discussion&discussionid=" + discussionId,		
+ 					async : true,		
+ 					data : {},		
+ 					success : function (response) {		
+ 						alert("ajax bien");		
+ 						$('.modal').append(response);
+ 						$('.modal').modal('show');
+ 					}		
+ 				});
+
+ 				$('#m' + discussionId).modal('show');		
+				 				 						
+ 				if(aclick == 'font-weight:bold;'){		
+ 				 							
+					$(this).parent().parent().children("td").css('font-weight','normal');		
+//					$(this).parent().parent().children("td").children("button").removeClass("btn btn-primary");		
+//					$(this).parent().parent().children("td").children("button").addClass("btn btn-default");		
+					$(this).parent().parent().children("td").children("center").children("span").css('color','transparent');		
+					$(this).parent().parent().children("td").children("button").css('color','#909090');		
+ 				 							
+					if(badgecourseid.text() == 1) { 		
+						badgecourseid.remove(); 		
+					}		
+					else{ 		
+						badgecourseid.text(badgecourseid.text()-1); 		
+					}		
+				}		
+			}		
+ 				 			
+ 			else if($(this).attr('component') == "close-modal") {		
+ 				modalId = $(this).attr('modalid');		
+ 				$('#' + modalId).modal('hide');		
+ 			}
+
 			else if($(this).attr('component') == "emarking") {
 				emarkingId = $(this).attr('emarkingid');
 				$('#e' + emarkingId).modal('show');
@@ -299,27 +349,6 @@ if ($userfacebookinfo != false) {
 		});
 	});
 	</script>
-	<script>
-	$('.forum').click(function(event) {
-
-		var discussionId = $(this).parent().attr('discussionid');
-		alert(discussionId);
-		//$('#m' + discussionId).modal('show');
-		
-		jQuery.ajax({
-			url : "https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_discussion&discussionid=" + discussionId,
-			async : true,
-			data : {},
-			success : function (response) {
-				alert("ajax bien");
-				$('#modal-body').append('<div>' + response + '</div>');
-			}
-		});
-
-		$('#m' + discussionId).modal('show');
-	});
-	</script>
-	
 	
 	
 	<?php
