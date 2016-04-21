@@ -58,13 +58,15 @@ if ($action == 'get_course_data') {
 		$component = '';
 		$link = '';
 		$id = 0;
+		$onclick = "";
 		
 		$htmltable .= "<tr><td>";
 		if ($module ['image'] == FACEBOOK_IMAGE_POST) {
 			$htmltable .= '<img src="images/post.png">';
 			$component = 'forum';
 			$link = "href='#'";
-			$id = "discussionid='".$module ['discussion']."'";
+			$id = $module ['discussion'];
+			$onclick = "onclick='displayDiscussion($id)'";
 		}
 	
 		else if ($module ['image'] == FACEBOOK_IMAGE_RESOURCE) {
@@ -81,14 +83,14 @@ if ($action == 'get_course_data') {
 			$htmltable .= '<img src="images/emarking.png">';
 			$component = 'emarking';
 			$link = "href='#'";
-			$id = "emarkingid='".$module['id']."'";
+			$id = $module['id'];
 		}
 	
 		else if ($module ['image'] == FACEBOOK_IMAGE_ASSIGN) {
 			$htmltable .= '<img src="images/assign.png">';
 			$assignid = $module ['id'];
 		}
-		$htmltable .= "</td><td component=$component $id><a $link component=$component>".$module['title']."</a></td>
+		$htmltable .= "</td><td><a $link $onclick>".$module['title']."</a></td>
 		<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
 	}
 	
