@@ -192,7 +192,7 @@ if ($userfacebookinfo != false) {
 		$("*", document.body).click(function(event) {
 			event.stopPropagation();
 
-			alert($(this).attr('component'));
+			alert("clicked: " + event.target.nodeName);
 	
 			var courseid = $(this).parent().parent().attr('courseid');
 			var badgecourseid = $( "button[courseid='"+courseid+"']" ).parent().find('.badge');
