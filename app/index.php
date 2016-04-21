@@ -191,6 +191,8 @@ if ($userfacebookinfo != false) {
 	
 		$("*", document.body).click(function(event) {
 			event.stopPropagation();
+
+			alert($(this).attr('component'));
 	
 			var courseid = $(this).parent().parent().attr('courseid');
 			var badgecourseid = $( "button[courseid='"+courseid+"']" ).parent().find('.badge');
@@ -316,10 +318,6 @@ if ($userfacebookinfo != false) {
 				}
 			}
 		});
-
-		$("#table-body").click(function(event) {
-			alert($(this).children().children().children().children().children().attr('component'));
-		}
 	});
 	</script>
 	<script>
