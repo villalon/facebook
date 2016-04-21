@@ -58,15 +58,13 @@ if ($action == 'get_course_data') {
 		$component = '';
 		$link = '';
 		$id = 0;
-		$onclick = "";
 		
 		$htmltable .= "<tr><td>";
 		if ($module ['image'] == FACEBOOK_IMAGE_POST) {
 			$htmltable .= '<img src="images/post.png">';
 			$component = 'forum';
 			$link = "href='#'";
-			$id = $module ['discussion'];
-			$onclick = "onclick='displayDiscussion($id)'";
+			$id = "discussionid='".$module ['discussion']."'";
 		}
 	
 		else if ($module ['image'] == FACEBOOK_IMAGE_RESOURCE) {
@@ -83,18 +81,39 @@ if ($action == 'get_course_data') {
 			$htmltable .= '<img src="images/emarking.png">';
 			$component = 'emarking';
 			$link = "href='#'";
-			$id = $module['id'];
+			$id = "emarkingid='".$module['id']."'";
 		}
 	
 		else if ($module ['image'] == FACEBOOK_IMAGE_ASSIGN) {
 			$htmltable .= '<img src="images/assign.png">';
 			$assignid = $module ['id'];
 		}
-		$htmltable .= "</td><td><a $link $onclick>".$module['title']."</a></td>
+		$htmltable .= "</td><td><a $link component=$component>".$module['title']."</a></td>
 		<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
 	}
 	
 	$htmltable .= "</tbody></table>";
+	
+	$jsfunction = "<script>
+			$('a').click(function () {
+				if ($(this).attr('component') == 'forum') {
+					discussionId = $(this).attr('discussionid');
+			
+					jQuery.ajax({
+	 					url : 'https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_discussion&discussionid=' + discussionId,
+	 					async : true,
+	 					data : {},
+	 					success : function (response) {
+	 						alert('ajax bien');
+	 						$('#modal-body').append(response);
+	 						$('#modal').modal();
+ 						}
+ 					});
+				}
+			});
+			</script>";
+	
+	$htmltable .= $jsfunction;
 	
 	echo $htmltable;
 } elseif ($action == 'get_discussion') {
