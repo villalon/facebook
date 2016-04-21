@@ -104,7 +104,7 @@ if ($action == 'get_course_data') {
 	 					async : true,
 	 					data : {},
 	 					success : function (response) {
-	 						alert('ajax bien');
+							alert(response);
 	 						$('#modal-body').append(response);
 	 						$('#modal').modal();
  						}
