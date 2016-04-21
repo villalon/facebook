@@ -105,7 +105,7 @@ if ($action == 'get_course_data') {
 	 					data : {},
 	 					success : function (response) {
 	 						alert('ajax bien');
-	 						$('.modal-body').append(response);
+	 						$('#modal-body').append(response);
 	 						$('#modal').modal();
  						}
  					});
