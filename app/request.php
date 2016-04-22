@@ -197,44 +197,46 @@ else if ($action == 'get_emarking') {
 	$emarkingdata = $DB->get_record_sql($emarkingsql, $paramsemarking);
 	$htmlmodal = '';
 	
-	$emarkingurl = new moodle_url('/mod/emarking/view.php', array(
-			'id' => $emarkingdata->moduleid
-	));
-	
-	$htmlmodal .= "<div class='row'>
-					<div class='col-md-4'>
-  						<b>".get_string('name', 'local_facebook')."</b>
-	  					<br>".$emarkingdata->user."
-	  				</div>
-	  				<div class='col-md-2'>
-	  					<b>".get_string('grade', 'local_facebook')."</b>
-	  					<br>";
-	
-  	if($emarkingdata->status >= 20) {
-  		$htmlmodal .= $emarkingdata->grade;
- 	} else {
- 		$htmlmodal .= "-";
-  	}
-	
-  	$htmlmodal .= "</div>
-	  				<div class='col-md-3'>
-	  					<b>".get_string('status', 'local_facebook')."</b>
-	  					<br>";
-	  					
-  	if($emarkingdata->status >= 20) {
-  		$htmlmodal .= get_string('published', 'local_facebook');
-  	} else if($emarkingdata->status >= 10) {
-  		$htmlmodal .= get_string('submitted', 'local_facebook');
-  	} else {
-  		$htmlmodal .= get_string('absent', 'local_facebook');
-  	}
-  	
-  	$htmlmodal .= "</div>
-	  				<div class='col-md-3'>
-	  					<br>
-	  						<a href='".$emarkingurl."' target='_blank'>".get_string('viewexam', 'local_facebook')."</a>
-	  				</div>
-	  			</div>";
+	foreach ($emarkingdata as $emarking) {
+		$emarkingurl = new moodle_url('/mod/emarking/view.php', array(
+				'id' => $emarking->moduleid
+		));
+		
+		$htmlmodal .= "<div class='row'>
+						<div class='col-md-4'>
+	  						<b>".get_string('name', 'local_facebook')."</b>
+		  					<br>".$emarking->user."
+		  				</div>
+		  				<div class='col-md-2'>
+		  					<b>".get_string('grade', 'local_facebook')."</b>
+		  					<br>";
+		
+	  	if($emarking->status >= 20) {
+	  		$htmlmodal .= $emarking->grade;
+	 	} else {
+	 		$htmlmodal .= "-";
+	  	}
+		
+	  	$htmlmodal .= "</div>
+		  				<div class='col-md-3'>
+		  					<b>".get_string('status', 'local_facebook')."</b>
+		  					<br>";
+		  					
+	  	if($emarking->status >= 20) {
+	  		$htmlmodal .= get_string('published', 'local_facebook');
+	  	} else if($emarking->status >= 10) {
+	  		$htmlmodal .= get_string('submitted', 'local_facebook');
+	  	} else {
+	  		$htmlmodal .= get_string('absent', 'local_facebook');
+	  	}
+	  	
+	  	$htmlmodal .= "</div>
+		  				<div class='col-md-3'>
+		  					<br>
+		  						<a href='".$emarkingurl."' target='_blank'>".get_string('viewexam', 'local_facebook')."</a>
+		  				</div>
+		  			</div>";
+	}
   	
   	echo $htmlmodal;
 }
