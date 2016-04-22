@@ -43,7 +43,7 @@ if ($action == 'get_course_data') {
 	
 	$htmltable = "";
 	
-	$htmltable .= '<div align="center"><h2>'.$course->name.'</h2></div>
+	$htmltable .= '<div align="center"><h2>'.$course->fullname.'</h2></div>
 				<table class="tablesorter" border="0" width="100%" style="font-size: 13px; margin-left: 9px;">
 					<thead>
 						<tr>
