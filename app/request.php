@@ -99,6 +99,8 @@ if ($action == 'get_course_data') {
 	
 	$jsfunction = "<script>
 			$('a').click(function () {
+				var aclick = $(this).parent().attr('style');
+			
 				if ($(this).attr('component') == 'forum') {
 					discussionId = $(this).attr('discussionid');
 			
