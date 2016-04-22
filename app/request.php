@@ -33,6 +33,7 @@ $action 	  = required_param ('action', PARAM_ALPHAEXT);
 $moodleid	  = optional_param ('moodleid', null , PARAM_RAW_TRIMMED);
 $courseid 	  = optional_param ('courseid', null , PARAM_RAW_TRIMMED);
 $discussionid = optional_param ('discussionid', null, PARAM_RAW_TRIMMED);
+$emarkingid   = optional_param ('emarkingid', null, PARAM_RAW_TRIMMED);
 //$lastvisit = optional_param ( 'lastvisit', null , PARAM_RAW_TRIMMED );
 
 if ($action == 'get_course_data') {
@@ -112,13 +113,43 @@ if ($action == 'get_course_data') {
  						}
  					});
 				}
+			
+				else if($(this).attr('component') == 'emarking') {
+					emarkingId = $(this).attr('emarkingid');
+			
+					jQuery.ajax({
+						url : 'https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_emarking&emarkingid=' + emarkingId,
+						async : true,
+						data : {},
+						success : function (response) {
+							$('#modal-body').empty();
+	 						$('#modal-body').append(response);
+	 						$('#modal').modal();
+						}
+					});
+				}
+			
+				if(aclick == 'font-weight:bold'){			
+					 $(this).parent().parent().children('td').css('font-weight','normal');
+					 $(this).parent().parent().children('td').children('center').children('span').css('color','transparent');
+					 $(this).parent().parent().children('td').children('button').css('color','#909090');
+					 				
+					 if(badgecourseid.text() == 1) { 
+					 	badgecourseid.remove(); 
+					 }
+					 else{ 
+					 	badgecourseid.text(badgecourseid.text()-1); 
+					 }
+				}
 			});
 			</script>";
 	
 	$htmltable .= $jsfunction;
 	
 	echo $htmltable;
-} elseif ($action == 'get_discussion') {
+} 
+
+else if ($action == 'get_discussion') {
 	global $DB;
 	
 	$discussionposts = get_posts_from_discussion($discussionid);
@@ -134,4 +165,73 @@ if ($action == 'get_course_data') {
 	}
 		
 	echo $htmlmodal;
+} 
+
+else if ($action == 'get_emarking') {
+	global $DB;
+	
+	$emarkingsql = "SELECT s.id AS id,
+			e.id AS emarkingid,
+			e.course AS course,
+			e.name AS testname,
+			d.grade AS grade,
+			d.status AS status,
+			d.timemodified AS date,
+			s.teacher AS teacher,
+			cm.id as moduleid,
+			CONCAT(u.firstname,' ',u.lastname) AS user
+			FROM {emarking_draft} AS d JOIN {emarking} AS e ON (e.id = d.emarkingid AND e.type in (1,5,0) AND e.id = ?)
+			INNER JOIN {emarking_submission} AS s ON (d.submissionid = s.id AND d.status IN (20,30,35,40) AND s.student = ?)
+			INNER JOIN {user} AS u ON (u.id = s.student)
+			INNER JOIN {course_modules} AS cm ON (cm.instance = e.id AND cm.course = ?)
+			INNER JOIN {modules} AS m ON (cm.module = m.id AND m.name = 'emarking')";
+	
+	$paramsemarking = array(
+			$emarkingid,
+			$moodleid
+	);
+	
+	$emarkingdata = $DB->get_record_sql($emarkingsql, $paramsemarking);
+	$htmlmodal = '';
+	
+	$emarkingurl = new moodle_url('/mod/emarking/view.php', array(
+			'id' => $emarkingdata->moduleid
+	));
+	
+	$htmlmodal .= "<div class='row'>
+					<div class='col-md-4'>
+  						<b>".get_string('name', 'local_facebook')."</b>
+	  					<br>".$emarkingdata->user."
+	  				</div>
+	  				<div class='col-md-2'>
+	  					<b>".get_string('grade', 'local_facebook')."</b>
+	  					<br>";
+	
+  	if($emarkingdata->status >= 20) {
+  		$htmlmodal .= $emarkingdata->grade;
+ 	} else {
+ 		$htmlmodal .= "-";
+  	}
+	
+  	$htmlmodal .= "</div>
+	  				<div class='col-md-3'>
+	  					<b>".get_string('status', 'local_facebook')."</b>
+	  					<br>";
+	  					
+  	if($emarkingdata->status >= 20) {
+  		$htmlmodal .= get_string('published', 'local_facebook');
+  	} else if($emarkingdata->status >= 10) {
+  		$htmlmodal .= get_string('submitted', 'local_facebook');
+  	} else {
+  		$htmlmodal .= get_string('absent', 'local_facebook');
+  	}
+  	
+  	$htmlmodal .= "</div>
+	  				<div class='col-md-3'>
+	  					<br>
+	  						<a href='".$emarkingurl."' target='_blank'>".get_string('viewexam', 'local_facebook')."</a>
+	  				</div>
+	  			</div>";
+  	
+  	echo $htmlmodal;
 }

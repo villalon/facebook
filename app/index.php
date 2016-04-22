@@ -247,7 +247,7 @@ if ($userfacebookinfo != false) {
 
  				$('#m' + discussionId).modal('show');		
 				 				 						
- 				if(aclick == 'font-weight:bold;'){		
+ 				if(aclick == 'font-weight:bold;'){	
  				 							
 					$(this).parent().parent().children("td").css('font-weight','normal');		
 //					$(this).parent().parent().children("td").children("button").removeClass("btn btn-primary");		
