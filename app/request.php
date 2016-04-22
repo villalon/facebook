@@ -117,10 +117,11 @@ if ($action == 'get_course_data') {
 				}
 			
 				else if($(this).attr('component') == 'emarking') {
+					var moodleId = '<?php echo $moodleid; ?>';
 					emarkingId = $(this).attr('emarkingid');
 			
 					jQuery.ajax({
-						url : 'https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_emarking&emarkingid=' + emarkingId,
+						url : 'https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_emarking&emarkingid=' + emarkingId + '&moodleid=' + moodleId,
 						async : true,
 						data : {},
 						success : function (response) {
@@ -185,7 +186,7 @@ else if ($action == 'get_emarking') {
 			FROM {emarking_draft} AS d JOIN {emarking} AS e ON (e.id = d.emarkingid AND e.type in (1,5,0) AND e.id = ?)
 			INNER JOIN {emarking_submission} AS s ON (d.submissionid = s.id AND d.status IN (20,30,35,40) AND s.student = ?)
 			INNER JOIN {user} AS u ON (u.id = s.student)
-			INNER JOIN {course_modules} AS cm ON (cm.instance = e.id AND cm.course = ?)
+			INNER JOIN {course_modules} AS cm ON (cm.instance = e.id)
 			INNER JOIN {modules} AS m ON (cm.module = m.id AND m.name = 'emarking')";
 	
 	$paramsemarking = array(
