@@ -194,7 +194,7 @@ else if ($action == 'get_emarking') {
 			$moodleid
 	);
 	
-	$emarkingdata = $DB->get_record_sql($emarkingsql, $paramsemarking);
+	$emarkingdata = $DB->get_records_sql($emarkingsql, $paramsemarking);
 	$htmlmodal = '';
 	
 	foreach ($emarkingdata as $emarking) {
