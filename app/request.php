@@ -91,7 +91,7 @@ if ($action == 'get_course_data') {
 								<div class='modal-dialog' role='document'>
 									<div class='modal-content'>
 										<div class='modal-title' align='center'><h4>".$module['title']."</h4></div>
-										<div class='modal-body' id='modal-body'>
+										<div class='modal-body' id='emarking-modal-body'>
 											<div class='row'>
 												<div class='col-md-4'>
 							  						<b>".get_string('name', 'local_facebook')."</b>
