@@ -183,9 +183,10 @@ else if ($action == 'get_emarking') {
 			s.teacher AS teacher,
 			cm.id as moduleid,
 			CONCAT(u.firstname,' ',u.lastname) AS user
-			FROM {emarking_draft} AS d JOIN {emarking} AS e ON (e.id = d.emarkingid AND e.type in (1,5,0) AND e.id = ?)
-			INNER JOIN {emarking_submission} AS s ON (d.submissionid = s.id AND d.status IN (20,30,35,40) AND s.student = ?)
-			INNER JOIN {user} AS u ON (u.id = s.student)
+			FROM {emarking_draft} AS d 
+			INNER JOIN {emarking} AS e ON (e.id = d.emarkingid AND e.type in (1,5,0) AND e.id = ?)
+			INNER JOIN {emarking_submission} AS s ON (d.submissionid = s.id AND d.status IN (20,30,35,40))
+			INNER JOIN {user} AS u ON (u.id = s.student AND u.id = ?)
 			INNER JOIN {course_modules} AS cm ON (cm.instance = e.id)
 			INNER JOIN {modules} AS m ON (cm.module = m.id AND m.name = 'emarking')";
 	
