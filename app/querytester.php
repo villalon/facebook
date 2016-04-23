@@ -258,4 +258,22 @@ echo "</tbody></table> <br>";
 $totalend = microtime(TRUE);
 $totaltime = $totalend - $totalstart;
 
+$emarkingsql = "SELECT s.id AS id,
+			s.grade AS grade,
+			s.status AS status,
+			cm.id as moduleid,
+			CONCAT(u.firstname,' ',u.lastname) AS user
+			FROM {emarking_submission} AS s
+			INNER JOIN {user} AS u ON (u.id = s.student)
+			INNER JOIN {course_modules} AS cm ON (cm.instance = s.emarking)";
+
+$paramsemarking = array(
+		$moodleid,
+		$emarkingid
+);
+
+$emarkingdata = $DB->get_records_sql($emarkingsql, array(1));
+
+var_dump($emarkingdata);
+
 echo "Total time: ".$totaltime." s";
