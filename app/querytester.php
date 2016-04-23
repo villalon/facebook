@@ -37,6 +37,7 @@ $totalstart = microtime(TRUE);
 $moodleid = $USER->id;
 $course = $DB->get_record('course', array('fullname' => 'Curso de gente'));
 
+echo $moodleid."<br>";
 echo "Id: ".$course->id."<br> Course: ".$course->fullname."<br>";
 
 
