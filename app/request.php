@@ -90,14 +90,14 @@ if ($action == 'get_course_data') {
 			$emarkingmodal .= "<div class='modal fade' id='e".$module['id']."' tabindex='-1' role='dialog' aria-labelledby='modal'>
 								<div class='modal-dialog' role='document'>
 									<div class='modal-content'>
-										<div class='modal-title'><h4>".$module['title']."</h4></div>
+										<div class='modal-title' align='center'><h4>".$module['title']."</h4></div>
 										<div class='modal-body' id='modal-body'>
 											<div class='row'>
 												<div class='col-md-4'>
 							  						<b>".get_string('name', 'local_facebook')."</b>
 								  					<br>".$module['from']."
 								  				</div>
-								  				<div class='col-md-2'>
+								  				<div class='col-md-3'>
 								  					<b>".get_string('grade', 'local_facebook')."</b>
 								  					<br>";
 			
@@ -121,7 +121,7 @@ if ($action == 'get_course_data') {
 			}
 			
 			$emarkingmodal .= "</div>
-			  				<div class='col-md-3'>
+			  				<div class='col-md-2'>
 			  					<br>
 			  					<a href='".$module['link']."' target='_blank'>".get_string('viewexam', 'local_facebook')."</a>
 			  				</div>
