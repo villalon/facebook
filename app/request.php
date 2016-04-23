@@ -173,28 +173,19 @@ else if ($action == 'get_discussion') {
 else if ($action == 'get_emarking') {
 	global $DB;
 	echo $emarkingid." ".$moodleid;
-	$emarkingsql = "SELECT CONCAT(s.id,e.id,s.grade) AS ids,
-			s.id AS id, 
-			e.id AS emarkingid, 
-			e.course AS course,
-			e.name AS testname,
-			d.grade AS grade,
-			d.status AS status,
-			d.timemodified AS date,
-			s.teacher AS teacher,
+	$emarkingsql = "SELECT s.id AS id,
+			s.grade AS grade,
+			s.status AS status,
 			cm.id as moduleid,
 			CONCAT(u.firstname,' ',u.lastname) AS user
-			FROM {emarking_draft} AS d
-			INNER JOIN {emarking} AS e ON (e.id = d.emarkingid AND e.type in (1,5,0) AND d.emarkingid = ?)
-			INNER JOIN {emarking_submission} AS s ON (d.submissionid = s.id AND d.status IN (20,30,35,40) AND s.student = ?)
-			INNER JOIN {user} AS u ON (u.id = s.student)
-			INNER JOIN {course_modules} AS cm ON (cm.instance = e.id AND cm.course = ?)
-			INNER JOIN {modules} AS m ON (cm.module = m.id AND m.name = 'emarking')";
+			FROM {emarking_submission} AS s
+			INNER JOIN {user} AS u ON (u.id = s.student AND u.id = ?)
+			INNER JOIN {course_modules} AS cm ON (cm.instance = e.id)
+			WHERE s.emarking = ?";
 	
 	$paramsemarking = array(
-			$emarkingid,
 			$moodleid,
-			$courseid
+			$emarkingid
 	);
 	
 	$emarkingdata = $DB->get_records_sql($emarkingsql, $paramsemarking);
