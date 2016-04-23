@@ -86,18 +86,16 @@ if ($action == 'get_course_data') {
 			$component = 'emarking';
 			$link = "href='#'";
 			$id = "emarkingid='".$module['id']."'";
-			$emarkingurl = new moodle_url('/mod/emarking/view.php', array(
-					'id' => $module['id']
-			));
 			
 			$emarkingmodal .= "<div class='modal fade' id='e".$module['id']."' tabindex='-1' role='dialog' aria-labelledby='modal'>
 								<div class='modal-dialog' role='document'>
 									<div class='modal-content'>
+										<div class='modal-title'><h4>".$module['title']."</h4></div>
 										<div class='modal-body' id='modal-body'>
 											<div class='row'>
 												<div class='col-md-4'>
 							  						<b>".get_string('name', 'local_facebook')."</b>
-								  					<br>".$module['user']."
+								  					<br>".$module['from']."
 								  				</div>
 								  				<div class='col-md-2'>
 								  					<b>".get_string('grade', 'local_facebook')."</b>
@@ -125,7 +123,7 @@ if ($action == 'get_course_data') {
 			$emarkingmodal .= "</div>
 			  				<div class='col-md-3'>
 			  					<br>
-			  					<a href='".$emarkingurl."' target='_blank'>".get_string('viewexam', 'local_facebook')."</a>
+			  					<a href='".$module['link']."' target='_blank'>".get_string('viewexam', 'local_facebook')."</a>
 			  				</div>
 			  			</div>
   					</div>
