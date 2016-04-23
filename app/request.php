@@ -172,24 +172,24 @@ else if ($action == 'get_discussion') {
 
 else if ($action == 'get_emarking') {
 	global $DB;
-	echo $emarkingid." ".$moodleid;
+	
 	$emarkingsql = "SELECT s.id AS id,
 			s.grade AS grade,
 			s.status AS status,
 			cm.id as moduleid,
 			CONCAT(u.firstname,' ',u.lastname) AS user
 			FROM {emarking_submission} AS s
-			INNER JOIN {user} AS u ON (u.id = s.student)
+			INNER JOIN {user} AS u ON (u.id = s.student AND u.id = ?)
 			INNER JOIN {course_modules} AS cm ON (cm.instance = s.emarking AND s.emarking = ?)";
 	
 	$paramsemarking = array(
-//			$moodleid,
+			$moodleid,
 			$emarkingid
 	);
 	
 	$emarkingdata = $DB->get_records_sql($emarkingsql, $paramsemarking);
 	$htmlmodal = '';
-	echo count($emarkingdata);
+	
 	foreach ($emarkingdata as $emarking) {
 		$emarkingurl = new moodle_url('/mod/emarking/view.php', array(
 				'id' => $emarking->moduleid
