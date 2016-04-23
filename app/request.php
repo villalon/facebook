@@ -61,6 +61,7 @@ if ($action == 'get_course_data') {
 		$component = '';
 		$link = '';
 		$id = 0;
+		$emarkingmodal = '';
 		
 		$htmltable .= "<tr><td>";
 		if ($module ['image'] == FACEBOOK_IMAGE_POST) {
@@ -85,6 +86,57 @@ if ($action == 'get_course_data') {
 			$component = 'emarking';
 			$link = "href='#'";
 			$id = "emarkingid='".$module['id']."'";
+			$emarkingurl = new moodle_url('/mod/emarking/view.php', array(
+					'id' => $module['id']
+			));
+			
+			$emarkingmodal .= "<div class='modal fade' id='e".$module['id']."' tabindex='-1' role='dialog' aria-labelledby='modal'>
+								<div class='modal-dialog' role='document'>
+									<div class='modal-content'>
+										<div class='modal-body' id='modal-body'>
+											<div class='row'>
+												<div class='col-md-4'>
+							  						<b>".get_string('name', 'local_facebook')."</b>
+								  					<br>".$module['user']."
+								  				</div>
+								  				<div class='col-md-2'>
+								  					<b>".get_string('grade', 'local_facebook')."</b>
+								  					<br>";
+			
+			if($module['status'] >= 20) {
+				$emarkingmodal .= $module['grade'];
+			} else {
+				$emarkingmodal .= "-";
+			}
+			
+			$emarkingmodal .= "</div>
+			  				<div class='col-md-3'>
+			  					<b>".get_string('status', 'local_facebook')."</b>
+			  					<br>";
+				
+			if($module['status'] >= 20) {
+				$emarkingmodal .= get_string('published', 'local_facebook');
+			} else if($module['status'] >= 10) {
+				$emarkingmodal .= get_string('submitted', 'local_facebook');
+			} else {
+				$emarkingmodal .= get_string('absent', 'local_facebook');
+			}
+			
+			$emarkingmodal .= "</div>
+			  				<div class='col-md-3'>
+			  					<br>
+			  					<a href='".$emarkingurl."' target='_blank'>".get_string('viewexam', 'local_facebook')."</a>
+			  				</div>
+			  			</div>
+  					</div>
+					<div class='modal-footer'>
+						<button type='button' class='btn btn-default' data-dismiss='modal' component='close-modal'>Close</button>
+					</div>
+				</div>
+			</div>
+		</div>";
+			
+			$htmltable .= $emarkingmodal;
 		}
 	
 		else if ($module ['image'] == FACEBOOK_IMAGE_ASSIGN) {
@@ -117,19 +169,9 @@ if ($action == 'get_course_data') {
 				}
 			
 				else if($(this).attr('component') == 'emarking') {
-					var moodleId = '<?php echo $moodleid; ?>';
 					emarkingId = $(this).attr('emarkingid');
 			
-					jQuery.ajax({
-						url : 'https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_emarking&emarkingid=' + emarkingId + '&moodleid=' + moodleId,
-						async : true,
-						data : {},
-						success : function (response) {
-							$('#modal-body').empty();
-	 						$('#modal-body').append(response);
-	 						$('#modal').modal();
-						}
-					});
+					$('#e' + emarkingId).modal();
 				}
 			
 				if(aclick == 'font-weight:bold'){			
