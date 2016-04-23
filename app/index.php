@@ -172,7 +172,7 @@ if ($userfacebookinfo != false) {
 				<div class='modal-content'>
 					<div class='modal-body' id='modal-body'></div>
 					<div class='modal-footer'>
-						<button type='button' class='btn btn-default' data-dismiss='modal' component='close-modal'>Close</button>
+						<button type='button' class='btn btn-default' data-dismiss='modal' component='close-modal' modalid='modal'>Close</button>
 					</div>
 				</div>
 			</div>
@@ -226,42 +226,6 @@ if ($userfacebookinfo != false) {
 						$('#table-body').fadeIn(300);
 					}
 				});
-			}
-
-			else if ($(this).attr('component') == "forum") {
-				
- 				discussionId = $(this).attr('discussionid');
- 				alert(discussionId);
- 				//$('#m' + discussionId).modal('show');
- 				
- 				jQuery.ajax({
- 					url : "https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_discussion&discussionid=" + discussionId,
- 					async : true,
- 					data : {},
- 					success : function (response) {
- 						alert("ajax bien");
- 						$('.modal').append(response);
- 						$('.modal').modal('show');
- 					}
- 				});
-
- 				$('#m' + discussionId).modal('show');		
-				 				 						
- 				if(aclick == 'font-weight:bold;'){	
- 				 							
-					$(this).parent().parent().children("td").css('font-weight','normal');		
-//					$(this).parent().parent().children("td").children("button").removeClass("btn btn-primary");		
-//					$(this).parent().parent().children("td").children("button").addClass("btn btn-default");		
-					$(this).parent().parent().children("td").children("center").children("span").css('color','transparent');		
-					$(this).parent().parent().children("td").children("button").css('color','#909090');		
- 				 							
-					if(badgecourseid.text() == 1) { 		
-						badgecourseid.remove(); 		
-					}		
-					else{ 		
-						badgecourseid.text(badgecourseid.text()-1); 		
-					}		
-				}		
 			}		
  				 			
  			else if($(this).attr('component') == "close-modal") {		
