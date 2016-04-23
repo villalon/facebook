@@ -264,8 +264,9 @@ $emarkingsql = "SELECT s.id AS id,
 			cm.id as moduleid,
 			CONCAT(u.firstname,' ',u.lastname) AS user
 			FROM {emarking_submission} AS s
-			INNER JOIN {user} AS u ON (u.id = s.student AND s.student = ?)
+			INNER JOIN {user} AS u ON (u.id = s.student)
 			INNER JOIN {course_modules} AS cm ON (cm.instance = s.emarking)
+			WHERE u.id = ?
 			GROUP BY s.id";
 
 $paramsemarking = array(
