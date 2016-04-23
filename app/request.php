@@ -172,7 +172,7 @@ else if ($action == 'get_discussion') {
 
 else if ($action == 'get_emarking') {
 	global $DB;
-	
+	echo $emarkingid." ".$moodleid;
 	$emarkingsql = "SELECT CONCAT(s.id,e.id,s.grade) AS ids,
 			s.id AS id, 
 			e.id AS emarkingid, 
