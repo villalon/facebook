@@ -179,11 +179,11 @@ else if ($action == 'get_emarking') {
 			cm.id as moduleid,
 			CONCAT(u.firstname,' ',u.lastname) AS user
 			FROM {emarking_submission} AS s
-			INNER JOIN {user} AS u ON (u.id = s.student AND u.id = ?)
+			INNER JOIN {user} AS u ON (u.id = s.student)
 			INNER JOIN {course_modules} AS cm ON (cm.instance = s.emarking AND s.emarking = ?)";
 	
 	$paramsemarking = array(
-			$moodleid,
+//			$moodleid,
 			$emarkingid
 	);
 	
