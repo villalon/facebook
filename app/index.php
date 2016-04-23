@@ -232,26 +232,6 @@ if ($userfacebookinfo != false) {
  				modalId = $(this).attr('modalid');		
  				$('#' + modalId).modal('hide');		
  			}
-
-			else if($(this).attr('component') == "emarking") {
-				emarkingId = $(this).attr('emarkingid');
-				$('#e' + emarkingId).modal('show');
-	
-				if(aclick == 'font-weight:bold'){			
-					 $(this).parent().parent().children("td").css('font-weight','normal');
-	//				 $(this).parent().parent().children("td").children("button").removeClass("btn btn-primary");
-	//				 $(this).parent().parent().children("td").children("button").addClass("btn btn-default");
-					 $(this).parent().parent().children("td").children("center").children("span").css('color','transparent');
-					 $(this).parent().parent().children("td").children("button").css('color','#909090');
-					 				
-					 if(badgecourseid.text() == 1) { 
-					 	badgecourseid.remove(); 
-					 }
-					 else{ 
-					 	badgecourseid.text(badgecourseid.text()-1); 
-					 }
-				}
-			}
 	
 			else if($(this).attr('component') == "assign") {
 				assignId = $(this).attr('assignid');

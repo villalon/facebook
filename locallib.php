@@ -217,10 +217,10 @@ function get_course_data ($moodleid, $courseid) {
 	$datapostsql = "SELECT fp.id AS postid, us.firstname AS firstname, us.lastname AS lastname, fp.subject AS subject,
 			fp.modified AS modified, discussions.course AS course, discussions.id AS dis_id 
 			FROM {forum_posts} AS fp
-			INNER JOIN {forum_discussions} AS discussions ON (fp.discussion=discussions.id AND discussions.course = ?)
-			INNER JOIN {forum} AS forum ON (forum.id=discussions.forum)
-			INNER JOIN {user} AS us ON (us.id=discussions.userid)
-			INNER JOIN {course_modules} AS cm ON (cm.instance=forum.id)
+			INNER JOIN {forum_discussions} AS discussions ON (fp.discussion = discussions.id AND discussions.course = ?)
+			INNER JOIN {forum} AS forum ON (forum.id = discussions.forum)
+			INNER JOIN {user} AS us ON (us.id = fp.userid)
+			INNER JOIN {course_modules} AS cm ON (cm.instance = forum.id)
 			WHERE cm.visible = ? 
 			GROUP BY fp.id";
 	
@@ -321,6 +321,10 @@ function get_course_data ($moodleid, $courseid) {
 	$count = $DB->count_records_sql($dataassignmentsql,array_merge($userid,$param,array(1,1)));
 	echo "<h3>$count</h3>";
 	*/
+	
+	$dataassignmentsql = "SELECT
+			FROM {assign} AS a
+			INNER JOIN {";
 	
 	$sqlparams = array(
 			FACEBOOK_COURSE_MODULE_VISIBLE,
