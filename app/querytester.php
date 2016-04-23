@@ -265,11 +265,12 @@ $emarkingsql = "SELECT s.id AS id,
 			CONCAT(u.firstname,' ',u.lastname) AS user
 			FROM {emarking_submission} AS s
 			INNER JOIN {user} AS u ON (u.id = s.student)
-			INNER JOIN {course_modules} AS cm ON (cm.instance = s.emarking)";
+			INNER JOIN {course_modules} AS cm ON (cm.instance = s.emarking)
+			GROUP BY s.id";
 
 $paramsemarking = array(
 		$moodleid,
-		$emarkingid
+//		$emarkingid
 );
 
 $emarkingdata = $DB->get_records_sql($emarkingsql, array(1));
