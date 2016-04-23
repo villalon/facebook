@@ -198,7 +198,7 @@ else if ($action == 'get_emarking') {
 	
 	$emarkingdata = $DB->get_records_sql($emarkingsql, $paramsemarking);
 	$htmlmodal = '';
-	
+	echo count($emarkingdata);
 	foreach ($emarkingdata as $emarking) {
 		$emarkingurl = new moodle_url('/mod/emarking/view.php', array(
 				'id' => $emarking->moduleid
