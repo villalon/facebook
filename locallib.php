@@ -334,7 +334,8 @@ function get_course_data ($moodleid, $courseid) {
 			INNER JOIN {enrol} AS e ON (c.id = e.courseid)
 			INNER JOIN {user_enrolments} AS ue ON (e.id = ue.enrolid AND ue.userid = ?)
 			INNER JOIN {course_modules} AS cm ON (c.id = cm.course AND cm.module = ? AND cm.visible = ?)
-			INNER JOIN {assign_submission} AS s ON (a.id = s.assignment)";
+			INNER JOIN {assign_submission} AS s ON (a.id = s.assignment)
+			GROUP BY a.id";
 	
 	$paramsassignment = array(
 			$courseid,
@@ -343,7 +344,7 @@ function get_course_data ($moodleid, $courseid) {
 			FACEBOOK_COURSE_MODULE_VISIBLE
 	);
 	
-	$dataassignment = $DB->get_records_sql($dataassignmentsql, $paramsassignment);
+	$dataassign = $DB->get_records_sql($dataassignmentsql, $paramsassignment);
 	
 	//$assignparams = array_merge($userid,$param,$sqlparams,$userid);	
 	//$dataassign = $DB->get_records_sql($dataassignmentsql, $assignparams);
