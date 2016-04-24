@@ -322,14 +322,28 @@ function get_course_data ($moodleid, $courseid) {
 	echo "<h3>$count</h3>";
 	*/
 	
-	$dataassignmentsql = "SELECT
+	$dataassignmentsql = "SELECT a.id AS id,
+			s.status AS status,
+			a.timemodified AS date,
+			a.duedate AS duedate,
+			s.timemodified AS lastmodified,
+			a.name AS assignmentname,
+			cm.id AS moduleid
 			FROM {assign} AS a
-			INNER JOIN {";
+			INNER JOIN {course} AS c ON (a.course = c.id AND c.id = ?)
+			INNER JOIN {enrol} AS e ON (c.id = e.courseid)
+			INNER JOIN {user_enrolments} AS ue ON (e.id = ue.enrolid AND ue.userid = ?)
+			INNER JOIN {course_modules} AS cm ON (c.id = cm.course AND cm.module = ? AND cm.visible = ?)
+			INNER JOIN {assign_submission} AS s ON (a.id = s.assignment)";
 	
-	$sqlparams = array(
-			FACEBOOK_COURSE_MODULE_VISIBLE,
+	$paramsassignment = array(
+			$courseid,
+			$moodleid,
+			MODULE_ASSIGN,
 			FACEBOOK_COURSE_MODULE_VISIBLE
 	);
+	
+	$dataassignment = $DB->get_records_sql($dataassignmentsql, $paramsassignment);
 	
 	//$assignparams = array_merge($userid,$param,$sqlparams,$userid);	
 	//$dataassign = $DB->get_records_sql($dataassignmentsql, $assignparams);
@@ -404,26 +418,47 @@ function get_course_data ($moodleid, $courseid) {
 				'teacherid'=>$emarking->teacher
 		);
 	}
-	/*
+	
 	foreach($dataassign as $assign){
 		$assignurl = new moodle_url('/mod/assign/view.php', array(
 				'id'=>$assign->moduleid
 		));
+		
+		$duedate = date("d/m H:i", $assign->duedate);
+		$date = date("d/m H:i", $assign->lastmodified);
+		
+		if ($DB->record_exists('assign_grades', array(
+				'assignment' => $assign->id,
+				'userid' => $moodleid
+		))) {
+			$totaldata[] = array(
+					'id'=>$assign->id,
+					'image'=>FACEBOOK_IMAGE_ASSIGN,
+					'link'=>$assignurl,
+					'title'=>$assign->assignmentname,
+					'date'=>$assign->date,
+					'due'=>$duedate,
+					'modified'=>$date,
+					'status'=>$assign->status,
+					'grade'=>get_string('graded', 'local_facebook')
+			);
+		} else {
+			$totaldata[] = array(
+					'id'=>$assign->id,
+					'image'=>FACEBOOK_IMAGE_ASSIGN,
+					'link'=>$assignurl,
+					'title'=>$assign->assignmentname,
+					'date'=>$assign->date,
+					'due'=>$duedate,
+					'modified'=>$date,
+					'status'=>$assign->status,
+					'grade'=>get_string('notgraded', 'local_facebook')
+			);
+		}
 	
-		$totaldata[] = array(
-				'image'=>FACEBOOK_IMAGE_ASSIGN,
-				'link'=>$assignurl,
-				'title'=>$assign->name,
-				'intro'=>$assign->intro,
-				'date'=>$assign->due,
-				'due'=>$assign->due,
-				'course'=>$assign->course,
-				'status'=>$assign->status,
-				'grade'=>$assign->grade,
-				'id'=>$assign->id
-		);
+		
 	}
-	*/
+	
 	// Returns the final array ordered by date to index.php
 	return record_sort($totaldata, 'date', 'true');
 }

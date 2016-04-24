@@ -139,7 +139,44 @@ if ($action == 'get_course_data') {
 	
 		else if ($module ['image'] == FACEBOOK_IMAGE_ASSIGN) {
 			$htmltable .= '<img src="images/assign.png">';
-			$assignid = $module ['id'];
+			$id = "assignid='".$module ['id']."'";
+			$component = 'assign';
+			
+			$assignmodal .= "<div class='modal fade' id='a".$module['id']."' tabindex='-1' role='dialog' aria-labelledby='modal'>
+								<div class='modal-dialog' role='document'>
+									<div class='modal-content'>
+										<div class='modal-title' align='center'><h4>".$module['title']."</h4></div>
+										<div class='modal-body' id='emarking-modal-body'>
+											<div class='row'>
+												<table class='table table-stripped'>
+													<tr>
+														<td><b>".get_string('submitstatus', 'local_facebook')."</b></td>
+														<td>".$module['status']."</td>
+													</tr>
+													<tr>
+														<td><b>".get_string('gradestatus', 'local_facebook')."</b></td>
+														<td>".$module['grade']."</td>
+													</tr>
+													<tr>
+														<td><b>".get_string('duedate', 'local_facebook')."</b></td>
+														<td>".$module['due']."</td>
+													</tr>
+													<tr>
+														<td><b>".get_string('lastmodified', 'local_facebook')."</b></td>
+														<td>".$module['modified']."</td>
+													</tr>
+												</table>
+											</div>
+										</div>
+										<div class='modal-footer'>
+											<a class='btn btn-primary' href='".$module['link']."' role='button'>".get_string('viewassign', 'local_facebook')."</a>
+											<button type='button' class='btn btn-default' data-dismiss='modal' component='close-modal'>Close</button>
+										</div>
+									</div>
+								</div>
+							</div>";
+			
+			$htmltable .= $assignmodal;
 		}
 		$htmltable .= "</td><td><a $link component=$component $id>".$module['title']."</a></td>
 		<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
@@ -170,6 +207,12 @@ if ($action == 'get_course_data') {
 					emarkingId = $(this).attr('emarkingid');
 			
 					$('#e' + emarkingId).modal();
+				}
+			
+				else if ($(this).attr('component') == 'assign') {
+					assignId = $(this).attr('assignid');
+			
+					$('#a' + assignId).modal();
 				}
 			
 				if(aclick == 'font-weight:bold'){			
