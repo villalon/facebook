@@ -34,7 +34,7 @@ $moodleid	  = optional_param ('moodleid', null , PARAM_RAW_TRIMMED);
 $courseid 	  = optional_param ('courseid', null , PARAM_RAW_TRIMMED);
 $discussionid = optional_param ('discussionid', null, PARAM_RAW_TRIMMED);
 $emarkingid   = optional_param ('emarkingid', null, PARAM_RAW_TRIMMED);
-//$lastvisit = optional_param ( 'lastvisit', null , PARAM_RAW_TRIMMED );
+$lastvisit    = optional_param ('lastvisit', null , PARAM_RAW_TRIMMED);
 
 if ($action == 'get_course_data') {
 	global $DB;
@@ -47,8 +47,9 @@ if ($action == 'get_course_data') {
 				<table class="tablesorter" border="0" width="100%" style="font-size: 13px; margin-left: 9px;">
 					<thead>
 						<tr>
-							<th width="3%" style="border-top-left-radius: 8px;"></th>
-							<th width="34%">Título</th>
+							<th width="1%" style="border-top-left-radius: 8px;"></th>
+							<th width="4%"></th>
+							<th width="32%">Título</th>
 							<th width="30%">De</th>
 							<th width="30%">Fecha</th>
 							<th width="3%" style="background-color: transparent"></th>
@@ -63,6 +64,13 @@ if ($action == 'get_course_data') {
 		$id = 0;
 		
 		$htmltable .= "<tr><td>";
+		
+		if ($module['date'] >= $lastvisit) {
+			$htmltable .= "<center><span class='glyphicon glyphicon-option-vertical' aria-hidden='true' style='color: #2a2a2a;'></span></center>&nbsp&nbsp";
+		}
+		
+		$htmltable .= "</td><td>";
+		
 		if ($module ['image'] == FACEBOOK_IMAGE_POST) {
 			$htmltable .= '<img src="images/post.png">';
 			$component = 'forum';
@@ -179,8 +187,14 @@ if ($action == 'get_course_data') {
 			
 			$htmltable .= $assignmodal;
 		}
-		$htmltable .= "</td><td><a $link component=$component $id>".$module['title']."</a></td>
-		<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
+		$htmltable .= "</td><td";
+		
+		if ($module['date'] >= $lastvisit) {
+			$htmltable .= "style='font-weight:bold;'";
+		}
+		
+		$htmltable .= "><a $link component=$component $id>".$module['title']."</a></td>
+				<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
 	}
 	
 	$htmltable .= "</tbody></table>";

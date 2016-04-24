@@ -198,6 +198,7 @@ if ($userfacebookinfo != false) {
 		var emarkingId = null;
 		var assignId = null;
 		var moodleId = "<?php echo $moodleid; ?>";
+		var lastVisit = "<?php echo $lastvisit; ?>";
 	
 		$("*", document.body).click(function(event) {
 			event.stopPropagation();
@@ -216,7 +217,7 @@ if ($userfacebookinfo != false) {
 	
 				// Ajax fix
 				jQuery.ajax({
-					url : "https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_course_data&moodleid=" + moodleId + "&courseid=" + courseId,
+					url : "https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_course_data&moodleid=" + moodleId + "&courseid=" + courseId + "&lastvisit=" + lastVisit,
 					async : true,
 					data : {},
 					success : function(response) {
