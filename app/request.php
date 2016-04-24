@@ -56,7 +56,7 @@ if ($action == 'get_course_data') {
 					</thead>
 					<tbody>';
 	if(empty($totaldata)){
-		$htmltable.= '<div class="col-md-12"><div class="alert alert-info" role="alert">No hay recursos dentro de este curso</div></div>';		
+		$htmltable.= '<tr><div class="col-md-12"><div class="alert alert-info" role="alert">No hay recursos dentro de este curso</div></div></tr>';		
 	}
 	else{
 	foreach ($totaldata as $module) {
