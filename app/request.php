@@ -43,15 +43,7 @@ if ($action == 'get_course_data') {
 	
 	$htmltable = "";
 	
-	
-	
-	if (empty($totaldata)) {
-		$htmltable .= '<div class="col-md-12"><div class="alert alert-info" role="alert">No hay recursos dentro de este curso</div></div>';
-	}
-	
-	else {
-		
-		$htmltable .= '<div align="center"><h2>'.$course->fullname.'</h2></div>
+	$htmltable .= '<div align="center"><h2>'.$course->fullname.'</h2></div>
 				<table class="tablesorter" border="0" width="100%" style="font-size: 13px; margin-left: 9px;">
 					<thead>
 						<tr>
@@ -64,145 +56,151 @@ if ($action == 'get_course_data') {
 						</tr>
 					</thead>
 					<tbody>';
+	
+	if (empty($totaldata)) {
+		$htmltable .= '<tr><div class="col-md-12"><div class="alert alert-info" role="alert">No hay recursos dentro de este curso</div></div><tr>';
+	}
+	
+	else {
+	
+	foreach ($totaldata as $module) {
+		$date = date ( "d/m/Y H:i", $module ['date'] );
+		$component = '';
+		$link = '';
+		$id = 0;
 		
-		foreach ($totaldata as $module) {
-			$date = date ( "d/m/Y H:i", $module ['date'] );
-			$component = '';
-			$link = '';
-			$id = 0;
+		$htmltable .= "<tr><td>";
+		
+		if ($module['date'] >= $lastvisit) {
+			$htmltable .= "<center><span class='glyphicon glyphicon-option-vertical' aria-hidden='true' style='color: #2a2a2a;'></span></center>&nbsp&nbsp";
+		}
+		
+		$htmltable .= "</td><td>";
+		
+		if ($module ['image'] == FACEBOOK_IMAGE_POST) {
+			$htmltable .= '<img src="images/post.png">';
+			$component = 'forum';
+			$link = "href='#'";
+			$id = "discussionid='".$module ['discussion']."'";
+		}
+	
+		else if ($module ['image'] == FACEBOOK_IMAGE_RESOURCE) {
+			$htmltable .= '<img src="images/resource.png">';
+			$link = "href='".$module['link']."' target='_blank'";
+		}
+	
+		else if ($module ['image'] == FACEBOOK_IMAGE_LINK) {
+			$htmltable .= '<img src="images/link.png">';
+			$link = "href='".$module['link']."' target='_blank'";
+		}
+	
+		else if ($module ['image'] == FACEBOOK_IMAGE_EMARKING) {
+			$htmltable .= '<img src="images/emarking.png">';
+			$component = 'emarking';
+			$link = "href='#'";
+			$id = "emarkingid='".$module['id']."'";
 			
-			$htmltable .= "<tr><td>";
+			$emarkingmodal = "<div class='modal fade' id='e".$module['id']."' tabindex='-1' role='dialog' aria-labelledby='modal'>
+								<div class='modal-dialog' role='document'>
+									<div class='modal-content'>
+										<div class='modal-title' align='center'><h4>".$module['title']."</h4></div>
+										<div class='modal-body' id='emarking-modal-body'>
+											<div class='row'>
+												<div class='col-md-4'>
+							  						<b>".get_string('name', 'local_facebook')."</b>
+								  					<br>".$module['from']."
+								  				</div>
+								  				<div class='col-md-3'>
+								  					<b>".get_string('grade', 'local_facebook')."</b>
+								  					<br>";
 			
-			if ($module['date'] >= $lastvisit) {
-				$htmltable .= "<center><span class='glyphicon glyphicon-option-vertical' aria-hidden='true' style='color: #2a2a2a;'></span></center>&nbsp&nbsp";
+			if($module['status'] >= 20) {
+				$emarkingmodal .= $module['grade'];
+			} else {
+				$emarkingmodal .= "-";
 			}
 			
-			$htmltable .= "</td><td>";
+			$emarkingmodal .= "</div>
+			  				<div class='col-md-3'>
+			  					<b>".get_string('status', 'local_facebook')."</b>
+			  					<br>";
+				
+			if($module['status'] >= 20) {
+				$emarkingmodal .= get_string('published', 'local_facebook');
+			} else if($module['status'] >= 10) {
+				$emarkingmodal .= get_string('submitted', 'local_facebook');
+			} else {
+				$emarkingmodal .= get_string('absent', 'local_facebook');
+			}
 			
-			if ($module ['image'] == FACEBOOK_IMAGE_POST) {
-				$htmltable .= '<img src="images/post.png">';
-				$component = 'forum';
-				$link = "href='#'";
-				$id = "discussionid='".$module ['discussion']."'";
-			}
-		
-			else if ($module ['image'] == FACEBOOK_IMAGE_RESOURCE) {
-				$htmltable .= '<img src="images/resource.png">';
-				$link = "href='".$module['link']."' target='_blank'";
-			}
-		
-			else if ($module ['image'] == FACEBOOK_IMAGE_LINK) {
-				$htmltable .= '<img src="images/link.png">';
-				$link = "href='".$module['link']."' target='_blank'";
-			}
-		
-			else if ($module ['image'] == FACEBOOK_IMAGE_EMARKING) {
-				$htmltable .= '<img src="images/emarking.png">';
-				$component = 'emarking';
-				$link = "href='#'";
-				$id = "emarkingid='".$module['id']."'";
-				
-				$emarkingmodal = "<div class='modal fade' id='e".$module['id']."' tabindex='-1' role='dialog' aria-labelledby='modal'>
-									<div class='modal-dialog' role='document'>
-										<div class='modal-content'>
-											<div class='modal-title' align='center'><h4>".$module['title']."</h4></div>
-											<div class='modal-body' id='emarking-modal-body'>
-												<div class='row'>
-													<div class='col-md-4'>
-								  						<b>".get_string('name', 'local_facebook')."</b>
-									  					<br>".$module['from']."
-									  				</div>
-									  				<div class='col-md-3'>
-									  					<b>".get_string('grade', 'local_facebook')."</b>
-									  					<br>";
-				
-				if($module['status'] >= 20) {
-					$emarkingmodal .= $module['grade'];
-				} else {
-					$emarkingmodal .= "-";
-				}
-				
-				$emarkingmodal .= "</div>
-				  				<div class='col-md-3'>
-				  					<b>".get_string('status', 'local_facebook')."</b>
-				  					<br>";
-					
-				if($module['status'] >= 20) {
-					$emarkingmodal .= get_string('published', 'local_facebook');
-				} else if($module['status'] >= 10) {
-					$emarkingmodal .= get_string('submitted', 'local_facebook');
-				} else {
-					$emarkingmodal .= get_string('absent', 'local_facebook');
-				}
-				
-				$emarkingmodal .= "</div>
-				  				<div class='col-md-2'>
-				  					<br>
-				  					<a href='".$module['link']."' target='_blank'>".get_string('viewexam', 'local_facebook')."</a>
-				  				</div>
-				  			</div>
-	  					</div>
-						<div class='modal-footer'>
-							<button type='button' class='btn btn-default' data-dismiss='modal' component='close-modal'>Close</button>
-						</div>
+			$emarkingmodal .= "</div>
+			  				<div class='col-md-2'>
+			  					<br>
+			  					<a href='".$module['link']."' target='_blank'>".get_string('viewexam', 'local_facebook')."</a>
+			  				</div>
+			  			</div>
+  					</div>
+					<div class='modal-footer'>
+						<button type='button' class='btn btn-default' data-dismiss='modal' component='close-modal'>Close</button>
 					</div>
 				</div>
-			</div>";
-				
-				$htmltable .= $emarkingmodal;
-			}
-		
-			else if ($module ['image'] == FACEBOOK_IMAGE_ASSIGN) {
-				$htmltable .= '<img src="images/assign.png">';
-				$id = "assignid='".$module ['id']."'";
-				$component = 'assign';
-				
-				$assignmodal = "<div class='modal fade' id='a".$module['id']."' tabindex='-1' role='dialog' aria-labelledby='modal'>
-									<div class='modal-dialog' role='document'>
-										<div class='modal-content'>
-											<div class='modal-title' align='center'><h4>".$module['title']."</h4></div>
-											<div class='modal-body' id='emarking-modal-body'>
-												<div class='row'>
-													<div class='col-md-5 col-md-offset-1'>
-														<b>".get_string('submitstatus', 'local_facebook')."</b>
-															<br>
-															<br>
-														<b>".get_string('gradestatus', 'local_facebook')."</b>
-															<br>
-															<br>
-														<b>".get_string('duedate', 'local_facebook')."</b>
-															<br>
-															<br>
-														<b>".get_string('lastmodified', 'local_facebook')."</b>
-													</div>
-													<div class='col-md-5'>
-														".$module['status']."
-															<br>
-															<br>
-														".$module['grade']."
-															<br>
-															<br>
-														".$module['due']."
-															<br>
-															<br>
-														".$module['modified']."
-													</div>
+			</div>
+		</div>";
+			
+			$htmltable .= $emarkingmodal;
+		}
+	
+		else if ($module ['image'] == FACEBOOK_IMAGE_ASSIGN) {
+			$htmltable .= '<img src="images/assign.png">';
+			$id = "assignid='".$module ['id']."'";
+			$component = 'assign';
+			
+			$assignmodal = "<div class='modal fade' id='a".$module['id']."' tabindex='-1' role='dialog' aria-labelledby='modal'>
+								<div class='modal-dialog' role='document'>
+									<div class='modal-content'>
+										<div class='modal-title' align='center'><h4>".$module['title']."</h4></div>
+										<div class='modal-body' id='emarking-modal-body'>
+											<div class='row'>
+												<div class='col-md-5 col-md-offset-1'>
+													<b>".get_string('submitstatus', 'local_facebook')."</b>
+														<br>
+														<br>
+													<b>".get_string('gradestatus', 'local_facebook')."</b>
+														<br>
+														<br>
+													<b>".get_string('duedate', 'local_facebook')."</b>
+														<br>
+														<br>
+													<b>".get_string('lastmodified', 'local_facebook')."</b>
+												</div>
+												<div class='col-md-5'>
+													".$module['status']."
+														<br>
+														<br>
+													".$module['grade']."
+														<br>
+														<br>
+													".$module['due']."
+														<br>
+														<br>
+													".$module['modified']."
 												</div>
 											</div>
-											<div class='modal-footer'>
-												<a class='btn btn-primary' href='".$module['link']."' role='button' target='_blank'>".get_string('viewassign', 'local_facebook')."</a>
-												<button type='button' class='btn btn-default' data-dismiss='modal' component='close-modal'>Close</button>
-											</div>
+										</div>
+										<div class='modal-footer'>
+											<a class='btn btn-primary' href='".$module['link']."' role='button' target='_blank'>".get_string('viewassign', 'local_facebook')."</a>
+											<button type='button' class='btn btn-default' data-dismiss='modal' component='close-modal'>Close</button>
 										</div>
 									</div>
-								</div>";
-				
-				$htmltable .= $assignmodal;
-			}
-			$htmltable .= "</td><td><a $link component=$component $id>".$module['title']."</a></td>
-					<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
+								</div>
+							</div>";
+			
+			$htmltable .= $assignmodal;
 		}
-		}
+		$htmltable .= "</td><td><a $link component=$component $id>".$module['title']."</a></td>
+				<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
+	}
+	}
 	$htmltable .= "</tbody></table>";
 	
 	$jsfunction = "<script>
