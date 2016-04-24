@@ -193,13 +193,7 @@ if ($action == 'get_course_data') {
 			
 			$htmltable .= $assignmodal;
 		}
-		$htmltable .= "</td><td><a $link component=$component $id ";
-		
-//		if ($module['date'] >= $lastvisit) {
-//			$htmltable .= "style='font-weight: bold;'";
-//		}
-		
-		$htmltable .= ">".$module['title']."</a></td>
+		$htmltable .= "</td><td><a $link component=$component $id>".$module['title']."</a></td>
 				<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
 	}
 	}
@@ -208,7 +202,7 @@ if ($action == 'get_course_data') {
 	$jsfunction = "<script>
 			$('a').click(function () {
 				var aclick = $(this).attr('style');
-				var badgecourseid = $('button[courseid='+courseid+']).parent().find('.badge');
+				var badgecourseid = $('button[courseid=".'+courseid+'."]).parent().find('.badge');
 			
 				if ($(this).attr('component') == 'forum') {
 					discussionId = $(this).attr('discussionid');
