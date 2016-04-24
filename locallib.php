@@ -217,10 +217,10 @@ function get_course_data ($moodleid, $courseid) {
 	$datapostsql = "SELECT fp.id AS postid, us.firstname AS firstname, us.lastname AS lastname, fp.subject AS subject,
 			fp.modified AS modified, discussions.course AS course, discussions.id AS dis_id 
 			FROM {forum_posts} AS fp
-			INNER JOIN {forum_discussions} AS discussions ON (fp.discussion=discussions.id AND discussions.course = ?)
-			INNER JOIN {forum} AS forum ON (forum.id=discussions.forum)
-			INNER JOIN {user} AS us ON (us.id=discussions.userid)
-			INNER JOIN {course_modules} AS cm ON (cm.instance=forum.id)
+			INNER JOIN {forum_discussions} AS discussions ON (fp.discussion = discussions.id AND discussions.course = ?)
+			INNER JOIN {forum} AS forum ON (forum.id = discussions.forum)
+			INNER JOIN {user} AS us ON (us.id = fp.userid)
+			INNER JOIN {course_modules} AS cm ON (cm.instance = forum.id)
 			WHERE cm.visible = ? 
 			GROUP BY fp.id";
 	
@@ -322,10 +322,29 @@ function get_course_data ($moodleid, $courseid) {
 	echo "<h3>$count</h3>";
 	*/
 	
-	$sqlparams = array(
-			FACEBOOK_COURSE_MODULE_VISIBLE,
+	$dataassignmentsql = "SELECT a.id AS id,
+			s.status AS status,
+			a.timemodified AS date,
+			a.duedate AS duedate,
+			s.timemodified AS lastmodified,
+			a.name AS assignmentname,
+			cm.id AS moduleid
+			FROM {assign} AS a
+			INNER JOIN {course} AS c ON (a.course = c.id AND c.id = ?)
+			INNER JOIN {enrol} AS e ON (c.id = e.courseid)
+			INNER JOIN {user_enrolments} AS ue ON (e.id = ue.enrolid AND ue.userid = ?)
+			INNER JOIN {course_modules} AS cm ON (c.id = cm.course AND cm.module = ? AND cm.visible = ?)
+			INNER JOIN {assign_submission} AS s ON (a.id = s.assignment)
+			GROUP BY a.id";
+	
+	$paramsassignment = array(
+			$courseid,
+			$moodleid,
+			MODULE_ASSIGN,
 			FACEBOOK_COURSE_MODULE_VISIBLE
 	);
+	
+	$dataassign = $DB->get_records_sql($dataassignmentsql, $paramsassignment);
 	
 	//$assignparams = array_merge($userid,$param,$sqlparams,$userid);	
 	//$dataassign = $DB->get_records_sql($dataassignmentsql, $assignparams);
@@ -400,26 +419,49 @@ function get_course_data ($moodleid, $courseid) {
 				'teacherid'=>$emarking->teacher
 		);
 	}
-	/*
+	
 	foreach($dataassign as $assign){
 		$assignurl = new moodle_url('/mod/assign/view.php', array(
 				'id'=>$assign->moduleid
 		));
+		
+		$duedate = date("d/m H:i", $assign->duedate);
+		$date = date("d/m H:i", $assign->lastmodified);
+		
+		if ($DB->record_exists('assign_grades', array(
+				'assignment' => $assign->id,
+				'userid' => $moodleid
+		))) {
+			$totaldata[] = array(
+					'id'=>$assign->id,
+					'image'=>FACEBOOK_IMAGE_ASSIGN,
+					'link'=>$assignurl,
+					'title'=>$assign->assignmentname,
+					'date'=>$assign->date,
+					'due'=>$duedate,
+					'from'=>'',
+					'modified'=>$date,
+					'status'=>$assign->status,
+					'grade'=>get_string('graded', 'local_facebook')
+			);
+		} else {
+			$totaldata[] = array(
+					'id'=>$assign->id,
+					'image'=>FACEBOOK_IMAGE_ASSIGN,
+					'link'=>$assignurl,
+					'title'=>$assign->assignmentname,
+					'date'=>$assign->date,
+					'due'=>$duedate,
+					'from'=>'',
+					'modified'=>$date,
+					'status'=>$assign->status,
+					'grade'=>get_string('notgraded', 'local_facebook')
+			);
+		}
 	
-		$totaldata[] = array(
-				'image'=>FACEBOOK_IMAGE_ASSIGN,
-				'link'=>$assignurl,
-				'title'=>$assign->name,
-				'intro'=>$assign->intro,
-				'date'=>$assign->due,
-				'due'=>$assign->due,
-				'course'=>$assign->course,
-				'status'=>$assign->status,
-				'grade'=>$assign->grade,
-				'id'=>$assign->id
-		);
+		
 	}
-	*/
+	
 	// Returns the final array ordered by date to index.php
 	return record_sort($totaldata, 'date', 'true');
 }

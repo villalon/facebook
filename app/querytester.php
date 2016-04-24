@@ -37,6 +37,7 @@ $totalstart = microtime(TRUE);
 $moodleid = $USER->id;
 $course = $DB->get_record('course', array('fullname' => 'Curso de gente'));
 
+echo $moodleid."<br>";
 echo "Id: ".$course->id."<br> Course: ".$course->fullname."<br>";
 
 
@@ -256,5 +257,31 @@ echo "</tbody></table> <br>";
 
 $totalend = microtime(TRUE);
 $totaltime = $totalend - $totalstart;
+
+$emarkingsql = "SELECT CONCAT(s.id,e.id,s.grade) AS ids,
+			s.id AS id, 
+			e.id AS emarkingid, 
+			e.course AS course,
+			e.name AS testname,
+			d.grade AS grade,
+			d.status AS status,
+			d.timemodified AS date,
+			s.teacher AS teacher,
+			cm.id as moduleid,
+			CONCAT(u.firstname,' ',u.lastname) AS user
+			FROM {emarking_draft} AS d JOIN {emarking} AS e ON (e.id = d.emarkingid AND e.type in (1,5,0))
+			INNER JOIN {emarking_submission} AS s ON (d.submissionid = s.id AND d.status IN (20,30,35,40) AND s.student = ?)
+			INNER JOIN {user} AS u ON (u.id = s.student)
+			INNER JOIN {course_modules} AS cm ON (cm.instance = e.id AND cm.course = 10)
+			INNER JOIN {modules} AS m ON (cm.module = m.id AND m.name = 'emarking')";
+
+$paramsemarking = array(
+		$moodleid,
+//		$emarkingid
+);
+
+$emarkingdata = $DB->get_records_sql($emarkingsql, array(1));
+
+var_dump($emarkingdata);
 
 echo "Total time: ".$totaltime." s";
