@@ -147,24 +147,26 @@ if ($action == 'get_course_data') {
 										<div class='modal-title' align='center'><h4>".$module['title']."</h4></div>
 										<div class='modal-body' id='emarking-modal-body'>
 											<div class='row'>
-												<table class='table table-stripped'>
-													<tr>
-														<td><b>".get_string('submitstatus', 'local_facebook')."</b></td>
-														<td>".$module['status']."</td>
-													</tr>
-													<tr>
-														<td><b>".get_string('gradestatus', 'local_facebook')."</b></td>
-														<td>".$module['grade']."</td>
-													</tr>
-													<tr>
-														<td><b>".get_string('duedate', 'local_facebook')."</b></td>
-														<td>".$module['due']."</td>
-													</tr>
-													<tr>
-														<td><b>".get_string('lastmodified', 'local_facebook')."</b></td>
-														<td>".$module['modified']."</td>
-													</tr>
-												</table>
+												<div class='col-md-10 col-md-offset-1'>
+													<table class='table table-bordered'>
+														<tr>
+															<td><b>".get_string('submitstatus', 'local_facebook')."</b></td>
+															<td>".$module['status']."</td>
+														</tr>
+														<tr>
+															<td><b>".get_string('gradestatus', 'local_facebook')."</b></td>
+															<td>".$module['grade']."</td>
+														</tr>
+														<tr>
+															<td><b>".get_string('duedate', 'local_facebook')."</b></td>
+															<td>".$module['due']."</td>
+														</tr>
+														<tr>
+															<td><b>".get_string('lastmodified', 'local_facebook')."</b></td>
+															<td>".$module['modified']."</td>
+														</tr>
+													</table>
+												</div>
 											</div>
 										</div>
 										<div class='modal-footer'>
