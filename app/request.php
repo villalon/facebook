@@ -61,7 +61,6 @@ if ($action == 'get_course_data') {
 		$component = '';
 		$link = '';
 		$id = 0;
-		$emarkingmodal = '';
 		
 		$htmltable .= "<tr><td>";
 		if ($module ['image'] == FACEBOOK_IMAGE_POST) {
@@ -87,7 +86,7 @@ if ($action == 'get_course_data') {
 			$link = "href='#'";
 			$id = "emarkingid='".$module['id']."'";
 			
-			$emarkingmodal .= "<div class='modal fade' id='e".$module['id']."' tabindex='-1' role='dialog' aria-labelledby='modal'>
+			$emarkingmodal = "<div class='modal fade' id='e".$module['id']."' tabindex='-1' role='dialog' aria-labelledby='modal'>
 								<div class='modal-dialog' role='document'>
 									<div class='modal-content'>
 										<div class='modal-title' align='center'><h4>".$module['title']."</h4></div>
@@ -142,7 +141,7 @@ if ($action == 'get_course_data') {
 			$id = "assignid='".$module ['id']."'";
 			$component = 'assign';
 			
-			$assignmodal .= "<div class='modal fade' id='a".$module['id']."' tabindex='-1' role='dialog' aria-labelledby='modal'>
+			$assignmodal = "<div class='modal fade' id='a".$module['id']."' tabindex='-1' role='dialog' aria-labelledby='modal'>
 								<div class='modal-dialog' role='document'>
 									<div class='modal-content'>
 										<div class='modal-title' align='center'><h4>".$module['title']."</h4></div>
