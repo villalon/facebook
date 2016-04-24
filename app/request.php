@@ -164,18 +164,24 @@ if ($action == 'get_course_data') {
 												<div class='col-md-5 col-md-offset-1'>
 													<b>".get_string('submitstatus', 'local_facebook')."</b>
 														<br>
+														<br>
 													<b>".get_string('gradestatus', 'local_facebook')."</b>
 														<br>
+														<br>
 													<b>".get_string('duedate', 'local_facebook')."</b>
+														<br>
 														<br>
 													<b>".get_string('lastmodified', 'local_facebook')."</b>
 												</div>
 												<div class='col-md-5'>
 													".$module['status']."
 														<br>
+														<br>
 													".$module['grade']."
 														<br>
+														<br>
 													".$module['due']."
+														<br>
 														<br>
 													".$module['modified']."
 												</div>
