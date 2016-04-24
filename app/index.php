@@ -181,15 +181,6 @@ if ($userfacebookinfo != false) {
 	?>
 	
 	<!-- Display engine -->
-	<script>
-	$(document).ready(function () {
-	    $(document).ajaxStart(function () {
-	        $("#loadinggif").show();
-	    }).ajaxStop(function () {
-	        $("#loadinggif").hide();
-	    });
-	});
-	</script>
 
 	<script type="text/javascript">
 	$(document).ready(function () {
@@ -219,12 +210,18 @@ if ($userfacebookinfo != false) {
 					url : "https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_course_data&moodleid=" + moodleId + "&courseid=" + courseId,
 					async : true,
 					data : {},
+					   beforeSend: function(){
+						   $("#loadinggif").show();
+						   },
 					success : function(response) {
 						$('#table-body').empty();
 						$('#table-body').hide();
 						$('#table-body').append('<div>' + response + '</div>');
 						$('#table-body').fadeIn(300);
-					}
+					},
+					   complete: function(){
+						   $("#loadinggif").hide();
+						   }
 				});
 			}		
  				 			
