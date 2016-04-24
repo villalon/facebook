@@ -428,6 +428,12 @@ function get_course_data ($moodleid, $courseid) {
 		$duedate = date("d/m H:i", $assign->duedate);
 		$date = date("d/m H:i", $assign->lastmodified);
 		
+		if ($assign->status == 'submitted') {
+			$status = get_string('submitted', 'local_facebook');
+		} else {
+			$status = get_string('notsubmitted', 'local_facebook');
+		}
+		
 		if ($DB->record_exists('assign_grades', array(
 				'assignment' => $assign->id,
 				'userid' => $moodleid
@@ -441,7 +447,7 @@ function get_course_data ($moodleid, $courseid) {
 					'due'=>$duedate,
 					'from'=>'',
 					'modified'=>$date,
-					'status'=>$assign->status,
+					'status'=>$status,
 					'grade'=>get_string('graded', 'local_facebook')
 			);
 		} else {
@@ -454,7 +460,7 @@ function get_course_data ($moodleid, $courseid) {
 					'due'=>$duedate,
 					'from'=>'',
 					'modified'=>$date,
-					'status'=>$assign->status,
+					'status'=>$status,
 					'grade'=>get_string('notgraded', 'local_facebook')
 			);
 		}

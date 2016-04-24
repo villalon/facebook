@@ -71,3 +71,4 @@ $string["lastmodified"] = "Última modificación";
 $string["notgraded"] = "Sin calificar";
 $string["graded"] = "Calificado";
 $string["viewassign"] = "Ver Tarea";
+$string["notsubmitted"] = "No enviada";
