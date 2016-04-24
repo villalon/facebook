@@ -57,6 +57,12 @@ if ($action == 'get_course_data') {
 					</thead>
 					<tbody>';
 	
+	if (empty($totaldata)) {
+		$htmltable .= '<tr><div class="col-md-12"><div class="alert alert-info" role="alert">No hay recursos dentro de este curso</div></div><tr>';
+	}
+	
+	else {
+	
 	foreach ($totaldata as $module) {
 		$date = date ( "d/m/Y H:i", $module ['date'] );
 		$component = '';
@@ -155,8 +161,8 @@ if ($action == 'get_course_data') {
 										<div class='modal-title' align='center'><h4>".$module['title']."</h4></div>
 										<div class='modal-body' id='emarking-modal-body'>
 											<div class='row'>
-												<div class='col-md-10 col-md-offset-1'>
-													<table class='table table-bordered'>
+												<div class='col-md-10 col-md-offset-1 table-responsive'>
+													<table class='table table-stripped table-bordered'>
 														<tr>
 															<td><b>".get_string('submitstatus', 'local_facebook')."</b></td>
 															<td>".$module['status']."</td>
@@ -196,7 +202,7 @@ if ($action == 'get_course_data') {
 		$htmltable .= ">".$module['title']."</a></td>
 				<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
 	}
-	
+	}
 	$htmltable .= "</tbody></table>";
 	
 	$jsfunction = "<script>
