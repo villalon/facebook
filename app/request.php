@@ -43,22 +43,25 @@ if ($action == 'get_course_data') {
 	
 	$htmltable = "";
 	
-	$htmltable .= '<div align="center"><h2>'.$course->fullname.'</h2></div>
-				<table class="tablesorter" border="0" width="100%" style="font-size: 13px; margin-left: 9px;">
-					<thead>
-						<tr>
-							<th width="3%" style="border-top-left-radius: 8px;"></th>
-							<th width="34%">Título</th>
-							<th width="30%">De</th>
-							<th width="30%">Fecha</th>
-							<th width="3%" style="background-color: transparent"></th>
-						</tr>
-					</thead>
-					<tbody>';
+
 	if(empty($totaldata)){
-		$htmltable.= '<tr><div class="col-md-12"><div class="alert alert-info" role="alert">No hay recursos dentro de este curso</div></div></tr>';		
+		$htmltable.= '<div align="center"><h2>'.$course->fullname.'</h2></div>											
+				<div class="col-md-12"><div class="alert alert-info" role="alert">No hay recursos dentro de este curso</div></div>';		
 	}
 	else{
+	$htmltable .= '<div align="center"><h2>'.$course->fullname.'</h2></div>
+			<table class="tablesorter" border="0" width="100%" style="font-size: 13px; margin-left: 9px;">
+				<thead>
+					<tr>
+						<th width="3%" style="border-top-left-radius: 8px;"></th>
+						<th width="34%">Título</th>
+						<th width="30%">De</th>
+						<th width="30%">Fecha</th>
+						<th width="3%" style="background-color: transparent"></th>
+					</tr>
+				</thead>
+				<tbody>';
+		
 	foreach ($totaldata as $module) {
 		$date = date ( "d/m/Y H:i", $module ['date'] );
 		$component = '';
