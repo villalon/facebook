@@ -159,26 +159,25 @@ if ($action == 'get_course_data') {
 								<div class='modal-dialog' role='document'>
 									<div class='modal-content'>
 										<div class='modal-title' align='center'><h4>".$module['title']."</h4></div>
-											<div class='modal-body' id='emarking-modal-body'>
-												<div class='row'>
-													<div class='col-md-5 col-md-offset-1'>
-														<b>".get_string('submitstatus', 'local_facebook')."</b>
-															<br>
-														<b>".get_string('gradestatus', 'local_facebook')."</b>
-															<br>
-														<b>".get_string('duedate', 'local_facebook')."</b>
-															<br>
-														<b>".get_string('lastmodified', 'local_facebook')."</b>
-													</div>
-													<div class='col-md-5'>
-														".$module['status']."
-															<br>
-														".$module['grade']."
-															<br>
-														".$module['due']."
-															<br>
-														".$module['modified']."
-													</div>
+										<div class='modal-body' id='emarking-modal-body'>
+											<div class='row'>
+												<div class='col-md-5 col-md-offset-1'>
+													<b>".get_string('submitstatus', 'local_facebook')."</b>
+														<br>
+													<b>".get_string('gradestatus', 'local_facebook')."</b>
+														<br>
+													<b>".get_string('duedate', 'local_facebook')."</b>
+														<br>
+													<b>".get_string('lastmodified', 'local_facebook')."</b>
+												</div>
+												<div class='col-md-5'>
+													".$module['status']."
+														<br>
+													".$module['grade']."
+														<br>
+													".$module['due']."
+														<br>
+													".$module['modified']."
 												</div>
 											</div>
 										</div>
