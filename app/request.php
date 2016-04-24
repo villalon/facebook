@@ -202,7 +202,7 @@ if ($action == 'get_course_data') {
 	$jsfunction = "<script>
 			$('a').click(function () {
 				var aclick = $(this).attr('style');
-				var badgecourseid = $('button[courseid=".'+courseid+'."]).parent().find('.badge');
+				var badgecourseid = $('button[courseid='".'"+courseid+"'."']).parent().find('.badge');
 			
 				if ($(this).attr('component') == 'forum') {
 					discussionId = $(this).attr('discussionid');
