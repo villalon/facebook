@@ -159,27 +159,26 @@ if ($action == 'get_course_data') {
 								<div class='modal-dialog' role='document'>
 									<div class='modal-content'>
 										<div class='modal-title' align='center'><h4>".$module['title']."</h4></div>
-										<div class='modal-body' id='emarking-modal-body'>
-											<div class='row'>
-												<div class='col-md-10 col-md-offset-1 table-responsive'>
-													<table class='table table-stripped table-bordered'>
-														<tr>
-															<td><b>".get_string('submitstatus', 'local_facebook')."</b></td>
-															<td>".$module['status']."</td>
-														</tr>
-														<tr>
-															<td><b>".get_string('gradestatus', 'local_facebook')."</b></td>
-															<td>".$module['grade']."</td>
-														</tr>
-														<tr>
-															<td><b>".get_string('duedate', 'local_facebook')."</b></td>
-															<td>".$module['due']."</td>
-														</tr>
-														<tr>
-															<td><b>".get_string('lastmodified', 'local_facebook')."</b></td>
-															<td>".$module['modified']."</td>
-														</tr>
-													</table>
+											<div class='modal-body' id='emarking-modal-body'>
+												<div class='row'>
+													<div class='col-md-5 col-md-offset-1'>
+														<b>".get_string('submitstatus', 'local_facebook')."</b>
+															<br>
+														<b>".get_string('gradestatus', 'local_facebook')."</b>
+															<br>
+														<b>".get_string('duedate', 'local_facebook')."</b>
+															<br>
+														<b>".get_string('lastmodified', 'local_facebook')."</b>
+													</div>
+													<div class='col-md-5'>
+														".$module['status']."
+															<br>
+														".$module['grade']."
+															<br>
+														".$module['due']."
+															<br>
+														".$module['modified']."
+													</div>
 												</div>
 											</div>
 										</div>
@@ -202,6 +201,7 @@ if ($action == 'get_course_data') {
 	$jsfunction = "<script>
 			$('a').click(function () {
 				var aclick = $(this).attr('style');
+				var badgecourseid = $('button[courseid='".'"+courseid+"'."']).parent().find('.badge');
 			
 				if ($(this).attr('component') == 'forum') {
 					discussionId = $(this).attr('discussionid');
