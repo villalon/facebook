@@ -168,7 +168,7 @@ if ($action == 'get_course_data') {
 											</div>
 										</div>
 										<div class='modal-footer'>
-											<a class='btn btn-primary' href='".$module['link']."' role='button'>".get_string('viewassign', 'local_facebook')."</a>
+											<a class='btn btn-primary' href='".$module['link']."' role='button' target='_blank'>".get_string('viewassign', 'local_facebook')."</a>
 											<button type='button' class='btn btn-default' data-dismiss='modal' component='close-modal'>Close</button>
 										</div>
 									</div>

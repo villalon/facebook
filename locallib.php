@@ -439,6 +439,7 @@ function get_course_data ($moodleid, $courseid) {
 					'title'=>$assign->assignmentname,
 					'date'=>$assign->date,
 					'due'=>$duedate,
+					'from'=>'',
 					'modified'=>$date,
 					'status'=>$assign->status,
 					'grade'=>get_string('graded', 'local_facebook')
@@ -451,6 +452,7 @@ function get_course_data ($moodleid, $courseid) {
 					'title'=>$assign->assignmentname,
 					'date'=>$assign->date,
 					'due'=>$duedate,
+					'from'=>'',
 					'modified'=>$date,
 					'status'=>$assign->status,
 					'grade'=>get_string('notgraded', 'local_facebook')
