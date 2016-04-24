@@ -68,3 +68,7 @@ $string["gradestatus"] = "Grading status";
 $string["duedate"] = "Due date";
 $string["timeleft"] = "Time remaining";
 $string["lastmodified"] = "Last modified";
+$string["notgraded"] = "Not graded";
+$string["graded"] = "Graded";
+$string["viewassign"] = "View Assignment";
+$string["notsubmitted"] = "Not submitted";

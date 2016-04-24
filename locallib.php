@@ -13,13 +13,14 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle. If not, see <http://www.gnu.org/licenses/>.
-
 /**
- * @package local_facebook
- * @copyright 2015 Xiu-Fong Lin (xlin@alumnos.uai.cl)
- * @copyright 2015 Mihail Pozarski (mipozarski@alumnos.uai.cl)
- * @copyright 2015 Hans Jeria (hansjeria@gmail.com)
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    local
+ * @subpackage facebook
+ * @copyright  2015 Xiu-Fong Lin (xlin@alumnos.uai.cl)
+ * @copyright  2015 Mihail Pozarski (mipozarski@alumnos.uai.cl)
+ * @copyright  2015 Hans Jeria (hansjeria@gmail.com)
+ * @copyright  2016 Mark Michaelsen (mmichaelsen678@gmail.com)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
 /**
@@ -37,10 +38,8 @@ define('FACEBOOK_IMAGE_RESOURCE', 'resource');
 define('FACEBOOK_IMAGE_LINK', 'link');
 define('FACEBOOK_IMAGE_EMARKING', 'emarking');
 define('FACEBOOK_IMAGE_ASSIGN', 'assign');
-
 define('MODULE_EMARKING', 24);
 define('MODULE_ASSIGN', 1);
-
 /**
  * This function gets al the notification pending since the last check.
  * @param $sqlin from get_in_or_equal used in "IN ('')" clause    
@@ -205,74 +204,60 @@ function record_sort($records, $field, $reverse = false){
  * @param $param from get_in_or_equal parameters      	
  * @return array
  */
-function get_data_post_resource_link($sqlin, $param, $moodleid){
-	global $DB,$USER;
+function get_course_data ($moodleid, $courseid) {
+	global $DB;
 	
 	// Parameters for post query
-	$datapostparams = array(
+	$paramspost = array(
+			$courseid,
 			FACEBOOK_COURSE_MODULE_VISIBLE
 	);
-	// Merge with the params that the function brings
-	$paramspost = array_merge($param, $datapostparams);
 	
 	// Query for the posts information
 	$datapostsql = "SELECT fp.id AS postid, us.firstname AS firstname, us.lastname AS lastname, fp.subject AS subject,
 			fp.modified AS modified, discussions.course AS course, discussions.id AS dis_id 
 			FROM {forum_posts} AS fp
-			INNER JOIN {forum_discussions} AS discussions ON (fp.discussion=discussions.id)
-			INNER JOIN {forum} AS forum ON (forum.id=discussions.forum)
-			INNER JOIN {user} AS us ON (us.id=discussions.userid)
-			INNER JOIN {course_modules} AS cm ON (cm.instance=forum.id)
-			WHERE discussions.course $sqlin AND cm.visible = ?
+			INNER JOIN {forum_discussions} AS discussions ON (fp.discussion = discussions.id AND discussions.course = ?)
+			INNER JOIN {forum} AS forum ON (forum.id = discussions.forum)
+			INNER JOIN {user} AS us ON (us.id = fp.userid)
+			INNER JOIN {course_modules} AS cm ON (cm.instance = forum.id)
+			WHERE cm.visible = ? 
 			GROUP BY fp.id";
 	
 	// Get the data from the above query
 	$datapost = $DB->get_records_sql($datapostsql, $paramspost);
 	
 	// Parameters for resource query
-	$dataresourcesparams = array(
-			'resource',
-			FACEBOOK_COURSE_MODULE_VISIBLE
+	$paramsresource = array(
+			$courseid,
+			FACEBOOK_COURSE_MODULE_VISIBLE,
+			'resource'
 	);
-	// Merge with the params that the function brings
-	$paramsresource = array_merge($param, $dataresourcesparams);
 	
 	// Query for the resource information
 	$dataresourcesql = "SELECT cm.id AS coursemoduleid, r.id AS resourceid, r.name AS resourcename, r.timemodified, 
-			  r.course AS resourcecourse, cm.visible, cm.visibleold, CONCAT(u.firstname,' ',u.lastname) as user
+			  r.course AS resourcecourse, cm.visible, cm.visibleold
 			  FROM {resource} AS r 
-              INNER JOIN {course_modules} AS cm ON (cm.instance = r.id)
-              INNER JOIN {modules} AS m ON (cm.module = m.id)
-              LEFT JOIN {logstore_standard_log} AS log ON (log.objectid = cm.id AND log.action = 'created' AND log.target = 'course_module')
-              INNER JOIN {user} AS u ON (u.id = log.userid)
-			  WHERE r.course $sqlin 
-			  AND m.name IN (?) 
-			  AND cm.visible = ?
+              INNER JOIN {course_modules} AS cm ON (cm.instance = r.id AND cm.course = ? AND cm.visible = ?)
+              INNER JOIN {modules} AS m ON (cm.module = m.id AND m.name = ?)
               GROUP BY cm.id";
-
 	// Get the data from the above query
 	$dataresource = $DB->get_records_sql($dataresourcesql, $paramsresource);
 	
 	// Parameters for the link query
-	$datalinkparams = array(
-			'url',
-			FACEBOOK_COURSE_MODULE_VISIBLE
+	$paramslink = array(
+			$courseid,
+			FACEBOOK_COURSE_MODULE_VISIBLE,
+			'url'
 	);
-	// Merge with the params that the function brings
-	$paramslink = array_merge($param, $datalinkparams);
 	
 	//query for the link information
 	$datalinksql="SELECT url.id AS id, url.name AS urlname, url.externalurl AS externalurl, url.timemodified AS timemodified,
-	          url.course AS urlcourse, cm.visible AS visible, cm.visibleold AS visibleold, CONCAT(u.firstname,' ',u.lastname) as user
+	          url.course AS urlcourse, cm.visible AS visible, cm.visibleold AS visibleold
 		      FROM {url} AS url
-              INNER JOIN {course_modules} AS cm ON (cm.instance = url.id)
-              INNER JOIN {modules} AS m ON (cm.module = m.id)
-              LEFT JOIN {logstore_standard_log} AS log ON (log.objectid = cm.id AND log.action = 'created' AND log.target = 'course_module')
-              INNER JOIN {user} AS u ON (u.id = log.userid)
-		      WHERE url.course $sqlin 
-		      AND m.name IN (?)
-		      AND cm.visible = ?
-                      GROUP BY url.id";
+              INNER JOIN {course_modules} AS cm ON (cm.instance = url.id AND cm.course = ? AND cm.visible = ?)
+              INNER JOIN {modules} AS m ON (cm.module = m.id AND m.name = ?)
+              GROUP BY url.id";
 	
 	// Get the data from the above query
 	$datalink = $DB->get_records_sql($datalinksql, $paramslink);
@@ -289,17 +274,20 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 			s.teacher AS teacher,
 			cm.id as moduleid,
 			CONCAT(u.firstname,' ',u.lastname) AS user
-			FROM {emarking_draft} AS d JOIN {emarking} AS e ON (e.id = d.emarkingid AND e.course $sqlin AND e.type in (1,5,0))
-			JOIN {emarking_submission} AS s ON (d.submissionid = s.id AND d.status IN (20,30,35,40) AND s.student = ?)
-			JOIN {user} AS u ON (u.id = s.student)
-			JOIN {course_modules} AS cm ON (cm.instance = e.id AND cm.course  $sqlin)
-			JOIN {modules} AS m ON (cm.module = m.id AND m.name = 'emarking')";
+			FROM {emarking_draft} AS d JOIN {emarking} AS e ON (e.id = d.emarkingid AND e.type in (1,5,0))
+			INNER JOIN {emarking_submission} AS s ON (d.submissionid = s.id AND d.status IN (20,30,35,40) AND s.student = ?)
+			INNER JOIN {user} AS u ON (u.id = s.student)
+			INNER JOIN {course_modules} AS cm ON (cm.instance = e.id AND cm.course = ?)
+			INNER JOIN {modules} AS m ON (cm.module = m.id AND m.name = 'emarking')";
 	
 	//$emarkingparams = $param;
-	$emarkingparams = array_merge($param,array($moodleid),$param);
+	$paramsemarking = array(
+			$moodleid,
+			$courseid
+	);
 	
 	// Get the data from the query
-	$dataemarking = $DB->get_records_sql($dataemarkingsql, $emarkingparams);
+	$dataemarking = $DB->get_records_sql($dataemarkingsql, $paramsemarking);
 	
 	/*$dataassignmentsql = "SELECT CONCAT(a.id,a.duedate) AS ids,
 			a.id, 
@@ -334,10 +322,29 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 	echo "<h3>$count</h3>";
 	*/
 	
-	$sqlparams = array(
-			FACEBOOK_COURSE_MODULE_VISIBLE,
+	$dataassignmentsql = "SELECT a.id AS id,
+			s.status AS status,
+			a.timemodified AS date,
+			a.duedate AS duedate,
+			s.timemodified AS lastmodified,
+			a.name AS assignmentname,
+			cm.id AS moduleid
+			FROM {assign} AS a
+			INNER JOIN {course} AS c ON (a.course = c.id AND c.id = ?)
+			INNER JOIN {enrol} AS e ON (c.id = e.courseid)
+			INNER JOIN {user_enrolments} AS ue ON (e.id = ue.enrolid AND ue.userid = ?)
+			INNER JOIN {course_modules} AS cm ON (c.id = cm.course AND cm.module = ? AND cm.visible = ?)
+			INNER JOIN {assign_submission} AS s ON (a.id = s.assignment)
+			GROUP BY a.id";
+	
+	$paramsassignment = array(
+			$courseid,
+			$moodleid,
+			MODULE_ASSIGN,
 			FACEBOOK_COURSE_MODULE_VISIBLE
 	);
+	
+	$dataassign = $DB->get_records_sql($dataassignmentsql, $paramsassignment);
 	
 	//$assignparams = array_merge($userid,$param,$sqlparams,$userid);	
 	//$dataassign = $DB->get_records_sql($dataassignmentsql, $assignparams);
@@ -372,7 +379,7 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 					'image'=>FACEBOOK_IMAGE_RESOURCE,
 					'link'=>$resourceurl,
 					'title'=>$resource->resourcename,
-					'from'=>$resource->user,
+					'from'=>'',
 					'date'=>$resource->timemodified,
 					'course'=>$resource->resourcecourse 
 			);
@@ -387,7 +394,7 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 					'image'=>FACEBOOK_IMAGE_LINK,
 					'link'=>$link->externalurl,
 					'title'=>$link->urlname,
-					'from'=>$link->user,
+					'from'=>'',
 					'date'=>$link->timemodified,
 					'course'=>$link->urlcourse 
 			);
@@ -395,7 +402,6 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 	}
 	
 	foreach($dataemarking as $emarking){
-
 		$emarkingurl = new moodle_url('/mod/emarking/view.php', array(
 				'id' => $emarking->moduleid
 		));
@@ -413,49 +419,73 @@ function get_data_post_resource_link($sqlin, $param, $moodleid){
 				'teacherid'=>$emarking->teacher
 		);
 	}
-	/*
+	
 	foreach($dataassign as $assign){
 		$assignurl = new moodle_url('/mod/assign/view.php', array(
 				'id'=>$assign->moduleid
 		));
+		
+		$duedate = date("d/m H:i", $assign->duedate);
+		$date = date("d/m H:i", $assign->lastmodified);
+		
+		if ($assign->status == 'submitted') {
+			$status = get_string('submitted', 'local_facebook');
+		} else {
+			$status = get_string('notsubmitted', 'local_facebook');
+		}
+		
+		if ($DB->record_exists('assign_grades', array(
+				'assignment' => $assign->id,
+				'userid' => $moodleid
+		))) {
+			$totaldata[] = array(
+					'id'=>$assign->id,
+					'image'=>FACEBOOK_IMAGE_ASSIGN,
+					'link'=>$assignurl,
+					'title'=>$assign->assignmentname,
+					'date'=>$assign->date,
+					'due'=>$duedate,
+					'from'=>'',
+					'modified'=>$date,
+					'status'=>$status,
+					'grade'=>get_string('graded', 'local_facebook')
+			);
+		} else {
+			$totaldata[] = array(
+					'id'=>$assign->id,
+					'image'=>FACEBOOK_IMAGE_ASSIGN,
+					'link'=>$assignurl,
+					'title'=>$assign->assignmentname,
+					'date'=>$assign->date,
+					'due'=>$duedate,
+					'from'=>'',
+					'modified'=>$date,
+					'status'=>$status,
+					'grade'=>get_string('notgraded', 'local_facebook')
+			);
+		}
 	
-		$totaldata[] = array(
-				'image'=>FACEBOOK_IMAGE_ASSIGN,
-				'link'=>$assignurl,
-				'title'=>$assign->name,
-				'intro'=>$assign->intro,
-				'date'=>$assign->due,
-				'due'=>$assign->due,
-				'course'=>$assign->course,
-				'status'=>$assign->status,
-				'grade'=>$assign->grade,
-				'id'=>$assign->id
-		);
+		
 	}
-	*/
+	
 	// Returns the final array ordered by date to index.php
 	return record_sort($totaldata, 'date', 'true');
 }
-
 function facebook_connect_table_generator($facebook_id, $link, $first_name, $middle_name, $last_name, $appname) {
-
 	$imagetable = new html_table ();
 	$infotable = new html_table ();
-
 	$infotable->data [] = array (
 			get_string ( "fbktablename", "local_facebook" ),
 			$first_name." ".$middle_name." ".$last_name
 	);
-
 	$infotable->data [] = array (
 			get_string ( "profile", "local_facebook" ),
-			"<a href='" . $link . "' target=”_blank”>" . $link . "</a>"
+			"<a href='" . $link . "' target=_blank>" . $link . "</a>"
 	);
-
 	if ($appname != null) {
 		$infotable->data [] = array (
 				"Link a la app",
-				"<a href='http://apps.facebook.com/" . $appname . "' target=”_blank”>http://apps.facebook.com/" . $appname . "</a>"
+				"<a href='http://apps.facebook.com/" . $appname . "' target=_blank>http://apps.facebook.com/" . $appname . "</a>"
 		);
 	} else {
 		$infotable->data [] = array (
@@ -467,11 +497,9 @@ function facebook_connect_table_generator($facebook_id, $link, $first_name, $mid
 			"<img src='https://graph.facebook.com/" .$facebook_id . "/picture?type=large'>",
 			html_writer::table ($infotable)
 	);
-
 	echo html_writer::table ($imagetable);
 }
-
-function get_posts_from_discussion($discussionId) {
+function get_posts_from_discussion($discussionid) {
 	global $DB;
 	
 	$sql = "SELECT fp.id AS id, fp.subject AS subject, fp.message AS message, fp.created AS date, fp.parent AS parent, 
@@ -481,7 +509,7 @@ function get_posts_from_discussion($discussionId) {
 			WHERE fp.discussion = ? 
 			GROUP BY fp.id";
 	
-	$discussionData = $DB->get_records_sql($sql, array($discussionId));
+	$discussionData = $DB->get_records_sql($sql, array($discussionid));
 	
 	$data = array();
 	foreach($discussionData as $post) {
@@ -497,8 +525,6 @@ function get_posts_from_discussion($discussionId) {
 	
 	return $data;
 }
-
 function cmp($a, $b){
 	return strcmp ($b->totalnotifications, $a->totalnotifications);
 }
-

@@ -68,3 +68,7 @@ $string["gradestatus"] = "Estado de la calificación";
 $string["duedate"] = "Fecha de entrega";
 $string["timeleft"] = "Tiempo restante";
 $string["lastmodified"] = "Última modificación";
+$string["notgraded"] = "Sin calificar";
+$string["graded"] = "Calificado";
+$string["viewassign"] = "Ver Tarea";
+$string["notsubmitted"] = "No enviada";

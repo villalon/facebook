@@ -22,10 +22,11 @@
  * @copyright  2010 Jorge Villalon (http://villalon.cl)
  * @copyright  2015 Mihail Pozarski (mipozarski@alumnos.uai.cl)
  * @copyright  2015 Hans Jeria (hansjeria@gmail.com)
+ * @copyright  2016 Mark Michaelsen (mmichaelsen678@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-//define('CLI_SCRIPT', true);
+define('CLI_SCRIPT', true);
 
 require_once(dirname(dirname(dirname(dirname(__FILE__)))).'/config.php');
 require_once($CFG->dirroot."/local/facebook/app/Facebook/autoload.php");
@@ -42,7 +43,7 @@ use Facebook\FacebookRedirectLoginHelper;
 use Facebook\FacebookRequire;
 use Facebook\Facebook;
 use Facebook\Request;
-/*
+
 // now get cli options
 list($options, $unrecognized) = cli_get_params(array('help'=>false),
                                                array('h'=>'help'));
@@ -71,7 +72,7 @@ cli_heading('Facebook notifications'); // TODO: localize
 
 echo "\nSearching for new notifications\n";
 echo "\nStarting at ".date("F j, Y, G:i:s")."\n";
-*/
+
 // Define used lower in the querys
 define('FACEBOOK_NOTIFICATION_LOGGEDOFF','message_provider_local_facebook_notification_loggedoff');
 define('FACEBOOK_NOTIFICATION_LOGGEDIN','message_provider_local_facebook_notification_loggedin');
@@ -85,17 +86,23 @@ define('FACEBOOK_MODULE_NOT_VISIBLE', 0);
 define('FACEBOOK_NOTIFICATIONS_WANTED', 1);
 define('FACEBOOK_NOTIFICATIONS_UNWANTED', 0);
 
+$initialtime = time();
+
 // Sql that brings the facebook user id
-$sqlusers = "SELECT  u.id as id, f.facebookid, u.lastaccess, CONCAT(u.firstname,' ',u.lastname) as name
+$sqlusers = "SELECT  u.id as id, f.facebookid AS facebookid, u.lastaccess, CONCAT(u.firstname,' ',u.lastname) as name
 	FROM {user} AS u JOIN {facebook_user} AS f ON (u.id = f.moodleid AND f.status = ?)
-	WHERE f.facebookid iS NOT NULL
+	WHERE f.facebookid IS NOT NULL
 	GROUP BY f.facebookid";
 
+// Table made for debugging purposes
 echo "<table border=1>";
-echo "<tr><th>User id</th> <th>User name</th> <th>total Resources</th> <th>Total Urls</th> <th>Total posts</th> <th>total emarking</th></tr> ";
+echo "<tr><th>User id</th> <th>User name</th> <th>total Resources</th> <th>Total Urls</th> <th>Total posts</th> <th>total emarking</th> <th>Notification sent</th> </tr> ";
 
 $appid = $CFG->fbkAppID;
 $secretid = $CFG->fbkScrID;
+
+// Counts every notification sent
+$sent = 0;
 
 // Facebook app information
 $fb = new Facebook([
@@ -105,23 +112,60 @@ $fb = new Facebook([
 ]);
 
 if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
-	var_dump($facebookusers);
-	$counttosend = 0;
 	foreach($facebookusers as $user){
+		var_dump($user);
 		
 		$courses = enrol_get_users_courses($user->id);
-		
 		$courseidarray = array();
+		
+		// Save all courses ids in an array
 		foreach ($courses as $course){
 			$courseidarray[] = $course->id;
 		}	
 		
 		if(!empty($courseidarray)){
 			
-			
-			// get_in_or_equal used after in the IN ('') clause of multiple querys
+			// get_in_or_equal used in the IN ('') clause of multiple querys
 			list($sqlincourses, $paramcourses) = $DB->get_in_or_equal($courseidarray);
 			
+			$resourcesparams = array_merge(
+					$paramcourses,
+					array(
+						"resource",
+						1,
+						1,
+						$user->lastaccess,
+						$user->id
+					));
+			
+			$urlsparams = array_merge(
+					$paramcourses,
+					array(
+						"resource",
+						1,
+						1,
+						$user->lastaccess,
+						$user->id
+					));
+			
+			$postsparams = array_merge(
+					$paramcourses,
+					array(
+						$user->lastaccess,
+						$user->id
+					));
+			
+			$emarkingsparams = array_merge(
+					$paramcourses,
+					array(
+						$user->id	
+					),
+					$paramcourses,
+					array(
+						$user->lastaccess
+					));
+			
+			/*
 			$params = array_merge(
 					$paramcourses,
 					array(
@@ -155,9 +199,10 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 					
 			);
 			
+			
 			$sqlnotifications = "SELECT Resources.countallresources, Urls.countallurl, Posts.countallpost, Emarkings.emarkingid
 			FROM
-			(SELECT COUNT(cm.module) AS countallresources
+			(SELECT user.id AS userid, COUNT(cm.module) AS countallresources
 			FROM {course_modules} AS cm
 			INNER JOIN {modules} AS m ON (cm.module = m.id)
 			INNER JOIN {resource} AS r ON (cm.instance=r.id)
@@ -171,10 +216,10 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 			AND m.visible = ?
 			AND r.timemodified >= ?
 			AND user.id = ?
-			GROUP BY cm.course, user.id)
+			GROUP BY user.id)
 			AS Resources,
 				
-			(SELECT COUNT(cm.module) AS countallurl
+			(SELECT user.id AS userid, COUNT(cm.module) AS countallurl
 			FROM {course_modules} AS cm
 			INNER JOIN {modules} AS m ON (cm.module = m.id)
 			INNER JOIN {url} AS u ON (cm.instance=u.id)
@@ -188,10 +233,10 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 			AND m.visible = ?
 			AND  u.timemodified >= ?
 			AND user.id = ?
-			GROUP BY cm.course,user.id )
+			GROUP BY user.id )
 			as Urls,
 			
-			(SELECT fd.course AS idcoursefd, COUNT(fp.id) AS countallpost
+			(SELECT user.id AS userid, fd.course AS idcoursefd, COUNT(fp.id) AS countallpost
 			FROM {forum_posts} AS fp
 			INNER JOIN {forum_discussions} AS fd ON (fp.discussion=fd.id)
 			INNER JOIN {course} AS course ON (course.id = fd.course)
@@ -201,66 +246,211 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 			WHERE fd.course $sqlincourses
 			AND fp.modified > ?
 			AND user.id = ?
-			GROUP BY fd.course,user.id)
+			GROUP BY user.id)
 			as Posts,
 			
-			(SELECT COUNT(e.id) AS emarkingid
+			(SELECT user.id AS userid, COUNT(e.id) AS emarkingid
 			FROM {emarking_draft} AS d JOIN {emarking} AS e ON (e.id = d.emarkingid AND e.course $sqlincourses AND e.type in (1,5,0))
 			JOIN {emarking_submission} AS s ON (d.submissionid = s.id AND d.status IN (20,30,35,40) AND s.student = ?)
-			JOIN {user} AS u ON (u.id = s.student )
-			JOIN {course_modules} AS cm ON (cm.instance = e.id AND cm.course  $sqlincourses)
+			JOIN {user} AS user ON (user.id = s.student )
+			JOIN {course_modules} AS cm ON (cm.instance = e.id AND cm.course $sqlincourses)
 			JOIN {modules} AS m ON (cm.module = m.id AND m.name = 'emarking')
 			WHERE d.timemodified >= ?
-			GROUP BY u.id)
+			GROUP BY user.id)
 			as Emarkings";
-		
-			$notifications = $DB->get_records_sql($sqlnotifications, $params);
+			*/
+			
+			// Queries for getting the amount of notifications for each supported module
+			// TODO: OPTIMIZATION
+			$sqlresources = "SELECT user.id AS userid, COUNT(cm.module) AS count
+				FROM {course_modules} AS cm
+				INNER JOIN {modules} AS m ON (cm.module = m.id)
+				INNER JOIN {resource} AS r ON (cm.instance=r.id)
+				INNER JOIN {course} AS course ON (course.id = cm.course)
+				INNER JOIN {context} AS ct ON (course.id = ct.instanceid)
+				INNER JOIN {role_assignments} AS ra ON (ra.contextid = ct.id)
+				INNER JOIN {user} AS user ON (user.id = ra.userid)
+				WHERE cm.course $sqlincourses
+				AND m.name IN (?)
+				AND cm.visible = ?
+				AND m.visible = ?
+				AND r.timemodified >= ?
+				AND user.id = ?
+				GROUP BY user.id";
+			
+			$sqlurls = "SELECT user.id AS userid, COUNT(cm.module) AS count
+				FROM {course_modules} AS cm
+				INNER JOIN {modules} AS m ON (cm.module = m.id)
+				INNER JOIN {url} AS u ON (cm.instance=u.id)
+				INNER JOIN {course} AS course ON (course.id = cm.course)
+				INNER JOIN {context} AS ct ON (course.id = ct.instanceid)
+				INNER JOIN {role_assignments} AS ra ON (ra.contextid = ct.id)
+				INNER JOIN {user} AS user ON (user.id = ra.userid)
+				WHERE cm.course $sqlincourses
+				AND m.name IN (?)
+				AND cm.visible = ?
+				AND m.visible = ?
+				AND  u.timemodified >= ?
+				AND user.id = ?
+				GROUP BY user.id";
+			
+			$sqlposts = "SELECT user.id AS userid, fd.course AS idcoursefd, COUNT(fp.id) AS count
+				FROM {forum_posts} AS fp
+				INNER JOIN {forum_discussions} AS fd ON (fp.discussion=fd.id)
+				INNER JOIN {course} AS course ON (course.id = fd.course)
+				INNER JOIN {context} AS ct ON (course.id = ct.instanceid)
+				INNER JOIN {role_assignments} AS ra ON (ra.contextid = ct.id)
+				INNER JOIN {user} AS user ON (user.id = ra.userid)
+				WHERE fd.course $sqlincourses
+				AND fp.modified > ?
+				AND user.id = ?
+				GROUP BY user.id";
+			
+			$sqlemarkings = "SELECT user.id AS userid, COUNT(e.id) AS count
+				FROM {emarking_draft} AS d JOIN {emarking} AS e ON (e.id = d.emarkingid AND e.course $sqlincourses AND e.type in (1,5,0))
+				JOIN {emarking_submission} AS s ON (d.submissionid = s.id AND d.status IN (20,30,35,40) AND s.student = ?)
+				JOIN {user} AS user ON (user.id = s.student )
+				JOIN {course_modules} AS cm ON (cm.instance = e.id AND cm.course $sqlincourses)
+				JOIN {modules} AS m ON (cm.module = m.id AND m.name = 'emarking')
+				WHERE d.timemodified >= ?
+				GROUP BY user.id";
+			
+			//$notifications = $DB->get_records_sql($sqlnotifications, $params);
 			
 			
-			foreach ($notifications as $notification){
-				echo "<tr>";
-				//var_dump($notification);
-				echo "<td>".$user->id."</td>";
-				echo "<td>".$user->name."</td>";
-				echo "<td>".$notification->countallresources."</td>";
-				echo "<td>".$notification->countallurl."</td>";
-				echo "<td>".$notification->countallpost."</td>";
-				echo "<td>".$notification->emarkingid."</td>";
-				/*
-				if( ($notification->countallresources+$notification->countallurl+$notification->countallpost+$notification->emarkingid) > 0 ){
-					$data = array(
-							"link" => "",
-							"message" => "",
-							"template" => "Tienes nuevas notificaciones de WebCursos."
-					);
-					
-					$fb->setDefaultAccessToken($appid.'|'.$secretid);
+			echo "<tr>";
+			echo "<td>".$user->id."</td>";
+			echo "<td>".$user->name."</td>";
+			
+			// Count total notifications for the current user
+			$notifications = 0;
+			
+			// Print the obtained information in the table (debugging)
+			if($resources = $DB->get_record_sql($sqlresources, $resourcesparams)){
+				echo "<td>".$resources->count."</td>";
+				$notifications += $resources->count;
+			} else {
+				echo "<td>0</td>";
+			}
+			
+			if($urls = $DB->get_record_sql($sqlurls, $urlsparams)){
+				echo "<td>".$urls->count."</td>";
+				$notifications += $urls->count;
+			} else {
+				echo "<td>0</td>";
+			}
+			
+			if($posts = $DB->get_record_sql($sqlposts, $postsparams)){
+				echo "<td>".$posts->count."</td>";
+				$notifications += $posts->count;
+			} else {
+				echo "<td>0</td>";
+			}
+			
+			if($emarkings = $DB->get_record_sql($sqlemarkings, $emarkingsparams)){
+				echo "<td>".$emarkings->count."</td>";
+				$notifications += $emarkings->count;
+			} else {
+				echo "<td>0</td>";
+			}
+			
+			// Check if there are notifications to send
+			if ($notifications == 0) {
+				echo "<td>No notifications found</td>";
+			} elseif ($user->facebookid != null) {
+				if ($notifications == 1) {
+					$template = "Tienes $notifications notificación de WebCursos.";
+				} else {
+					$template = "Tienes $notifications notificaciones de WebCursos.";
+				}
+				
+				$data = array(
+						"link" => "",
+						"message" => "",
+						"template" => $template
+				);
+			
+				$fb->setDefaultAccessToken($appid.'|'.$secretid);
+				
+				// Handles when the notifier throws an exception (couldn't send the notification)
+				try {
 					$response = $fb->post('/'.$user->facebookid.'/notifications', $data);
 					$return = $response->getDecodedBody();
 					
 					if($return['success'] == TRUE){
-						// Echo that tells to who notifications were sent, ordered by id
-						echo $counttosend." ".$user->facebookid." ok\n";
-						$counttosend++;
-					}else{
-						echo $userfacebookid->facebookid." fail\n";
+						echo "<td>Sent: $notifications</td>";
+						$sent++;
+					} else {
+						echo "<td>Not sent (success = FALSE)</td>";
 					}
-				}*/
-				echo "</tr>";
+				} catch (Exception $e) {
+					$exception = $e->getMessage();
+					echo "<td>Exception found: <br>$exception<br>";
+					
+					// If the user hasn't installed the app, update it's record to status = 0
+					if (strpos($exception, "not installed") !== FALSE) {
+						$updatequery = "UPDATE {facebook_user} 
+								SET status = ? 
+								WHERE moodleid = ?";
+						
+						$updateparams = array(
+								0,
+								$user->id
+						);
+						
+						if ($DB->execute($updatequery, $updateparams)) {
+							echo "Record updated, set status to 0.";
+						} else {
+							echo "Could not update the record.";
+						}
+						
+						echo "</td>";
+					}
+				}
 			}
 			
+			/*
+			if( ($notification->countallresources+$notification->countallurl+$notification->countallpost+$notification->emarkingid) > 0 ){
+				$data = array(
+						"link" => "",
+						"message" => "",
+						"template" => "Tienes nuevas notificaciones de WebCursos."
+				);
+				
+				$fb->setDefaultAccessToken($appid.'|'.$secretid);
+				$response = $fb->post('/'.$user->facebookid.'/notifications', $data);
+				$return = $response->getDecodedBody();
+				
+				if($return['success'] == TRUE){
+					// Echo that tells to who notifications were sent, ordered by id
+					echo $counttosend." ".$user->facebookid." ok\n";
+					$counttosend++;
+				}else{
+					echo $userfacebookid->facebookid." fail\n";
+				}
+			}*/
+			
+			echo "</tr>";
 		}else{
-		echo "chupalo no tienes cursos";
+			// When the current user isn't enroled in any course (debugging)
+			echo "<br><b>Chupalo no tienes cursos</b><br>";
+		}
 	}
-	}
-echo "</table>";
+	echo "</table>";
+	
+	// Check how many notifications were sent
+	echo $sent." notifications sent.<br>";
+	
+	// Displays the time required to complete the process
+	$finaltime = time();
+	$executiontime = $finaltime - $initialtime;
+	
+	echo "Execution time: ".$executiontime." seconds.";
 }
-
-
 
 die();
 
-
+// ----------------- previous version ----------------- //
 
 // Sql that brings the latest time modified from facebook_notifications
 $maxtimenotificationssql = "SELECT max(timemodified) AS maxtime	
