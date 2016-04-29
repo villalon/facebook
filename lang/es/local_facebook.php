@@ -72,3 +72,4 @@ $string["notgraded"] = "Sin calificar";
 $string["graded"] = "Calificado";
 $string["viewassign"] = "Ver Tarea";
 $string["notsubmitted"] = "No enviada";
+$string["facebooklogin"] = "Conectarse con otra cuenta de facebook";
