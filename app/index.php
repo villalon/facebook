@@ -151,7 +151,7 @@ if ($userfacebookinfo != false) {
 			echo '<p class="name" style="position: relative; height: 3em; overflow: hidden; color: black; font-weight: bold; text-decoration: none; font-size:13px; word-wrap: initial;" courseid="' . $courseid . '" component="button">
  				' . $fullname . '</p><span class="badge" style="color: white; background-color: red; position: relative; right: -58%; top: -64px; margin-right:9%;" courseid="' . $courseid . '" component="button">' . $totals . '</span></button></div>';
 		} else {
-			echo '<p class="name" style="position: relative; height: 3em; overflow: hidden; color: black; font-weight: bold; text-decoration: none; font-size:13px; word-wrap: initial;" courseid="' . $courseid . '" component="button">
+			echo '<p class="name" style="position: relative; height: 3em; overflow: hidden; color: black; font-weight: bold; text-decoration: none; font-size:13px; word-wrap: initial; align: left;" courseid="' . $courseid . '" component="button">
  				' . $fullname . '</p></button></div>';
 		}
 	}
