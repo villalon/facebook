@@ -154,6 +154,7 @@ if ($action == 'get_course_data') {
 			$htmltable .= '<img src="images/assign.png">';
 			$id = "assignid='".$module ['id']."'";
 			$component = 'assign';
+			$link = "href='#'";
 			
 			$assignmodal = "<div class='modal fade' id='a".$module['id']."' tabindex='-1' role='dialog' aria-labelledby='modal'>
 								<div class='modal-dialog' role='document'>

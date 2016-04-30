@@ -148,10 +148,10 @@ if ($userfacebookinfo != false) {
 		echo '<div class="block" style="height: 4em;"><button type="button" class="btn btn-info btn-lg" style="white-space: normal; width: 90%; height: 90%; border: 1px solid lightgray; background: linear-gradient(white, gainsboro);" courseid="' . $courseid . '" fullname="' . $fullname . '" component="button">';
 		
 		if ($totals > 0) {
-			echo '<p class="name" style="position: relative; height: 3em; overflow: hidden; color: black; font-weight: bold; text-decoration: none; font-size:13px; word-wrap: initial;" courseid="' . $courseid . '" component="button">
+			echo '<p class="name" align="left" style="position: relative; height: 3em; overflow: hidden; color: black; font-weight: bold; text-decoration: none; font-size:13px; word-wrap: initial;" courseid="' . $courseid . '" component="button">
  				' . $fullname . '</p><span class="badge" style="color: white; background-color: red; position: relative; right: -58%; top: -64px; margin-right:9%;" courseid="' . $courseid . '" component="button">' . $totals . '</span></button></div>';
 		} else {
-			echo '<p class="name" style="position: relative; height: 3em; overflow: hidden; color: black; font-weight: bold; text-decoration: none; font-size:13px; word-wrap: initial;" courseid="' . $courseid . '" component="button">
+			echo '<p class="name" align="left" style="position: relative; height: 3em; overflow: hidden; color: black; font-weight: bold; text-decoration: none; font-size:13px; word-wrap: initial;" courseid="' . $courseid . '" component="button">
  				' . $fullname . '</p></button></div>';
 		}
 	}
@@ -161,7 +161,7 @@ if ($userfacebookinfo != false) {
 	// include 'htmltoinclude/news.html';
 	echo "</div>";
 	
-	echo "<div class='col-md-10 col-sm-9 col-xs-12'>";
+	echo "<div class='col-md-9 col-sm-9 col-xs-12'>";
 	echo "<div class='advert'><div style='position: relative;'><img src='images/jpg_an_1.jpg'style='margin-top:10%; margin-left:8%; width:35%'><img src='images/jpg_an_2.jpg' style='margin-top:10%; margin-left:5%; width:35%'></div></div>";
 	echo "<div id='loadinggif' align='center' style='margin-top: 10%; text-align: center; display:none;'><img src='https://webcursos-d.uai.cl/local/facebook/app/images/ajaxloader.gif'></div>";
 	echo "<div id='table-body'></div>";
