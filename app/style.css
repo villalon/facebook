@@ -296,7 +296,7 @@ table.tablesorter tbody td {
  	word-wrap: break-word;
 }
 
-table.tablesorter tbody tr:nth-child(odd) {
+tbody tr:nth-child(odd) {
    background-color: #ccc;
 }
 
