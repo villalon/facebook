@@ -296,8 +296,8 @@ table.tablesorter tbody td {
  	word-wrap: break-word;
 }
 
-tbody tr:nth-child(odd) {
-   background-color: #ccc !important;
+table.tablesorter tbody tr:nth-child(odd) {
+   background-color: #E8E8E8 !important;
 }
 
 table.tablesorter tbody td:nth-of-type(6n+5) {
