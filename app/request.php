@@ -43,13 +43,14 @@ if ($action == 'get_course_data') {
 	
 	$htmltable = "";
 	
+	$htmltable .= '<div align="left"><h2>'.$course->fullname.'</h2></div>';
+	
 	if (empty($totaldata)) {
-		$htmltable .= '<tr><div class="col-md-12"><div class="alert alert-info" role="alert">No hay recursos dentro de este curso</div></div><tr>';
+		$htmltable .= '<tr><div class="col-md-10 col-md-offset-1"><div class="alert alert-info" role="alert">No hay recursos dentro de este curso</div></div><tr>';
 	}
 	
 	else {
-		$htmltable .= '<div align="left"><h2>'.$course->fullname.'</h2></div>
-					<table class="tablesorter" border="0" width="100%" style="font-size: 13px; margin-left: 9px;">
+		$htmltable .= '<table class="tablesorter" border="0" width="100%" style="font-size: 13px; margin-left: 9px;">
 						<thead>
 							<tr>
 								<th width="1%" style="border-top-left-radius: 8px;"></th>
