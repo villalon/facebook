@@ -212,7 +212,7 @@ if ($action == 'get_course_data') {
 					discussionId = $(this).attr('discussionid');
 			
 					jQuery.ajax({
-	 					url : 'https://webcursos.uai.cl/local/facebook/app/request.php?action=get_discussion&discussionid=' + discussionId,
+	 					url : 'https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_discussion&discussionid=' + discussionId,
 	 					async : true,
 	 					data : {},
 	 					success : function (response) {
