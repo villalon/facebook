@@ -145,7 +145,7 @@ if ($userfacebookinfo != false) {
 		$shortname = $courses->shortname;
 		$totals = $courses->totalnotifications;
 		
-		echo '<div class="block" style="height: 4em;"><button type="button" class="btn btn-info btn-lg" style="white-space: normal; width: 90%; height: 90%; border: 1px solid lightgray; background: linear-gradient(white, gainsboro);" courseid="' . $courseid . '" fullname="' . $fullname . '" component="button">';
+		echo '<div class="block" style="height: 4em;"><button type="button" class="btn btn-info btn-lg" style="white-space: normal; width: 90%; height: 90%; border: 1px solid lightgray; background: #F0F0F0;" courseid="' . $courseid . '" fullname="' . $fullname . '" component="button">';
 		
 		if ($totals > 0) {
 			echo '<p class="name" align="left" style="position: relative; height: 3em; overflow: hidden; color: black; font-weight: bold; text-decoration: none; font-size:13px; word-wrap: initial;" courseid="' . $courseid . '" component="button">
@@ -163,7 +163,7 @@ if ($userfacebookinfo != false) {
 	
 	echo "<div class='col-md-9 col-sm-9 col-xs-12'>";
 	echo "<div class='advert'><div style='position: relative;'><img src='images/jpg_an_1.jpg'style='margin-top:10%; margin-left:8%; width:35%'><img src='images/jpg_an_2.jpg' style='margin-top:10%; margin-left:5%; width:35%'></div></div>";
-	echo "<div id='loadinggif' align='center' style='margin-top: 10%; text-align: center; display:none;'><img src='https://webcursos-d.uai.cl/local/facebook/app/images/ajaxloader.gif'></div>";
+	echo "<div id='loadinggif' align='center' style='margin-top: 10%; text-align: center; display:none;'><img src='https://webcursos.uai.cl/local/facebook/app/images/ajaxloader.gif'></div>";
 	echo "<div id='table-body'></div>";
 	
 	// Define the modal
@@ -208,7 +208,7 @@ if ($userfacebookinfo != false) {
 	
 				// Ajax fix
 				jQuery.ajax({
-					url : "https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_course_data&moodleid=" + moodleId + "&courseid=" + courseId + "&lastvisit=" + lastVisit,
+					url : "https://webcursos.uai.cl/local/facebook/app/request.php?action=get_course_data&moodleid=" + moodleId + "&courseid=" + courseId + "&lastvisit=" + lastVisit,
 					async : true,
 					data : {},
 					beforeSend: function(){
