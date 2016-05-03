@@ -23,6 +23,7 @@
 * @copyright  2013 Francisco García Ralph (francisco.garcia.ralph@gmail.com)
 * @copyright  2015 Mihail Pozarski (mipozarski@alumnos.uai.cl)
 * @copyright  2015 Hans Jeria (hansjeria@gmail.com)
+* @copyright  2016 Mark Michaelsen (mmichaelsen678@gmail.com)
 * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
 
@@ -161,101 +162,89 @@ if(isset($userinfo->status)){
 }else{
 
 	// If he clicked the link button.
-	if($connect != NULL){
-
-		// If the user wants to link an account that was already linked, but was unlinked that means with status 0
-		/*
-		$user_inactive = $DB->get_record("facebook_user", array(
-				"moodleid" => $USER->id,
-				"status" => 0
-		));
-
-		if ($user_inactive) {
+if($connect != NULL){
+		// Facebook code to search the user information.
+		// We have a user ID, so probably a logged in user.
+		// If not, we'll get an exception, which we handle below.
+		try{
+			$accessToken = $helper->getAccessToken();
 				
-			$user_inactive->timemodified = $time;
-			$user_inactive->status = FACEBOOK_STATUS_LINKED;
-			$user_inactive->lasttimechecked = $time;
-			$DB->update_record("facebook_user", $user_inactive );
+			if(isset($accessToken)){
+
+				// Logged in!
 				
-			echo "<script>location.reload();</script>";
-		}  // If the user wants to link a account that was never linked before.
-		else {*/
-			// Facebook code to search the user information.
-			// We have a user ID, so probably a logged in user.
-			// If not, we'll get an exception, which we handle below.
-			try{
-				$accessToken = $helper->getAccessToken();
+				$user_data = $facebook->get ("/me?fields=link,first_name,middle_name,last_name",$accessToken);
 					
-				if(isset($accessToken)){
-
-					// Logged in!
-					
-					$user_data = $facebook->get ("/me?fields=link,first_name,middle_name,last_name",$accessToken);
-						
-					$user_profile = $user_data->getGraphUser();
-					$link = $user_profile["link"];
-					$first_name = $user_profile["first_name"];
-					if (isset ( $user_profile ["middle_name"] )) {
-						$middle_name = $user_profile ["middle_name"];
-					} else {
-						$middle_name = "";
-					}
-
-					$last_name = $user_profile ["last_name"];
-
-					
-					$record = new stdClass ();
-					$record->moodleid  = $USER->id;
-					$record->facebookid = $user_profile["id"];
-					$record->timemodified = $time;
-					$record->status = FACEBOOK_STATUS_LINKED;
-					$record->lasttimechecked = $time;
-					$record->link = $link;
-					$record->firstname = $first_name;
-					$record->middlename = $middle_name;
-					$record->lastname = $last_name;
-					//$record->email = $link;
-					
-					if($user_inactive = $DB->get_record("facebook_user", array("moodleid" => $USER->id,"status" => 0))){
-						$record->id =$user_inactive->id;
-						$DB->update_record("facebook_user", $record );
-					}else{
-						$DB->insert_record("facebook_user", $record );
-					}
-
-					
-					echo "<script>location.reload();</script>";
-					// Now you can redirect to another page and use the
-					// access token from $_SESSION['facebook_access_token']
-				} elseif ($helper->getError()) {
-					// The user denied the request
-					exit;
+				$user_profile = $user_data->getGraphUser();
+				$link = $user_profile["link"];
+				$first_name = $user_profile["first_name"];
+				if (isset ( $user_profile ["middle_name"] )) {
+					$middle_name = $user_profile ["middle_name"];
+				} else {
+					$middle_name = "";
 				}
-			}catch(FacebookApiException $e){
-					
-				// If the user is logged out, you can have a
-				// user ID even though the access token is invalid.
-				// In this case, we'll get an exception, so we'll
-				// just ask the user to login again here.
-					
-				$params = ["email",
-						"publish_actions",
-						"user_birthday",
-						"user_tagged_places",
-						"user_work_history",
-						"user_about_me",
-						"user_hometown",
-						"user_actions.books",
-						"user_education_history",
-						"user_likes",
-						"user_friends",
-						"user_religion_politics"
-				];
-				$$loginUrl = $helper->getLoginUrl(($CFG->wwwroot . "/local/facebook/connect.php"), $params );
-				echo "Please <a href='" . $login_Url . "'>Log in with Facebook..</a>";
-			}
 
-		//}
+				$last_name = $user_profile ["last_name"];
+
+				
+				$record = new stdClass ();
+				$record->moodleid  = $USER->id;
+				$record->facebookid = $user_profile["id"];
+				$record->timemodified = $time;
+				$record->status = FACEBOOK_STATUS_LINKED;
+				$record->lasttimechecked = $time;
+				$record->link = $link;
+				$record->firstname = $first_name;
+				$record->middlename = $middle_name;
+				$record->lastname = $last_name;
+				//$record->email = $link;
+				
+				if($user_inactive = $DB->get_record("facebook_user", array("moodleid" => $USER->id,"status" => 0))){
+					$record->id =$user_inactive->id;
+					$DB->update_record("facebook_user", $record );
+				} else if ($DB->record_exists("facebook_user", array(
+						"facebookid" => $user_profile["id"],
+						"status" => FACEBOOK_STATUS_LINKED
+				))) {
+					throw new Exception(get_string("accused", "local_facebook"));
+				} else {
+					$DB->insert_record("facebook_user", $record );
+				}
+
+				
+				echo "<script>location.reload();</script>";
+				// Now you can redirect to another page and use the
+				// access token from $_SESSION['facebook_access_token']
+			} elseif ($helper->getError()) {
+				// The user denied the request
+				exit;
+			}
+		} catch(FacebookApiException $e) {
+				
+			// If the user is logged out, you can have a
+			// user ID even though the access token is invalid.
+			// In this case, we'll get an exception, so we'll
+			// just ask the user to login again here.
+				
+			$params = ["email",
+					"publish_actions",
+					"user_birthday",
+					"user_tagged_places",
+					"user_work_history",
+					"user_about_me",
+					"user_hometown",
+					"user_actions.books",
+					"user_education_history",
+					"user_likes",
+					"user_friends",
+					"user_religion_politics"
+			];
+			$$loginUrl = $helper->getLoginUrl(($CFG->wwwroot . "/local/facebook/connect.php"), $params );
+			echo "Please <a href='" . $login_Url . "'>Log in with Facebook..</a>";
+		} catch (Exception $e) {
+			echo $e->getMessage();
+			echo "<a href='https://www.facebook.com/'>".get_string("facebooklogin", "local_facebook")."</a>";
+		}
 	} else {
 
 		echo $OUTPUT->heading(get_string("acountconnect", "local_facebook"));

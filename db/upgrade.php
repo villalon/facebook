@@ -51,7 +51,19 @@
    	global $CFG, $DB;
    
    	$dbman = $DB->get_manager();
-   
+   	
+   	if ($oldversion < 2016042801) {
+   	
+   		// Define key userid (foreign-unique) to be added to facebook_user.
+   		$table = new xmldb_table('facebook_user');
+   		$key = new xmldb_key('userid', XMLDB_KEY_FOREIGN_UNIQUE, array('moodleid'), 'mdl_user', array('id'));
+   	
+   		// Launch add key userid.
+   		$dbman->add_key($table, $key);
+   	
+   		// Facebook savepoint reached.
+   		upgrade_plugin_savepoint(true, 2016042801, 'local', 'facebook');
+   	}
    
     if ($oldversion < 2013072900) {
 
