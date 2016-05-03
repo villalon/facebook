@@ -198,7 +198,6 @@ if ($action == 'get_course_data') {
 				
 				$htmltable .= $assignmodal;
 			}
-<<<<<<< HEAD
 			if ($module['date'] >= $lastvisit) {
 			$htmltable .= "</td><td><a style='font-weight:bold' $link component=$component $id>".$module['title']."</a></td>
 					<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
@@ -208,10 +207,6 @@ if ($action == 'get_course_data') {
 					<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
 			}
 			
-=======
-			$htmltable .= "</td><td><a $link component=$component $id>".$module['title']."</a></td>
-					<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
->>>>>>> refs/remotes/mandrato1/master
 		}
 	}
 	$htmltable .= "</tbody></table>";
