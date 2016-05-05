@@ -198,15 +198,8 @@ if ($action == 'get_course_data') {
 				
 				$htmltable .= $assignmodal;
 			}
-			if ($module['date'] >= $lastvisit) {
-			$htmltable .= "</td><td><a style='font-weight:bold' $link component=$component $id>".$module['title']."</a></td>
-					<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
-			}
-			else{
 			$htmltable .= "</td><td><a $link component=$component $id>".$module['title']."</a></td>
 					<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
-			}
-			
 		}
 	}
 	$htmltable .= "</tbody></table>";
@@ -242,12 +235,7 @@ if ($action == 'get_course_data') {
 					$('#a' + assignId).modal();
 				}
 			
-<<<<<<< HEAD
-				if(aclick == 'font-weight:bold'){
-				var badgecourseid = $( "'button[courseid='"+courseid+"']'" ).parent().find('.badge');
-=======
 				if(aclick == 'font-weight:bold'){			
->>>>>>> refs/remotes/mandrato1/master
 					 $(this).css('font-weight','normal');
 					 $(this).parent().parent().children('td').children('center').children('span').css('color','transparent');
 					 $(this).parent().parent().children('td').children('button').css('color','#909090');
