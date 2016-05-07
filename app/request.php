@@ -199,12 +199,12 @@ if ($action == 'get_course_data') {
 				$htmltable .= $assignmodal;
 			}
 			if ($module['date'] >= $lastvisit) {
-			$htmltable .= "</td><td><a style='font-weight:bold' $link component=$component $id>".$module['title']."</a></td>
-					<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
+				$htmltable .= "</td><td><a $link component=$component $id><p style='font-weight:bold'>".$module['title']."</p></a></td>
+						<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
 			}
 			else{
-			$htmltable .= "</td><td><a $link component=$component $id>".$module['title']."</a></td>
-					<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
+				$htmltable .= "</td><td><a $link component=$component $id>".$module['title']."</a></td>
+						<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
 			}
 			
 		}
