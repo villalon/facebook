@@ -68,11 +68,13 @@ if ($action == 'get_course_data') {
 			$component = '';
 			$link = '';
 			$id = 0;
+			$new = 0;
 			
 			$htmltable .= "<tr><td>";
 			
 			if ($module['date'] >= $lastvisit) {
 				$htmltable .= "<center><span class='glyphicon glyphicon-option-vertical' aria-hidden='true' style='color: #2a2a2a;'></span></center>&nbsp&nbsp";
+			$new = 1;			
 			}
 			
 			$htmltable .= "</td><td>";
@@ -198,57 +200,21 @@ if ($action == 'get_course_data') {
 				
 				$htmltable .= $assignmodal;
 			}
-			$htmltable .= "</td><td><a $link component=$component $id>".$module['title']."</a></td>
-					<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
+
+			if ($new == 1) {
+				$htmltable .= "</td><td><a style='font-weight:bold' $link component=$component $id>".$module['title']."</a></td>
+						<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
+			}
+			else{
+				$htmltable .= "</td><td><a $link component=$component $id>".$module['title']."</a></td>
+						<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
+			}
+			
 		}
 	}
 	$htmltable .= "</tbody></table>";
 	
-	$jsfunction = "<script>
-			$('a').click(function () {
-				var aclick = $(this).attr('style');
-			
-				if ($(this).attr('component') == 'forum') {
-					discussionId = $(this).attr('discussionid');
-			
-					jQuery.ajax({
-	 					url : 'https://webcursos.uai.cl/local/facebook/app/request.php?action=get_discussion&discussionid=' + discussionId,
-	 					async : true,
-	 					data : {},
-	 					success : function (response) {
-							$('#modal-body').empty();
-	 						$('#modal-body').append(response);
-	 						$('#modal').modal();
- 						}
- 					});
-				}
-			
-				else if($(this).attr('component') == 'emarking') {
-					emarkingId = $(this).attr('emarkingid');
-			
-					$('#e' + emarkingId).modal();
-				}
-			
-				else if ($(this).attr('component') == 'assign') {
-					assignId = $(this).attr('assignid');
-			
-					$('#a' + assignId).modal();
-				}
-			
-				if(aclick == 'font-weight:bold'){			
-					 $(this).css('font-weight','normal');
-					 $(this).parent().parent().children('td').children('center').children('span').css('color','transparent');
-					 $(this).parent().parent().children('td').children('button').css('color','#909090');
-					 				
-					 if(badgecourseid.text() == 1) { 
-					 	badgecourseid.remove(); 
-					 }
-					 else{ 
-					 	badgecourseid.text(badgecourseid.text()-1); 
-					 }
-				}
-			});
-			</script>";
+	$jsfunction = "<script type='text/javascript' src='js/component.js'></script>";
 	
 	$htmltable .= $jsfunction;
 	

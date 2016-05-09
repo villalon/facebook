@@ -26,7 +26,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define('CLI_SCRIPT', true);
+//define('CLI_SCRIPT', true);
 
 require_once(dirname(dirname(dirname(dirname(__FILE__)))).'/config.php');
 require_once($CFG->dirroot."/local/facebook/app/Facebook/autoload.php");
@@ -86,6 +86,8 @@ define('FACEBOOK_MODULE_NOT_VISIBLE', 0);
 define('FACEBOOK_NOTIFICATIONS_WANTED', 1);
 define('FACEBOOK_NOTIFICATIONS_UNWANTED', 0);
 
+define('MODULE_ASSIGN', 1);
+
 $initialtime = time();
 
 // Sql that brings the facebook user id
@@ -96,7 +98,7 @@ $sqlusers = "SELECT  u.id as id, f.facebookid AS facebookid, u.lastaccess, CONCA
 
 // Table made for debugging purposes
 echo "<table border=1>";
-echo "<tr><th>User id</th> <th>User name</th> <th>total Resources</th> <th>Total Urls</th> <th>Total posts</th> <th>total emarking</th> <th>Notification sent</th> </tr> ";
+echo "<tr><th>User id</th> <th>User name</th> <th>total Resources</th> <th>Total Urls</th> <th>Total posts</th> <th>total emarking</th> <th>Total Assings</th> <th>Notification sent</th> </tr> ";
 
 $appid = $CFG->fbkAppID;
 $secretid = $CFG->fbkScrID;
@@ -128,194 +130,100 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 			// get_in_or_equal used in the IN ('') clause of multiple querys
 			list($sqlincourses, $paramcourses) = $DB->get_in_or_equal($courseidarray);
 			
-			$resourcesparams = array_merge(
-					$paramcourses,
-					array(
-						"resource",
-						1,
-						1,
-						$user->lastaccess,
-						$user->id
-					));
+			// Parameters for post query
+			$paramspost = array_merge($paramcourses, array(
+					FACEBOOK_COURSE_MODULE_VISIBLE,
+					$user->lastaccess
+			));
 			
-			$urlsparams = array_merge(
-					$paramcourses,
-					array(
-						"resource",
-						1,
-						1,
-						$user->lastaccess,
-						$user->id
-					));
+			// Query for the posts information
+			$datapostsql = "SELECT COUNT(data.id) AS count
+					FROM (
+					    SELECT fp.id AS id
+					    FROM {forum_posts} AS fp
+					    INNER JOIN {forum_discussions} AS discussions ON (fp.discussion = discussions.id AND discussions.course $sqlincourses)
+					    INNER JOIN {forum} AS forum ON (forum.id = discussions.forum)
+					    INNER JOIN {user} AS us ON (us.id = fp.userid)
+					    INNER JOIN {course_modules} AS cm ON (cm.instance = forum.id AND cm.visible = ?)
+					    WHERE fp.modified > ?
+					    GROUP BY fp.id)
+			        AS data";
 			
-			$postsparams = array_merge(
-					$paramcourses,
-					array(
-						$user->lastaccess,
-						$user->id
-					));
+			// Parameters for resource query
+			$paramsresource = array_merge($paramcourses, array(
+					FACEBOOK_COURSE_MODULE_VISIBLE,
+					'resource',
+					$user->lastaccess
+			));
 			
-			$emarkingsparams = array_merge(
-					$paramcourses,
-					array(
-						$user->id	
-					),
-					$paramcourses,
-					array(
-						$user->lastaccess
-					));
+			// Query for the resource information
+			$dataresourcesql = "SELECT COUNT(data.id) AS count
+					  FROM (
+					      SELECT cm.id AS id
+					      FROM {resource} AS r
+		                  INNER JOIN {course_modules} AS cm ON (cm.instance = r.id AND cm.course $sqlincourses AND cm.visible = ?)
+		                  INNER JOIN {modules} AS m ON (cm.module = m.id AND m.name = ?)
+		                  WHERE r.timemodified > ?
+		                  GROUP BY cm.id)
+			          AS data";
 			
-			/*
-			$params = array_merge(
-					$paramcourses,
+			// Parameters for the link query
+			$paramslink = array_merge($paramcourses, array(
+					FACEBOOK_COURSE_MODULE_VISIBLE,
+					'url',
+					$user->lastaccess
+			));
+			
+			//query for the link information
+			$datalinksql="SELECT COUNT(data.id) AS count
+				      FROM (
+				          SELECT url.id AS id
+				          FROM {url} AS url
+		                  INNER JOIN {course_modules} AS cm ON (cm.instance = url.id AND cm.course $sqlincourses AND cm.visible = ?)
+		                  INNER JOIN {modules} AS m ON (cm.module = m.id AND m.name = ?)
+		                  WHERE url.timemodified > ?
+		                  GROUP BY url.id)
+			          AS data";
+			
+			//$emarkingparams = $param;
+			$paramsemarking = array_merge(
 					array(
-						"resource",
-						1,
-						1,
 						$user->lastaccess,
 						$user->id
 					),
-					$paramcourses,
-					array(
-						"url",
-						1,
-						1,
-						$user->lastaccess,
-						$user->id
-					),
-					$paramcourses,
-					array(
-						$user->lastaccess,
-						$user->id
-					),
-					$paramcourses,
-					array(
-						$user->id	
-					),
-					$paramcourses,
-					array(
-						$user->lastaccess
-					)
-					
+					$paramcourses
 			);
 			
+			// Query for getting eMarkings by course
+			$dataemarkingsql= "SELECT COUNT(data.id) AS count
+					FROM (
+					    SELECT d.id AS id
+					    FROM {emarking_draft} AS d JOIN {emarking} AS e ON (e.id = d.emarkingid AND e.type in (1,5,0) AND d.timemodified > ?)
+					    INNER JOIN {emarking_submission} AS s ON (d.submissionid = s.id AND d.status IN (20,30,35,40) AND s.student = ?)
+					    INNER JOIN {user} AS u ON (u.id = s.student)
+					    INNER JOIN {course_modules} AS cm ON (cm.instance = e.id AND cm.course $sqlincourses)
+					    INNER JOIN {modules} AS m ON (cm.module = m.id AND m.name = 'emarking'))
+					AS data";
 			
-			$sqlnotifications = "SELECT Resources.countallresources, Urls.countallurl, Posts.countallpost, Emarkings.emarkingid
-			FROM
-			(SELECT user.id AS userid, COUNT(cm.module) AS countallresources
-			FROM {course_modules} AS cm
-			INNER JOIN {modules} AS m ON (cm.module = m.id)
-			INNER JOIN {resource} AS r ON (cm.instance=r.id)
-			INNER JOIN {course} AS course ON (course.id = cm.course)
-			INNER JOIN {context} AS ct ON (course.id = ct.instanceid)
-			INNER JOIN {role_assignments} AS ra ON (ra.contextid = ct.id)
-			INNER JOIN {user} AS user ON (user.id = ra.userid)
-			WHERE cm.course $sqlincourses
-			AND m.name IN (?)
-			AND cm.visible = ?
-			AND m.visible = ?
-			AND r.timemodified >= ?
-			AND user.id = ?
-			GROUP BY user.id)
-			AS Resources,
-				
-			(SELECT user.id AS userid, COUNT(cm.module) AS countallurl
-			FROM {course_modules} AS cm
-			INNER JOIN {modules} AS m ON (cm.module = m.id)
-			INNER JOIN {url} AS u ON (cm.instance=u.id)
-			INNER JOIN {course} AS course ON (course.id = cm.course)
-			INNER JOIN {context} AS ct ON (course.id = ct.instanceid)
-			INNER JOIN {role_assignments} AS ra ON (ra.contextid = ct.id)
-			INNER JOIN {user} AS user ON (user.id = ra.userid)
-			WHERE cm.course $sqlincourses
-			AND m.name IN (?)
-			AND cm.visible = ?
-			AND m.visible = ?
-			AND  u.timemodified >= ?
-			AND user.id = ?
-			GROUP BY user.id )
-			as Urls,
+			$paramsassignment = array_merge($paramcourses, array(
+					$user->id,
+					MODULE_ASSIGN,
+					FACEBOOK_COURSE_MODULE_VISIBLE,
+					$user->lastaccess
+			));
 			
-			(SELECT user.id AS userid, fd.course AS idcoursefd, COUNT(fp.id) AS countallpost
-			FROM {forum_posts} AS fp
-			INNER JOIN {forum_discussions} AS fd ON (fp.discussion=fd.id)
-			INNER JOIN {course} AS course ON (course.id = fd.course)
-			INNER JOIN {context} AS ct ON (course.id = ct.instanceid)
-			INNER JOIN {role_assignments} AS ra ON (ra.contextid = ct.id)
-			INNER JOIN {user} AS user ON (user.id = ra.userid)
-			WHERE fd.course $sqlincourses
-			AND fp.modified > ?
-			AND user.id = ?
-			GROUP BY user.id)
-			as Posts,
-			
-			(SELECT user.id AS userid, COUNT(e.id) AS emarkingid
-			FROM {emarking_draft} AS d JOIN {emarking} AS e ON (e.id = d.emarkingid AND e.course $sqlincourses AND e.type in (1,5,0))
-			JOIN {emarking_submission} AS s ON (d.submissionid = s.id AND d.status IN (20,30,35,40) AND s.student = ?)
-			JOIN {user} AS user ON (user.id = s.student )
-			JOIN {course_modules} AS cm ON (cm.instance = e.id AND cm.course $sqlincourses)
-			JOIN {modules} AS m ON (cm.module = m.id AND m.name = 'emarking')
-			WHERE d.timemodified >= ?
-			GROUP BY user.id)
-			as Emarkings";
-			*/
-			
-			// Queries for getting the amount of notifications for each supported module
-			// TODO: OPTIMIZATION
-			$sqlresources = "SELECT user.id AS userid, COUNT(cm.module) AS count
-				FROM {course_modules} AS cm
-				INNER JOIN {modules} AS m ON (cm.module = m.id)
-				INNER JOIN {resource} AS r ON (cm.instance=r.id)
-				INNER JOIN {course} AS course ON (course.id = cm.course)
-				INNER JOIN {context} AS ct ON (course.id = ct.instanceid)
-				INNER JOIN {role_assignments} AS ra ON (ra.contextid = ct.id)
-				INNER JOIN {user} AS user ON (user.id = ra.userid)
-				WHERE cm.course $sqlincourses
-				AND m.name IN (?)
-				AND cm.visible = ?
-				AND m.visible = ?
-				AND r.timemodified >= ?
-				AND user.id = ?
-				GROUP BY user.id";
-			
-			$sqlurls = "SELECT user.id AS userid, COUNT(cm.module) AS count
-				FROM {course_modules} AS cm
-				INNER JOIN {modules} AS m ON (cm.module = m.id)
-				INNER JOIN {url} AS u ON (cm.instance=u.id)
-				INNER JOIN {course} AS course ON (course.id = cm.course)
-				INNER JOIN {context} AS ct ON (course.id = ct.instanceid)
-				INNER JOIN {role_assignments} AS ra ON (ra.contextid = ct.id)
-				INNER JOIN {user} AS user ON (user.id = ra.userid)
-				WHERE cm.course $sqlincourses
-				AND m.name IN (?)
-				AND cm.visible = ?
-				AND m.visible = ?
-				AND  u.timemodified >= ?
-				AND user.id = ?
-				GROUP BY user.id";
-			
-			$sqlposts = "SELECT user.id AS userid, fd.course AS idcoursefd, COUNT(fp.id) AS count
-				FROM {forum_posts} AS fp
-				INNER JOIN {forum_discussions} AS fd ON (fp.discussion=fd.id)
-				INNER JOIN {course} AS course ON (course.id = fd.course)
-				INNER JOIN {context} AS ct ON (course.id = ct.instanceid)
-				INNER JOIN {role_assignments} AS ra ON (ra.contextid = ct.id)
-				INNER JOIN {user} AS user ON (user.id = ra.userid)
-				WHERE fd.course $sqlincourses
-				AND fp.modified > ?
-				AND user.id = ?
-				GROUP BY user.id";
-			
-			$sqlemarkings = "SELECT user.id AS userid, COUNT(e.id) AS count
-				FROM {emarking_draft} AS d JOIN {emarking} AS e ON (e.id = d.emarkingid AND e.course $sqlincourses AND e.type in (1,5,0))
-				JOIN {emarking_submission} AS s ON (d.submissionid = s.id AND d.status IN (20,30,35,40) AND s.student = ?)
-				JOIN {user} AS user ON (user.id = s.student )
-				JOIN {course_modules} AS cm ON (cm.instance = e.id AND cm.course $sqlincourses)
-				JOIN {modules} AS m ON (cm.module = m.id AND m.name = 'emarking')
-				WHERE d.timemodified >= ?
-				GROUP BY user.id";
-			
-			//$notifications = $DB->get_records_sql($sqlnotifications, $params);
+			$dataassignmentsql = "SELECT COUNT(data.id) AS count
+					FROM (
+					    SELECT a.id AS id
+					    FROM {assign} AS a
+					    INNER JOIN {course} AS c ON (a.course = c.id AND c.id $sqlincourses)
+					    INNER JOIN {enrol} AS e ON (c.id = e.courseid)
+					    INNER JOIN {user_enrolments} AS ue ON (e.id = ue.enrolid AND ue.userid = ?)
+					    INNER JOIN {course_modules} AS cm ON (c.id = cm.course AND cm.module = ? AND cm.visible = ?)
+					    INNER JOIN {assign_submission} AS s ON (a.id = s.assignment)
+					    WHERE a.timemodified > ?
+					    GROUP BY a.id)
+			        AS data";
 			
 			
 			echo "<tr>";
@@ -326,30 +234,37 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(1)) ){
 			$notifications = 0;
 			
 			// Print the obtained information in the table (debugging)
-			if($resources = $DB->get_record_sql($sqlresources, $resourcesparams)){
+			if($resources = $DB->get_record_sql($dataresourcesql, $paramsresource)){
 				echo "<td>".$resources->count."</td>";
 				$notifications += $resources->count;
 			} else {
 				echo "<td>0</td>";
 			}
 			
-			if($urls = $DB->get_record_sql($sqlurls, $urlsparams)){
+			if($urls = $DB->get_record_sql($datalinksql, $paramslink)){
 				echo "<td>".$urls->count."</td>";
 				$notifications += $urls->count;
 			} else {
 				echo "<td>0</td>";
 			}
 			
-			if($posts = $DB->get_record_sql($sqlposts, $postsparams)){
+			if($posts = $DB->get_record_sql($datapostsql, $paramspost)){
 				echo "<td>".$posts->count."</td>";
 				$notifications += $posts->count;
 			} else {
 				echo "<td>0</td>";
 			}
 			
-			if($emarkings = $DB->get_record_sql($sqlemarkings, $emarkingsparams)){
+			if($emarkings = $DB->get_record_sql($dataemarkingsql, $paramsemarking)){
 				echo "<td>".$emarkings->count."</td>";
 				$notifications += $emarkings->count;
+			} else {
+				echo "<td>0</td>";
+			}
+			
+			if($assigns = $DB->get_record_sql($dataassignmentsql, $paramsassignment)){
+				echo "<td>".$assigns->count."</td>";
+				$notifications += $assigns->count;
 			} else {
 				echo "<td>0</td>";
 			}
