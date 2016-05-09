@@ -27,7 +27,7 @@
 require_once (dirname ( dirname ( dirname ( dirname ( __FILE__ ) ) ) ) . '/config.php');
 require_once ($CFG->dirroot . '/local/facebook/locallib.php');
 require_once $CFG->libdir . '/accesslib.php';
-global $CFG, $DB, $OUTPUT, $PAGE, $USER;
+global $DB;
 
 $action 	  = required_param ('action', PARAM_ALPHAEXT);
 $moodleid	  = optional_param ('moodleid', null , PARAM_RAW_TRIMMED);
@@ -37,7 +37,7 @@ $emarkingid   = optional_param ('emarkingid', null, PARAM_RAW_TRIMMED);
 $lastvisit    = optional_param ('lastvisit', null , PARAM_RAW_TRIMMED);
 
 if ($action == 'get_course_data') {
-	global $DB;
+
 	$totaldata = get_course_data($moodleid, $courseid);
 	$course = $DB->get_record('course', array('id' => $courseid));
 	
@@ -74,7 +74,7 @@ if ($action == 'get_course_data') {
 			
 			if ($module['date'] >= $lastvisit) {
 				$htmltable .= "<center><span class='glyphicon glyphicon-option-vertical' aria-hidden='true' style='color: #2a2a2a;'></span></center>&nbsp&nbsp";
-			$new = 1;			
+				$new = 1;			
 			}
 			
 			$htmltable .= "</td><td>";
@@ -202,7 +202,7 @@ if ($action == 'get_course_data') {
 			}
 
 			if ($new == 1) {
-				$htmltable .= "</td><td><a style='font-weight:bold' $link component=$component $id>".$module['title']."</a></td>
+				$htmltable .= "</td><td><a style='font-weight:bold;' $link component=$component $id>".$module['title']."</a></td>
 						<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
 			}
 			else{
@@ -222,7 +222,6 @@ if ($action == 'get_course_data') {
 } 
 
 else if ($action == 'get_discussion') {
-	global $DB;
 	
 	$discussionposts = get_posts_from_discussion($discussionid);
 	$htmlmodal = '';
@@ -240,7 +239,6 @@ else if ($action == 'get_discussion') {
 } 
 
 else if ($action == 'get_emarking') {
-	global $DB;
 	
 	$emarkingsql = "SELECT s.id AS id,
 			s.grade AS grade,

@@ -45,9 +45,10 @@ use Facebook\Facebook;
 use Facebook\Request;
 
 // now get cli options
-list($options, $unrecognized) = cli_get_params(array('help'=>false),
-                                               array('h'=>'help'));
-
+list($options, $unrecognized) = cli_get_params(array(
+		'help' => false), array(
+				'h' => 'help'));
+	
 if ($unrecognized) {
     $unrecognized = implode("\n  ", $unrecognized);
     cli_error(get_string('cliunknowoption', 'admin', $unrecognized));
@@ -65,7 +66,7 @@ Example:
 "; //TODO: localize - to be translated later when everything is finished
 
     echo $help;
-    die;
+    die();
 }
 
 cli_heading('Facebook notifications'); // TODO: localize
@@ -108,7 +109,6 @@ $fb = new Facebook([
 
 if( $facebookusers = $DB->get_records_sql($sqlusers, array(FACEBOOK_LINKED)) ){
 	foreach($facebookusers as $user){
-		var_dump($user);
 		
 		$courses = enrol_get_users_courses($user->id);
 		$courseidarray = array();

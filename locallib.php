@@ -509,10 +509,10 @@ function get_posts_from_discussion($discussionid) {
 			WHERE fp.discussion = ? 
 			GROUP BY fp.id";
 	
-	$discussionData = $DB->get_records_sql($sql, array($discussionid));
+	$discussiondata = $DB->get_records_sql($sql, array($discussionid));
 	
 	$data = array();
-	foreach($discussionData as $post) {
+	foreach($discussiondata as $post) {
 		$data[] = array(
 				'id' => $post->id,
 				'subject' => $post->subject,
