@@ -85,7 +85,7 @@ define('MODULE_ASSIGN', 1);
 $initialtime = time();
 
 // Sql that brings the facebook user id
-$sqlusers = "SELECT  u.id AS id, f.facebookid AS facebookid, u.lastaccess, CONCAT(u.firstname,' ',u.lastname) AS name
+$sqlusers = "SELECT  u.id AS id, f.facebookid AS facebookid, u.lastaccess, CONCAT(u.firstname,' ',u.lastname) AS name, f.lasttimechecked
 	FROM {facebook_user} AS f  LEFT JOIN {user} AS u ON (u.id = f.moodleid AND f.status = ?)
 	WHERE f.facebookid IS NOT NULL
 	GROUP BY f.facebookid";
@@ -119,6 +119,11 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(FACEBOOK_LINKED)) ){
 		}	
 		
 		if(!empty($courseidarray)){
+			
+			// Use the last time in web or app
+			if($user->lastaccess < $user->lasttimechecked){
+				$user->lastaccess = $user->lasttimechecked; 
+			}
 			
 			// get_in_or_equal used in the IN ('') clause of multiple querys
 			list($sqlincourses, $paramcourses) = $DB->get_in_or_equal($courseidarray);
