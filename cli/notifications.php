@@ -86,6 +86,8 @@ define('FACEBOOK_MODULE_NOT_VISIBLE', 0);
 define('FACEBOOK_NOTIFICATIONS_WANTED', 1);
 define('FACEBOOK_NOTIFICATIONS_UNWANTED', 0);
 
+define('MODULE_ASSIGN', 1);
+
 $initialtime = time();
 
 // Sql that brings the facebook user id
