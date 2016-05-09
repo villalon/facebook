@@ -68,11 +68,13 @@ if ($action == 'get_course_data') {
 			$component = '';
 			$link = '';
 			$id = 0;
+			$new = 0;
 			
 			$htmltable .= "<tr><td>";
 			
 			if ($module['date'] >= $lastvisit) {
 				$htmltable .= "<center><span class='glyphicon glyphicon-option-vertical' aria-hidden='true' style='color: #2a2a2a;'></span></center>&nbsp&nbsp";
+			$new = 1;			
 			}
 			
 			$htmltable .= "</td><td>";
@@ -198,8 +200,8 @@ if ($action == 'get_course_data') {
 				
 				$htmltable .= $assignmodal;
 			}
-			if ($module['date'] >= $lastvisit) {
-				$htmltable .= "</td><td><a $link component=$component $id><p style='font-weight:bold'>".$module['title']."</p></a></td>
+			if ($new == 1) {
+				$htmltable .= "</td><td><a style='font-weight:bold' $link component=$component $id>".$module['title']."</a></td>
 						<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
 			}
 			else{
