@@ -64,8 +64,7 @@ if ($action == 'get_course_data') {
 						<tbody>';
 	
 		foreach ($totaldata as $module) {
-			//$date = date ( "d/m/Y H:i", $module ['date'] );
-			$date = $module ['date'];
+			$date = date ( "d/m/Y H:i", $module ['date'] );
 			$component = '';
 			$link = '';
 			$id = 0;
