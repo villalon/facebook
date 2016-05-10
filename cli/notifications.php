@@ -76,19 +76,17 @@ echo "\nStarting at ".date("F j, Y, G:i:s")."\n";
 
 // Define used lower in the querys
 define('FACEBOOK_COURSE_MODULE_VISIBLE', 1);
-define('FACEBOOK_COURSE_MODULE_NOT_VISIBLE', 0);
 // Facebook 
 define('FACEBOOK_LINKED', 1);
-
 define('MODULE_ASSIGN', 1);
 
 $initialtime = time();
 
 // Sql that brings the facebook user id
-$sqlusers = "SELECT  u.id AS id, f.facebookid AS facebookid, u.lastaccess, CONCAT(u.firstname,' ',u.lastname) AS name, f.lasttimechecked
+$sqlusers = "SELECT  f.facebookid AS facebookid, u.id AS id, u.lastaccess, CONCAT(u.firstname,' ',u.lastname) AS name, f.lasttimechecked
 	FROM {facebook_user} AS f  LEFT JOIN {user} AS u ON (u.id = f.moodleid AND f.status = ?)
 	WHERE f.facebookid IS NOT NULL
-	GROUP BY f.facebookid";
+	GROUP BY f.facebookid, u.id";
 
 // Table made for debugging purposes
 echo "<table border=1>";

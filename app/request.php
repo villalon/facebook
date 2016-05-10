@@ -202,11 +202,11 @@ if ($action == 'get_course_data') {
 			}
 
 			if ($new == 1) {
-				$htmltable .= "</td><td><a style='font-weight:bold;' $link component=$component $id>".$module['title']."</a></td>
+				$htmltable .= "</td><td><a style='font-weight:bold;' $link component=$component $id>".$module['title']."- Negra"."</a></td>
 						<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
 			}
 			else{
-				$htmltable .= "</td><td><a $link component=$component $id>".$module['title']."</a></td>
+				$htmltable .= "</td><td><a $link component=$component $id>".$module['title']."- Blanca"."</a></td>
 						<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
 			}
 			
