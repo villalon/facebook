@@ -3,8 +3,6 @@ $(document).ready(function () {
 		var discussionId = null;
 		var emarkingId = null;
 		var assignId = null;
-		var moodleId = "<?php echo $moodleid; ?>";
-		var lastVisit = "<?php echo $lastvisit; ?>";
 	
 		$("*", document.body).click(function(event) {
 			event.stopPropagation();
@@ -20,7 +18,9 @@ $(document).ready(function () {
 				courseId = $(this).attr('courseid');
 				advert.remove();
 				$('#table-body').empty();
-				alert(lastVisit);
+				var moodleId = $(this).attr('moodleid');
+				var lastVisit = $(this).attr('lastvisit');
+				
 				// Ajax fix
 				jQuery.ajax({
 					url : "https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_course_data&moodleid=" + moodleId + "&courseid=" + courseId + "&lastvisit=" + lastVisit,
