@@ -20,7 +20,7 @@ $(document).ready(function () {
 				courseId = $(this).attr('courseid');
 				advert.remove();
 				$('#table-body').empty();
-	
+				alert(lastVisit);
 				// Ajax fix
 				jQuery.ajax({
 					url : "https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_course_data&moodleid=" + moodleId + "&courseid=" + courseId + "&lastvisit=" + lastVisit,
