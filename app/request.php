@@ -64,7 +64,8 @@ if ($action == 'get_course_data') {
 						<tbody>';
 	
 		foreach ($totaldata as $module) {
-			$date = date ( "d/m/Y H:i", $module ['date'] );
+			//$date = date ( "d/m/Y H:i", $module ['date'] );
+			$date = $module ['date'];
 			$component = '';
 			$link = '';
 			$id = 0;
@@ -202,11 +203,11 @@ if ($action == 'get_course_data') {
 			}
 
 			if ($new == 1) {
-				$htmltable .= "</td><td><a style='font-weight:bold;' $link component=$component $id>".$module['title']."- Negra"."</a></td>
+				$htmltable .= "</td><td><a style='font-weight:bold;' $link component=$component $id>".$module['title']."</a></td>
 						<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
 			}
 			else{
-				$htmltable .= "</td><td><a $link component=$component $id>".$module['title']."- Blanca"."</a></td>
+				$htmltable .= "</td><td><a $link component=$component $id>".$module['title']."</a></td>
 						<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
 			}
 			
