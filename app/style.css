@@ -200,6 +200,7 @@ td {
 }
 
 .scroll {
+	height: 40%;
 	max-height: 100%;
 }
 
