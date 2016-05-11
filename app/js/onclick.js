@@ -50,35 +50,35 @@ $(document).ready(function () {
 			$('#a' + assignId).modal('show');
 
 			if(aclick == 'font-weight:bold'){			
-				 $(this).parent().parent().children("td").css('font-weight','normal');
-//				 $(this).parent().parent().children("td").children("button").removeClass("btn btn-primary");
-//				 $(this).parent().parent().children("td").children("button").addClass("btn btn-default");
-				 $(this).parent().parent().children("td").children("center").children("span").css('color','transparent');
-				 $(this).parent().parent().children("td").children("button").css('color','#909090');
-				 				
-				 if(badgecourseid.text() == 1) { 
-				 	badgecourseid.remove(); 
-				 }
-				 else{ 
-				 	badgecourseid.text(badgecourseid.text()-1); 
-				 }
+				var coursename = $('#coursename');
+				var badgecourse = $("p:contains('"+coursename+"')").parent().find('.badge');
+				$(this).css('font-weight','normal');
+				$(this).parent().parent().children('td').children('center').children('span').css('color','transparent');
+				$(this).parent().parent().children('td').children('button').css('color','#909090');
+				
+				if(badgecourse.text() == 1) {
+					badgecourse.remove();
+				}
+				else{
+					badgecourse.text(badgecourse.text()-1);
+				}
 			}
 		}
 		else if($(this).attr('component') == "other") {
 			
 			if(aclick == 'font-weight:bold'){
 				
-				$(this).parent().parent().children("td").css('font-weight','normal');
-//				$(this).parent().parent().children("td").children("button").removeClass("btn btn-primary");
-//				$(this).parent().parent().children("td").children("button").addClass("btn btn-default");
-				$(this).parent().parent().children("td").children("center").children("span").css('color','transparent');
-				$(this).parent().parent().children("td").children("button").css('color','#909090');
+				var coursename = $('#coursename');
+				var badgecourse = $("p:contains('"+coursename+"')").parent().find('.badge');
+				$(this).css('font-weight','normal');
+				$(this).parent().parent().children('td').children('center').children('span').css('color','transparent');
+				$(this).parent().parent().children('td').children('button').css('color','#909090');
 				
-				if(badgecourseid.text() == 1) { 
-					badgecourseid.remove(); 
+				if(badgecourse.text() == 1) {
+					badgecourse.remove();
 				}
-				else{ 
-					badgecourseid.text(badgecourseid.text()-1); 
+				else{
+					badgecourse.text(badgecourse.text()-1);
 				}
 			}
 		}
