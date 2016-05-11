@@ -29,6 +29,7 @@ $('a').click(function () {
 	}
 	
 	if(aclick == 'font-weight:bold'){
+		alert("me hiciste click y soy feo");
 		var coursename = $('#coursename');
 		var badgecourse = $("p:contains('"+coursename+"')").parent().find('.badge');
 		$(this).css('font-weight','normal');
