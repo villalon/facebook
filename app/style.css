@@ -199,10 +199,8 @@ td {
 	width: 100%;
 }
 
-div.scroll {
+.scroll {
 	max-height: 100%;
-	overflow-x: hidden;
-	overflow-y: scroll;
 }
 
 /* ---------------------------- popup -----------------------------*/
