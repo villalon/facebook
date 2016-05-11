@@ -23,27 +23,23 @@
  
 //define("AJAX_SCRIPT", true);
 //define("NO_DEBUG_DISPLAY", true);
-
 require_once (dirname ( dirname ( dirname ( dirname ( __FILE__ ) ) ) ) . '/config.php');
 require_once ($CFG->dirroot . '/local/facebook/locallib.php');
 require_once $CFG->libdir . '/accesslib.php';
 global $DB;
-
 $action 	  = required_param ('action', PARAM_ALPHAEXT);
 $moodleid	  = optional_param ('moodleid', null , PARAM_RAW_TRIMMED);
 $courseid 	  = optional_param ('courseid', null , PARAM_RAW_TRIMMED);
 $discussionid = optional_param ('discussionid', null, PARAM_RAW_TRIMMED);
 $emarkingid   = optional_param ('emarkingid', null, PARAM_RAW_TRIMMED);
 $lastvisit    = optional_param ('lastvisit', null , PARAM_RAW_TRIMMED);
-
 if ($action == 'get_course_data') {
-
 	$totaldata = get_course_data($moodleid, $courseid);
 	$course = $DB->get_record('course', array('id' => $courseid));
 	
 	$htmltable = "";
 	
-	$htmltable .= '<div align="left"><h2>'.$course->fullname.'</h2></div>';
+	$htmltable .= '<div align="left"><h2 id="coursename">'.$course->fullname.'</h2></div>';
 	
 	if (empty($totaldata)) {
 		$htmltable .= '<tr><div class="col-md-10 col-md-offset-1"><div class="alert alert-info" role="alert">No hay recursos dentro de este curso</div></div><tr>';
@@ -74,11 +70,7 @@ if ($action == 'get_course_data') {
 			
 			if ($module['date'] >= $lastvisit) {
 				$htmltable .= "<center><span class='glyphicon glyphicon-option-vertical' aria-hidden='true' style='color: #2a2a2a;'></span></center>&nbsp&nbsp";
-<<<<<<< HEAD
 				$new = 1;			
-=======
-			$new = 1;			
->>>>>>> origin/master
 			}
 			
 			$htmltable .= "</td><td>";
@@ -204,13 +196,8 @@ if ($action == 'get_course_data') {
 				
 				$htmltable .= $assignmodal;
 			}
-
 			if ($new == 1) {
-<<<<<<< HEAD
 				$htmltable .= "</td><td><a style='font-weight:bold;' $link component=$component $id>".$module['title']."</a></td>
-=======
-				$htmltable .= "</td><td><a style='font-weight:bold' $link component=$component $id>".$module['title']."</a></td>
->>>>>>> origin/master
 						<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
 			}
 			else{
@@ -228,7 +215,6 @@ if ($action == 'get_course_data') {
 	
 	echo $htmltable;
 } 
-
 else if ($action == 'get_discussion') {
 	
 	$discussionposts = get_posts_from_discussion($discussionid);
@@ -245,7 +231,6 @@ else if ($action == 'get_discussion') {
 		
 	echo $htmlmodal;
 } 
-
 else if ($action == 'get_emarking') {
 	
 	$emarkingsql = "SELECT s.id AS id,
