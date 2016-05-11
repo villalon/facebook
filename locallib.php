@@ -220,7 +220,8 @@ function get_course_data ($moodleid, $courseid) {
 			INNER JOIN {forum_discussions} AS discussions ON (fp.discussion = discussions.id AND discussions.course = ?)
 			INNER JOIN {forum} AS forum ON (forum.id = discussions.forum)
 			INNER JOIN {user} AS us ON (us.id = fp.userid)
-			INNER JOIN {course_modules} AS cm ON (cm.instance = forum.id AND cm.visible = ?)
+			INNER JOIN {course_modules} AS cm ON (cm.instance = forum.id)
+			WHERE cm.visible = ? 
 			GROUP BY fp.id";
 	
 	// Get the data from the above query
@@ -508,10 +509,10 @@ function get_posts_from_discussion($discussionid) {
 			WHERE fp.discussion = ? 
 			GROUP BY fp.id";
 	
-	$discussionData = $DB->get_records_sql($sql, array($discussionid));
+	$discussiondata = $DB->get_records_sql($sql, array($discussionid));
 	
 	$data = array();
-	foreach($discussionData as $post) {
+	foreach($discussiondata as $post) {
 		$data[] = array(
 				'id' => $post->id,
 				'subject' => $post->subject,
