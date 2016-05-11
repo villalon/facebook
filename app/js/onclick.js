@@ -1,8 +1,4 @@
 $(document).ready(function () {
-	$(".scroll").customScrollbar({
-		skin : "default-skin"
-	});
-
 	var courseId = null;
 	var discussionId = null;
 	var emarkingId = null;
