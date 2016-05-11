@@ -14,7 +14,6 @@ $(document).ready(function () {
 		var courseid = $(this).parent().parent().attr('courseid');
 		var badgecourseid = $( "button[courseid='"+courseid+"']" ).parent().find('.badge');
 		var aclick = $(this).parent().attr('style');
-		var advert = $(this).parent().parent().parent().parent().parent().find('.advert');
 		
 
 		if (($(this).attr('component') == "button") && ($(this).attr('courseid') != courseId)) {
