@@ -23,17 +23,21 @@
  
 //define("AJAX_SCRIPT", true);
 //define("NO_DEBUG_DISPLAY", true);
+
 require_once (dirname ( dirname ( dirname ( dirname ( __FILE__ ) ) ) ) . '/config.php');
 require_once ($CFG->dirroot . '/local/facebook/locallib.php');
 require_once $CFG->libdir . '/accesslib.php';
 global $DB;
+
 $action 	  = required_param ('action', PARAM_ALPHAEXT);
 $moodleid	  = optional_param ('moodleid', null , PARAM_RAW_TRIMMED);
 $courseid 	  = optional_param ('courseid', null , PARAM_RAW_TRIMMED);
 $discussionid = optional_param ('discussionid', null, PARAM_RAW_TRIMMED);
 $emarkingid   = optional_param ('emarkingid', null, PARAM_RAW_TRIMMED);
 $lastvisit    = optional_param ('lastvisit', null , PARAM_RAW_TRIMMED);
+
 if ($action == 'get_course_data') {
+
 	$totaldata = get_course_data($moodleid, $courseid);
 	$course = $DB->get_record('course', array('id' => $courseid));
 	
@@ -196,6 +200,7 @@ if ($action == 'get_course_data') {
 				
 				$htmltable .= $assignmodal;
 			}
+
 			if ($new == 1) {
 				$htmltable .= "</td><td><a style='font-weight:bold;' $link component=$component $id>".$module['title']."</a></td>
 						<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
@@ -215,6 +220,7 @@ if ($action == 'get_course_data') {
 	
 	echo $htmltable;
 } 
+
 else if ($action == 'get_discussion') {
 	
 	$discussionposts = get_posts_from_discussion($discussionid);
@@ -231,6 +237,7 @@ else if ($action == 'get_discussion') {
 		
 	echo $htmlmodal;
 } 
+
 else if ($action == 'get_emarking') {
 	
 	$emarkingsql = "SELECT s.id AS id,
