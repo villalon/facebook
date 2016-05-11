@@ -74,7 +74,11 @@ if ($action == 'get_course_data') {
 			
 			if ($module['date'] >= $lastvisit) {
 				$htmltable .= "<center><span class='glyphicon glyphicon-option-vertical' aria-hidden='true' style='color: #2a2a2a;'></span></center>&nbsp&nbsp";
+<<<<<<< HEAD
 				$new = 1;			
+=======
+			$new = 1;			
+>>>>>>> origin/master
 			}
 			
 			$htmltable .= "</td><td>";
@@ -202,7 +206,11 @@ if ($action == 'get_course_data') {
 			}
 
 			if ($new == 1) {
+<<<<<<< HEAD
 				$htmltable .= "</td><td><a style='font-weight:bold;' $link component=$component $id>".$module['title']."</a></td>
+=======
+				$htmltable .= "</td><td><a style='font-weight:bold' $link component=$component $id>".$module['title']."</a></td>
+>>>>>>> origin/master
 						<td>". $module['from'] ."</td><td>". $date ."</td></tr>";
 			}
 			else{
