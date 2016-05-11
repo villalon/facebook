@@ -20,7 +20,7 @@ $(document).ready(function () {
 		if (($(this).attr('component') == "button") && ($(this).attr('courseid') != courseId)) {
 			
 			courseId = $(this).attr('courseid');
-			advert.remove();
+			$('.advert').remove();
 			$('#table-body').empty();
 			var moodleId = $(this).attr('moodleid');
 			var lastVisit = $(this).attr('lastvisit');
