@@ -200,7 +200,7 @@ td {
 }
 
 div.scroll {
-	max-height: 73%;
+	max-height: 100%;
 	overflow-x: hidden;
 	overflow-y: scroll;
 }

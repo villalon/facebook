@@ -1,5 +1,4 @@
 $(document).ready(function () {
-	$(".scroll").customScrollbar();
 	//script for searching courses
 	$("#search").on('change keyup paste', function() {
 		var searchValue = $('#search').val();
