@@ -200,8 +200,8 @@ td {
 }
 
 .scroll {
-	height: 300px;
-	max-height: 450px;
+	height: 200px;
+	max-height: 200px;
 }
 
 /* ---------------------------- popup -----------------------------*/
