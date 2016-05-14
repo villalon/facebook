@@ -215,7 +215,7 @@ function get_course_data ($moodleid, $courseid) {
 	
 	// Query for the posts information
 	$datapostsql = "SELECT fp.id AS postid, us.firstname AS firstname, us.lastname AS lastname, fp.subject AS subject,
-			fp.modified AS modified, discussions.course AS course, discussions.id AS dis_id 
+			fp.modified AS modified, discussions.course AS course, discussions.id AS dis_id, cm.id AS moduleid
 			FROM {forum_posts} AS fp
 			INNER JOIN {forum_discussions} AS discussions ON (fp.discussion = discussions.id AND discussions.course = ?)
 			INNER JOIN {forum} AS forum ON (forum.id = discussions.forum)
@@ -289,38 +289,6 @@ function get_course_data ($moodleid, $courseid) {
 	// Get the data from the query
 	$dataemarking = $DB->get_records_sql($dataemarkingsql, $paramsemarking);
 	
-	/*$dataassignmentsql = "SELECT CONCAT(a.id,a.duedate) AS ids,
-			a.id, 
-			a.name, 
-			a.duedate AS due, 
-			a.course,
-			a.intro,
-			a.allowsubmissionsfromdate AS date,
-			asub.id AS submissionid, 
-			asub.timemodified AS submissiontime,
-			asub.status,
-			ag.grade,
-			cm.id AS moduleid
-			FROM {assign} AS a LEFT JOIN {assign_submission} AS asub ON (a.id = asub.assignment AND asub.userid = ?)
-			JOIN {course_modules} AS cm ON (a.course = cm.course AND a.course $sqlin AND cm.visible = ?)
-			JOIN {modules} AS m ON (m.id = cm.module AND m.visible = ? AND m.name = 'assign')
-			LEFT JOIN {assign_grades} AS ag ON (a.id = ag.assignment)
-			INNER JOIN {role_assignments} AS ra ON (ra.userid = ?)
-			INNER JOIN {context} AS ct ON (ct.id = ra.contextid)
-			INNER JOIN {course} AS c ON (c.id = ct.instanceid AND c.id = a.id)
-			INNER JOIN {role} AS r ON (r.id = ra.roleid)";*/
-	/*
-	$userid = array($moodleid);
-	
-	$dataassignmentsql = "SELECT *
-			FROM mdl_assign AS a INNER JOIN mdl_assign_submission AS asub ON (a.id = asub.assignment AND asub.userid = ?)
-			INNER JOIN mdl_course_modules AS cm ON (a.course = cm.course AND a.course $sqlin AND cm.visible = ?)
-			JOIN {modules} AS m ON (m.id = cm.module AND m.visible = ? AND m.name = 'assign')
-			GROUP BY a.id";
-	
-	$count = $DB->count_records_sql($dataassignmentsql,array_merge($userid,$param,array(1,1)));
-	echo "<h3>$count</h3>";
-	*/
 	
 	$dataassignmentsql = "SELECT a.id AS id,
 			s.status AS status,
@@ -363,7 +331,8 @@ function get_course_data ($moodleid, $courseid) {
 				'title'=>$post->subject,
 				'from'=>$post->firstname . ' ' . $post->lastname,
 				'date'=>$post->modified,
-				'course'=>$post->course
+				'course'=>$post->course,
+				'moduleid'=>$post->moduleid
 		);
 	}
 	
@@ -505,7 +474,7 @@ function get_posts_from_discussion($discussionid) {
 	$sql = "SELECT fp.id AS id, fp.subject AS subject, fp.message AS message, fp.created AS date, fp.parent AS parent, 
 			CONCAT(u.firstname, ' ', u.lastname) AS user 
 			FROM {forum_posts} AS fp 
-			INNER JOIN {user} AS u ON (fp.userid = u.id) 
+			INNER JOIN {user} AS u ON (fp.userid = u.id)
 			WHERE fp.discussion = ? 
 			GROUP BY fp.id";
 	

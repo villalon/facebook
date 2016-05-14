@@ -35,6 +35,7 @@ $courseid     = optional_param ('courseid', null , PARAM_RAW_TRIMMED);
 $discussionid = optional_param ('discussionid', null, PARAM_RAW_TRIMMED);
 $emarkingid   = optional_param ('emarkingid', null, PARAM_RAW_TRIMMED);
 $lastvisit    = optional_param ('lastvisit', null , PARAM_RAW_TRIMMED);
+$moduleid     = optional_param ('moduleid', null, PARAM_RAW_TRIMMED);
 
 if ($action == 'get_course_data') {
 
@@ -83,7 +84,7 @@ if ($action == 'get_course_data') {
 				$htmltable .= '<img src="images/post.png">';
 				$component = 'forum';
 				$link = "href='#'";
-				$id = "discussionid='".$module ['discussion']."'";
+				$id = "discussionid='".$module ['discussion']."' moduleid='".$module['moduleid']."'";
 			}
 		
 			else if ($module ['image'] == FACEBOOK_IMAGE_RESOURCE) {
@@ -227,7 +228,7 @@ else if ($action == 'get_discussion') {
 	$htmlmodal = "<div class='modal-body' id='modal-body'>";
 	
 	$moodlelink = new moodle_url('/mod/forum/view.php', array (
-			'id' => $discussionid
+			'id' => $moduleid
 	));
 	
 	foreach ($discussionposts as $post) {
