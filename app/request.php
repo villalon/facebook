@@ -144,7 +144,7 @@ if ($action == 'get_course_data') {
 				  			</div>
 	  					</div>
 						<div class='modal-footer'>
-							<button type='button' class='btn btn-default' data-dismiss='modal' component='close-modal'>Close</button>
+							<button type='button' class='btn btn-default' data-dismiss='modal' component='close-modal'>".get_string('close', 'local_facebook')."</button>
 						</div>
 					</div>
 				</div>
@@ -193,7 +193,7 @@ if ($action == 'get_course_data') {
 											</div>
 											<div class='modal-footer'>
 												<a class='btn btn-primary' href='".$module['link']."' role='button' target='_blank'>".get_string('viewassign', 'local_facebook')."</a>
-												<button type='button' class='btn btn-default' data-dismiss='modal' component='close-modal'>Close</button>
+												<button type='button' class='btn btn-default' data-dismiss='modal' component='close-modal'>".get_string('close', 'local_facebook')."</button>
 											</div>
 										</div>
 									</div>
