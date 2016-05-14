@@ -38,11 +38,6 @@ $(document).ready(function () {
 					$("#loadinggif").hide();
 				}
 			});
-		}		
-			 			
-		else if($(this).attr('component') == "close-modal") {		
-			modalId = $(this).attr('modalid');		
-			$('#' + modalId).modal('hide');		
 		}
 
 		else if($(this).attr('component') == "assign") {
