@@ -9,8 +9,8 @@ $('a').click(function () {
 			async : true,
 			data : {},
 			success : function (response) {
-				$('#modal-body').empty();
-				$('#modal-body').append(response);
+				$('#modal-content').empty();
+				$('#modal-content').append(response);
 				$('#modal').modal();
 			}
 		});
