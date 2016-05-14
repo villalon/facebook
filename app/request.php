@@ -243,7 +243,7 @@ else if ($action == 'get_discussion') {
 	$htmlmodal .= "</div>
 		   		<div class='modal-footer'>
 				   	<a class='btn btn-primary' href='".$moodlelink."' role='button' target='_blank'>".get_string('viewforum', 'local_facebook')."</a>
-					<button type='button' class='btn btn-default' data-dismiss='modal' component='close-modal' modalid='modal'>Close</button>
+					<button type='button' class='btn btn-default' data-dismiss='modal' component='close-modal' modalid='modal'>".get_string('close', 'local_facebook')."</button>
 				</div>";
 		
 	echo $htmlmodal;

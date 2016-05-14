@@ -74,3 +74,4 @@ $string["viewassign"] = "View Assignment";
 $string["notsubmitted"] = "Not submitted";
 $string["facebooklogin"] = "Log in with other facebook account";
 $string["viewforum"] = "View in forum";
+$string["close"] = "Close";

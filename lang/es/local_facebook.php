@@ -74,3 +74,4 @@ $string["viewassign"] = "Ver Tarea";
 $string["notsubmitted"] = "No enviada";
 $string["facebooklogin"] = "Conectarse con otra cuenta de facebook";
 $string["viewforum"] = "Ver en foro";
+$string["close"] = "Cerrar";
