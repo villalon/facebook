@@ -217,6 +217,7 @@ if ($action == 'get_course_data') {
 
 
 	$jsfunction = "<script>
+			$( document ).ready(function() {
  			$('a').click(function () {
 			alert('hola guapo, le hiciste click a un a');
  				var aclick = $(this).attr('style');
@@ -233,11 +234,13 @@ if ($action == 'get_course_data') {
  						alert('soy un assign');
  				}
 	
-	if(aclick == 'font-weight:bold'){
+	if(aclick == 'font-weight:bold;'){
 		alert('le hiciste click a un a bold');
 		
 	}
  			});
+});
+			
  			</script>";
 	
 	$htmltable .= $jsfunction;	
