@@ -283,7 +283,7 @@ else if ($action == 'get_discussion') {
 	$htmlmodal = "<div class='modal-body' id='modal-body'>";
 	
 	$moodlelink = new moodle_url('/mod/forum/discuss.php', array (
-			'id' => $discussionid
+			'd' => $discussionid
 	));
 	
 	foreach ($discussionposts as $post) {
