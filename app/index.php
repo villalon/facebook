@@ -167,7 +167,7 @@ if ($userfacebookinfo != false) {
 	echo "<div id='table-body'></div>";
 	
 	// Define the modal
-	echo "<div class='modal fade' id='modal' tabindex='-1' role='dialog' aria-labelledby='modal'>
+	echo "<div class='modal fade' id='forum-modal' tabindex='-1' role='dialog' aria-labelledby='modal'>
 			<div class='modal-dialog' role='document'>
 				<div class='modal-content' id='modal-content'>
 				</div>
