@@ -217,30 +217,53 @@ if ($action == 'get_course_data') {
 
 
 	$jsfunction = "<script>
-			$( document ).ready(function() {
  			$('a').click(function () {
-			alert('hola guapo, le hiciste click a un a');
+			//alert('hola guapo, le hiciste click a un a');
  				var aclick = $(this).attr('style');
 	
  				if ($(this).attr('component') == 'forum') {
- 		alert('soy un foro');
+ 					discussionId = $(this).attr('discussionid');
+	
+ 					jQuery.ajax({
+ 	 					url : 'https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_discussion&discussionid=' + discussionId,
+ 	 					async : true,
+ 	 					data : {},
+ 	 					success : function (response) {
+ 							$('#modal-body').empty();
+ 	 						$('#modal-body').append(response);
+ 	 						$('#modal').modal();
+  						}
+  					});
  				}
 	
  				else if($(this).attr('component') == 'emarking') {
- 						alert('soy un emarking');
+ 					emarkingId = $(this).attr('emarkingid');
+	
+ 					$('#e' + emarkingId).modal();
  				}
 	
  				else if ($(this).attr('component') == 'assign') {
- 						alert('soy un assign');
+ 					assignId = $(this).attr('assignid');
+	
+ 					$('#a' + assignId).modal();
  				}
 	
 	if(aclick == 'font-weight:bold;'){
-		alert('le hiciste click a un a bold');
-		
+	//	alert('le hiciste click a un a bold');
+		var coursename = $('#coursename').text();
+		//var badgecourse = $('p:contains("'+coursename+'")').parent().find('.badge');
+		$(this).css('font-weight','normal');
+		$(this).parent().parent().children('td').children('center').children('span').css('color','transparent');
+		$(this).parent().parent().children('td').children('button').css('color','#909090');
+	
+		if(badgecourse.text() == 1) {
+			badgecourse.remove();
+		}
+		else{
+			badgecourse.text(badgecourse.text()-1);
+		}
 	}
  			});
-});
-			
  			</script>";
 	
 	$htmltable .= $jsfunction;	
