@@ -254,7 +254,7 @@ if ($action == 'get_course_data') {
 		var courseid = $('#coursename').attr('courseid');
 		alert('courseid: '+courseid);
 		$(this).css('font-weight','normal');
-	var badgecourse = $( "'button[courseid='"+courseid+"']'" ).parent().find('.badge');
+	var badgecourse = $( 'button[courseid="'+courseid+'"]' ).parent().find('.badge');
 			if(badgecourse.text() == 1) {
 			badgecourse.remove();
 		}
