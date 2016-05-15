@@ -256,12 +256,7 @@ if ($action == 'get_course_data') {
 		$(this).css('font-weight','normal');			
 		var badgecourse = $( 'button[courseid="'+courseid+'"]' ).parent().find('.badge');
 		
-		if(badgecourse.text() == 1) {
-			badgecourse.remove();
-		}
-		else{
-			badgecourse.text(badgecourse.text()-1);
-		}
+	
 	}
  			});
 	});
