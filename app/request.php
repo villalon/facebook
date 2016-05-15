@@ -252,15 +252,9 @@ if ($action == 'get_course_data') {
 	if(aclick == 'font-weight:bold;'){
 		alert('le hiciste click a un a bold');
 		var coursename = $('#coursename').text();
-		var badgecourse = $('p:contains("'+coursename+'")').parent().find('.badge');
-		$(this).css('font-weight','normal');
 	
-		if(badgecourse.text() == 1) {
-			badgecourse.remove();
-		}
-		else{
-			badgecourse.text(badgecourse.text()-1);
-		}
+		$(this).css('font-weight','normal');
+
 	}
  			});
 	});
