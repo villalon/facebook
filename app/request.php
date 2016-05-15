@@ -249,7 +249,7 @@ if ($action == 'get_course_data') {
  
 	if(aclick == 'font-weight:bold'){
 		alert('le hiciste click a un a bold');
-		var coursename = $('#coursename');
+		var coursename = $('#coursename').text();
 		var badgecourse = $('p:contains("'+coursename+'")').parent().find('.badge');
 		$(this).css('font-weight','normal');
 		$(this).parent().parent().children('td').children('center').children('span').css('color','transparent');
