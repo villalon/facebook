@@ -278,17 +278,27 @@ if ($action == 'get_course_data') {
 
 else if ($action == 'get_discussion') {
 	
-$discussionposts = get_posts_from_discussion($discussionid);
-	$htmlmodal = '';
-		
+	$discussionposts = get_posts_from_discussion($discussionid);
+	$htmlmodal = "<div class='modal-body' id='modal-body'>";
+	
+	$moodlelink = new moodle_url('/mod/forum/view.php', array (
+			'id' => $moduleid
+	));
+	
 	foreach ($discussionposts as $post) {
 		$date = $post['date'];
 		$htmlmodal .= "<div align='left' style='background-color: #E6E6E6; border-radius: 4px 4px 0 0; padding: 4px; color: #333333;'>
 						<img src='images/post.png'>
 							<b>&nbsp&nbsp".$post['subject']."<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".$post['user'].", ".date('l d-F-Y', $date)."</b>
-					   </div>
-					   <div align='left' style='border-radius: 0 0 4px 4px; word-wrap: break-word;'>".$post['message']."</div><br>";
+					    </div>
+					<div align='left' style='border-radius: 0 0 4px 4px; word-wrap: break-word;'>".$post['message']."</div><br>";
 	}
+	
+	$htmlmodal .= "</div>
+		   		<div class='modal-footer'>
+				   	<a class='btn btn-primary' href='".$moodlelink."' role='button' target='_blank'>".get_string('viewforum', 'local_facebook')."</a>
+					<button type='button' class='btn btn-default' data-dismiss='modal' component='close-modal' modalid='modal'>".get_string('close', 'local_facebook')."</button>
+				</div>";
 		
 	echo $htmlmodal;
 } 
