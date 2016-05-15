@@ -253,9 +253,10 @@ if ($action == 'get_course_data') {
 		alert('le hiciste click a un a bold');
 		var courseid = $('#coursename').attr('courseid');
 		alert('courseid: '+courseid);
-		$(this).css('font-weight','normal');
-	var badgecourse = $( 'button[courseid="'+courseid+'"]' ).parent().find('.badge');
-			if(badgecourse.text() == 1) {
+		$(this).css('font-weight','normal');			
+		var badgecourse = $( 'button[courseid="'+courseid+'"]' ).parent().find('.badge');
+		
+		if(badgecourse.text() == 1) {
 			badgecourse.remove();
 		}
 		else{
