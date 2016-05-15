@@ -282,8 +282,8 @@ else if ($action == 'get_discussion') {
 	$discussionposts = get_posts_from_discussion($discussionid);
 	$htmlmodal = "<div class='modal-body' id='modal-body'>";
 	
-	$moodlelink = new moodle_url('/mod/forum/view.php', array (
-			'id' => $moduleid
+	$moodlelink = new moodle_url('/mod/forum/discuss.php', array (
+			'id' => $discussionid
 	));
 	
 	foreach ($discussionposts as $post) {
