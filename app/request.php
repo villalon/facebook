@@ -44,7 +44,7 @@ if ($action == 'get_course_data') {
 	
 	$htmltable = "";
 	
-	$htmltable .= '<div align="left"><h2 id="coursename" courseid="'$courseid'">'.$course->fullname.'</h2></div>';
+	$htmltable .= '<div align="left"><h2 id="coursename" courseid="'.$courseid.'">'.$course->fullname.'</h2></div>';
 	
 	if (empty($totaldata)) {
 		$htmltable .= '<tr><div class="col-md-10 col-md-offset-1"><div class="alert alert-info" role="alert">No hay recursos dentro de este curso</div></div><tr>';
@@ -252,7 +252,7 @@ if ($action == 'get_course_data') {
 	if(aclick == 'font-weight:bold;'){
 		alert('le hiciste click a un a bold');
 		var courseid = $('#coursename').attr('courseid');
-	alert('courseid: '+courseid);
+		alert('courseid: '+courseid);
 		$(this).css('font-weight','normal');
 
 	}
