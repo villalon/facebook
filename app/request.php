@@ -250,12 +250,11 @@ if ($action == 'get_course_data') {
  				}
 	
 	if(aclick == 'font-weight:bold;'){
-		alert('le hiciste click a un a bold');
 		var courseid = $('#coursename').attr('courseid');
-		alert('courseid: '+courseid);
 		$(this).css('font-weight','normal');			
 		$( '.name' ).each(function( index ) {
   			var este = $(this).attr(courseid);
+			alert ('courseid: ' + este);
 				if(este == courseid){
 				var badgecourse = $(this).parent().parent().find('.badge');
 					if(badgecourse.text() == 1) {
