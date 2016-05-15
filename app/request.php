@@ -233,7 +233,7 @@ if ($action == 'get_course_data') {
  	 					success : function (response) {
  							$('#modal-content').empty();
  	 						$('#modal-content').append(response);
- 	 						$('#modal').modal();
+ 	 						$('#forum-modal').modal();
   						}
   					});
  				}
