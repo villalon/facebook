@@ -254,8 +254,18 @@ if ($action == 'get_course_data') {
 		var courseid = $('#coursename').attr('courseid');
 		alert('courseid: '+courseid);
 		$(this).css('font-weight','normal');			
-		var badgecourse = $('.name[courseid='"'25'"']').parent().parent().find('.badge');
-		
+		$( '.name' ).each(function( index ) {
+  			var este = $(this).attr(courseid);
+				if(este == courseid){
+				var badgecourse = $(this).parent().parent().find('.badge');
+					if(badgecourse.text() == 1) {
+						badgecourse.remove();
+					}
+				else{
+						badgecourse.text(badgecourse.text()-1);
+					}
+									}
+										});
 	
 	}
  			});
