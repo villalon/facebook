@@ -219,58 +219,57 @@ if ($action == 'get_course_data') {
 	$jsfunction = "<script>
 			$( document ).ready(function() {
  				$('a').click(function () {
-
- 				var aclick = $(this).attr('style');
-	
- 				if ($(this).attr('component') == 'forum') {
- 					discussionId = $(this).attr('discussionid');
-					moduleId = $(this).attr('moduleid');
-	
- 					jQuery.ajax({
- 	 					url : 'https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_discussion&discussionid=' + discussionId + '&moduleid=' + moduleId,
- 	 					async : true,
- 	 					data : {},
- 	 					success : function (response) {
- 							$('#modal-content').empty();
- 	 						$('#modal-content').append(response);
- 	 						$('#forum-modal').modal();
-  						}
-  					});
- 				}
-	
- 				else if($(this).attr('component') == 'emarking') {
- 					emarkingId = $(this).attr('emarkingid');
-	
- 					$('#e' + emarkingId).modal();
- 				}
-	
- 				else if ($(this).attr('component') == 'assign') {
- 					assignId = $(this).attr('assignid');
-	
- 					$('#a' + assignId).modal();
- 				}
-	
-	if(aclick == 'font-weight:bold;'){
-		var courseid = $('#coursename').attr('courseid');
-		$(this).css('font-weight','normal');
-			
-		$( '.name' ).each(function( index ) {
-  			var este = $(this).attr('courseid');
+	 				var aclick = $(this).attr('style');
 		
-				if(este == courseid){
-				var badgecourse = $(this).parent().find('.badge');
-					if(badgecourse.text() == 1) {
-						badgecourse.remove();
+	 				if ($(this).attr('component') == 'forum') {
+	 					discussionId = $(this).attr('discussionid');
+						moduleId = $(this).attr('moduleid');
+		
+	 					jQuery.ajax({
+	 	 					url : 'https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_discussion&discussionid=' + discussionId + '&moduleid=' + moduleId,
+	 	 					async : true,
+	 	 					data : {},
+	 	 					success : function (response) {
+	 							$('#modal-content').empty();
+	 	 						$('#modal-content').append(response);
+	 	 						$('#forum-modal').modal();
+	  						}
+	  					});
+	 				}
+		
+	 				else if($(this).attr('component') == 'emarking') {
+	 					emarkingId = $(this).attr('emarkingid');
+		
+	 					$('#e' + emarkingId).modal();
+	 				}
+		
+	 				else if ($(this).attr('component') == 'assign') {
+	 					assignId = $(this).attr('assignid');
+		
+	 					$('#a' + assignId).modal();
+	 				}
+		
+					if(aclick == 'font-weight:bold;'){
+						var courseid = $('#coursename').attr('courseid');
+						$(this).css('font-weight','normal');
+						$(this).parent().parent().find('span').remove();
+							
+						$( '.name' ).each(function( index ) {
+				  			var este = $(this).attr('courseid');
+						
+							if(este == courseid){
+							var badgecourse = $(this).parent().find('.badge');
+								if(badgecourse.text() == 1) {
+									badgecourse.remove();
+								}
+							else{
+									badgecourse.text(badgecourse.text()-1);
+								}
+							}
+						});
 					}
-				else{
-						badgecourse.text(badgecourse.text()-1);
-					}
-									}
-										});
-	
-	}
- 			});
-	});
+				});
+			});
  			</script>";
 	
 	$htmltable .= $jsfunction;	
