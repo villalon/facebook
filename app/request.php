@@ -218,20 +218,21 @@ if ($action == 'get_course_data') {
 
 	$jsfunction = "<script>
 			$( document ).ready(function() {
- 			$('a').click(function () {
+ 				$('a').click(function () {
 
  				var aclick = $(this).attr('style');
 	
  				if ($(this).attr('component') == 'forum') {
  					discussionId = $(this).attr('discussionid');
+					moduleId = $(this).attr('moduleid');
 	
  					jQuery.ajax({
- 	 					url : 'https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_discussion&discussionid=' + discussionId,
+ 	 					url : 'https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_discussion&discussionid=' + discussionId + '&moduleid=' + moduleId,
  	 					async : true,
  	 					data : {},
  	 					success : function (response) {
- 							$('#modal-body').empty();
- 	 						$('#modal-body').append(response);
+ 							$('#modal-content').empty();
+ 	 						$('#modal-content').append(response);
  	 						$('#modal').modal();
   						}
   					});
