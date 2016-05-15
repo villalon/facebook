@@ -256,7 +256,7 @@ if ($action == 'get_course_data') {
   			var este = $(this).attr(courseid);
 			alert ('courseid: ' + este);
 				if(este == courseid){
-				var badgecourse = $(this).parent().parent().find('.badge');
+				var badgecourse = $(this).parent().find('.badge');
 					if(badgecourse.text() == 1) {
 						badgecourse.remove();
 					}
