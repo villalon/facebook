@@ -217,6 +217,7 @@ if ($action == 'get_course_data') {
 
 
 	$jsfunction = "<script>
+			$( document ).ready(function() {
  			$('a').click(function () {
 			//alert('hola guapo, le hiciste click a un a');
  				var aclick = $(this).attr('style');
@@ -256,14 +257,15 @@ if ($action == 'get_course_data') {
 		$(this).parent().parent().children('td').children('center').children('span').css('color','transparent');
 		$(this).parent().parent().children('td').children('button').css('color','#909090');
 	
-		if(badgecourse.text() == 1) {
-			badgecourse.remove();
-		}
-		else{
-			badgecourse.text(badgecourse.text()-1);
-		}
+// 		if(badgecourse.text() == 1) {
+// 			badgecourse.remove();
+// 		}
+// 		else{
+// 			badgecourse.text(badgecourse.text()-1);
+// 		}
 	}
  			});
+	});
  			</script>";
 	
 	$htmltable .= $jsfunction;	
