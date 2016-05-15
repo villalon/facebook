@@ -215,7 +215,32 @@ if ($action == 'get_course_data') {
 	}
 	$htmltable .= "</tbody></table>";
 
+
+	$jsfunction = "<script>
+ 			$('a').click(function () {
+			alert('hola guapo, le hiciste click a un a');
+ 				var aclick = $(this).attr('style');
 	
+ 				if ($(this).attr('component') == 'forum') {
+ 		alert('soy un foro');
+ 				}
+	
+ 				else if($(this).attr('component') == 'emarking') {
+ 						alert('soy un emarking');
+ 				}
+	
+ 				else if ($(this).attr('component') == 'assign') {
+ 						alert('soy un assign');
+ 				}
+	
+	if(aclick == 'font-weight:bold'){
+		alert('le hiciste click a un a bold');
+		
+	}
+ 			});
+ 			</script>";
+	
+	$htmltable .= $jsfunction;	
 	echo $htmltable;
 } 
 
