@@ -29,12 +29,13 @@ require_once ($CFG->dirroot . '/local/facebook/locallib.php');
 require_once $CFG->libdir . '/accesslib.php';
 global $DB;
 
-$action 	  = required_param ('action', PARAM_ALPHAEXT);
-$moodleid	  = optional_param ('moodleid', null , PARAM_RAW_TRIMMED);
-$courseid 	  = optional_param ('courseid', null , PARAM_RAW_TRIMMED);
+$action       = required_param ('action', PARAM_ALPHAEXT);
+$moodleid     = optional_param ('moodleid', null , PARAM_RAW_TRIMMED);
+$courseid     = optional_param ('courseid', null , PARAM_RAW_TRIMMED);
 $discussionid = optional_param ('discussionid', null, PARAM_RAW_TRIMMED);
 $emarkingid   = optional_param ('emarkingid', null, PARAM_RAW_TRIMMED);
 $lastvisit    = optional_param ('lastvisit', null , PARAM_RAW_TRIMMED);
+$moduleid     = optional_param ('moduleid', null, PARAM_RAW_TRIMMED);
 
 if ($action == 'get_course_data') {
 
@@ -43,7 +44,7 @@ if ($action == 'get_course_data') {
 	
 	$htmltable = "";
 	
-	$htmltable .= '<div align="left"><h2>'.$course->fullname.'</h2></div>';
+	$htmltable .= '<div align="left"><h2 id="coursename" courseid="'.$courseid.'">'.$course->fullname.'</h2></div>';
 	
 	if (empty($totaldata)) {
 		$htmltable .= '<tr><div class="col-md-10 col-md-offset-1"><div class="alert alert-info" role="alert">No hay recursos dentro de este curso</div></div><tr>';
@@ -83,7 +84,7 @@ if ($action == 'get_course_data') {
 				$htmltable .= '<img src="images/post.png">';
 				$component = 'forum';
 				$link = "href='#'";
-				$id = "discussionid='".$module ['discussion']."'";
+				$id = "discussionid='".$module ['discussion']."' moduleid='".$module['moduleid']."'";
 			}
 		
 			else if ($module ['image'] == FACEBOOK_IMAGE_RESOURCE) {
@@ -143,7 +144,7 @@ if ($action == 'get_course_data') {
 				  			</div>
 	  					</div>
 						<div class='modal-footer'>
-							<button type='button' class='btn btn-default' data-dismiss='modal' component='close-modal'>Close</button>
+							<button type='button' class='btn btn-default' data-dismiss='modal' component='close-modal'>".get_string('close', 'local_facebook')."</button>
 						</div>
 					</div>
 				</div>
@@ -192,7 +193,7 @@ if ($action == 'get_course_data') {
 											</div>
 											<div class='modal-footer'>
 												<a class='btn btn-primary' href='".$module['link']."' role='button' target='_blank'>".get_string('viewassign', 'local_facebook')."</a>
-												<button type='button' class='btn btn-default' data-dismiss='modal' component='close-modal'>Close</button>
+												<button type='button' class='btn btn-default' data-dismiss='modal' component='close-modal'>".get_string('close', 'local_facebook')."</button>
 											</div>
 										</div>
 									</div>
@@ -213,31 +214,96 @@ if ($action == 'get_course_data') {
 		}
 	}
 	$htmltable .= "</tbody></table>";
+
+
+	$jsfunction = "<script>
+			$( document ).ready(function() {
+ 				$('a').click(function () {
+	 				var aclick = $(this).attr('style');
+		
+	 				if ($(this).attr('component') == 'forum') {
+	 					discussionId = $(this).attr('discussionid');
+						moduleId = $(this).attr('moduleid');
+		
+	 					jQuery.ajax({
+	 	 					url : 'https://webcursos.uai.cl/local/facebook/app/request.php?action=get_discussion&discussionid=' + discussionId + '&moduleid=' + moduleId,
+	 	 					async : true,
+	 	 					data : {},
+	 	 					success : function (response) {
+	 							$('#modal-content').empty();
+	 	 						$('#modal-content').append(response);
+	 	 						$('#forum-modal').modal();
+	  						}
+	  					});
+	 				}
+		
+	 				else if($(this).attr('component') == 'emarking') {
+	 					emarkingId = $(this).attr('emarkingid');
+		
+	 					$('#e' + emarkingId).modal();
+	 				}
+		
+	 				else if ($(this).attr('component') == 'assign') {
+	 					assignId = $(this).attr('assignid');
+		
+	 					$('#a' + assignId).modal();
+	 				}
+		
+					if(aclick == 'font-weight:bold;'){
+						var courseid = $('#coursename').attr('courseid');
+						$(this).css('font-weight','normal');
+						$(this).parent().parent().find('span').remove();
+							
+						$( '.name' ).each(function( index ) {
+				  			var este = $(this).attr('courseid');
+						
+							if(este == courseid){
+							var badgecourse = $(this).parent().find('.badge');
+								if(badgecourse.text() == 1) {
+									badgecourse.remove();
+								}
+							else{
+									badgecourse.text(badgecourse.text()-1);
+								}
+							}
+						});
+					}
+				});
+			});
+ 			</script>";
 	
-	$jsfunction = "<script type='text/javascript' src='js/component.js'></script>";
-	
-	$htmltable .= $jsfunction;
-	
+	$htmltable .= $jsfunction;	
 	echo $htmltable;
 } 
 
 else if ($action == 'get_discussion') {
 	
 	$discussionposts = get_posts_from_discussion($discussionid);
-	$htmlmodal = '';
-		
+	$htmlmodal = "<div class='modal-body' id='modal-body'>";
+	
+	$moodlelink = new moodle_url('/mod/forum/discuss.php', array (
+			'd' => $discussionid
+	));
+	
 	foreach ($discussionposts as $post) {
 		$date = $post['date'];
 		$htmlmodal .= "<div align='left' style='background-color: #E6E6E6; border-radius: 4px 4px 0 0; padding: 4px; color: #333333;'>
 						<img src='images/post.png'>
 							<b>&nbsp&nbsp".$post['subject']."<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".$post['user'].", ".date('l d-F-Y', $date)."</b>
-					   </div>
-					   <div align='left' style='border-radius: 0 0 4px 4px; word-wrap: break-word;'>".$post['message']."</div><br>";
+					    </div>
+					<div align='left' style='border-radius: 0 0 4px 4px; word-wrap: break-word;'>".$post['message']."</div><br>";
 	}
+	
+	$htmlmodal .= "</div>
+		   		<div class='modal-footer'>
+				   	<a class='btn btn-primary' href='".$moodlelink."' role='button' target='_blank'>".get_string('viewforum', 'local_facebook')."</a>
+					<button id='close' type='button' class='btn btn-default' data-dismiss='modal' component='close-modal' modalid='forum-modal'>".get_string('close', 'local_facebook')."</button>
+				</div>
+				<script type='text/javascript' src='js/modalclose.js'></script>";
 		
 	echo $htmlmodal;
 } 
-
+/*
 else if ($action == 'get_emarking') {
 	
 	$emarkingsql = "SELECT s.id AS id,
@@ -299,4 +365,4 @@ else if ($action == 'get_emarking') {
 	}
   	
   	echo $htmlmodal;
-}
+}*/

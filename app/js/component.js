@@ -3,14 +3,15 @@ $('a').click(function () {
 
 	if ($(this).attr('component') == 'forum') {
 		discussionId = $(this).attr('discussionid');
+		moduleId = $(this).attr('moduleid');
 
 		jQuery.ajax({
-			url : 'https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_discussion&discussionid=' + discussionId,
+			url : 'https://webcursos.uai.cl/local/facebook/app/request.php?action=get_discussion&discussionid=' + discussionId + '&moduleid=' + moduleId,
 			async : true,
 			data : {},
 			success : function (response) {
-				$('#modal-body').empty();
-				$('#modal-body').append(response);
+				$('#modal-content').empty();
+				$('#modal-content').append(response);
 				$('#modal').modal();
 			}
 		});
@@ -29,16 +30,18 @@ $('a').click(function () {
 	}
 	
 	if(aclick == 'font-weight:bold'){
-		var badgecourseid = $( "'button[courseid='"+courseid+"']'" ).parent().find('.badge');
+		alert("me hiciste click y soy feo");
+		var coursename = $('#coursename');
+		var badgecourse = $("p:contains('"+coursename+"')").parent().find('.badge');
 		$(this).css('font-weight','normal');
 		$(this).parent().parent().children('td').children('center').children('span').css('color','transparent');
 		$(this).parent().parent().children('td').children('button').css('color','#909090');
 		
-		if(badgecourseid.text() == 1) {
-			badgecourseid.remove();
+		if(badgecourse.text() == 1) {
+			badgecourse.remove();
 		}
 		else{
-			badgecourseid.text(badgecourseid.text()-1);
+			badgecourse.text(badgecourse.text()-1);
 		}
 	}
 });

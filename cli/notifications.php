@@ -26,7 +26,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-//define('CLI_SCRIPT', true);
+define('CLI_SCRIPT', true);
 
 require_once(dirname(dirname(dirname(dirname(__FILE__)))).'/config.php');
 require_once($CFG->dirroot."/local/facebook/app/Facebook/autoload.php");
@@ -87,10 +87,6 @@ $sqlusers = "SELECT  u.id AS id, f.facebookid AS facebookid, u.lastaccess, CONCA
 	FROM {facebook_user} AS f  LEFT JOIN {user} AS u ON (u.id = f.moodleid AND f.status = ?)
 	WHERE f.facebookid IS NOT NULL
 	GROUP BY f.facebookid, u.id";
-
-// Table made for debugging purposes
-echo "<table border=1>";
-echo "<tr><th>User id</th> <th>User name</th> <th>total Resources</th> <th>Total Urls</th> <th>Total posts</th> <th>total emarking</th> <th>Total Assings</th> <th>Notification sent</th> </tr> ";
 
 $appid = $CFG->fbkAppID;
 $secretid = $CFG->fbkScrID;
@@ -221,54 +217,32 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(FACEBOOK_LINKED)) ){
 					    GROUP BY a.id)
 			        AS data";
 			
-			
-			echo "<tr>";
-			echo "<td>".$user->id."</td>";
-			echo "<td>".$user->name."</td>";
-			
 			// Count total notifications for the current user
 			$notifications = 0;
 			
 			// Print the obtained information in the table (debugging)
 			if($resources = $DB->get_record_sql($dataresourcesql, $paramsresource)){
-				echo "<td>".$resources->count."</td>";
 				$notifications += $resources->count;
-			} else {
-				echo "<td>0</td>";
 			}
 			
 			if($urls = $DB->get_record_sql($datalinksql, $paramslink)){
-				echo "<td>".$urls->count."</td>";
 				$notifications += $urls->count;
-			} else {
-				echo "<td>0</td>";
 			}
 			
 			if($posts = $DB->get_record_sql($datapostsql, $paramspost)){
-				echo "<td>".$posts->count."</td>";
 				$notifications += $posts->count;
-			} else {
-				echo "<td>0</td>";
 			}
 			
 			if($emarkings = $DB->get_record_sql($dataemarkingsql, $paramsemarking)){
-				echo "<td>".$emarkings->count."</td>";
 				$notifications += $emarkings->count;
-			} else {
-				echo "<td>0</td>";
 			}
 			
 			if($assigns = $DB->get_record_sql($dataassignmentsql, $paramsassignment)){
-				echo "<td>".$assigns->count."</td>";
 				$notifications += $assigns->count;
-			} else {
-				echo "<td>0</td>";
 			}
 			
 			// Check if there are notifications to send
-			if ($notifications == 0) {
-				echo "<td>No notifications found</td>";
-			} elseif ($user->facebookid != null) {
+			if ($user->facebookid != null && $notifications != 0) {
 				if ($notifications == 1) {
 					$template = "Tienes $notifications notificación de WebCursos.";
 				} else {
@@ -287,16 +261,9 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(FACEBOOK_LINKED)) ){
 				try {
 					$response = $fb->post('/'.$user->facebookid.'/notifications', $data);
 					$return = $response->getDecodedBody();
-					
-					if($return['success'] == TRUE){
-						echo "<td>Sent: $notifications</td>";
-						$sent++;
-					} else {
-						echo "<td>Not sent (success = FALSE)</td>";
-					}
 				} catch (Exception $e) {
 					$exception = $e->getMessage();
-					echo "<td>Exception found: <br>$exception<br>";
+					echo "Exception found: $exception \n";
 					
 					// If the user hasn't installed the app, update it's record to status = 0
 					if (strpos($exception, "not installed") !== FALSE) {
@@ -310,54 +277,26 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(FACEBOOK_LINKED)) ){
 						);
 						
 						if ($DB->execute($updatequery, $updateparams)) {
-							echo "Record updated, set status to 0.";
+							echo "Record updated, set status to 0. \n";
 						} else {
-							echo "Could not update the record.";
+							echo "Could not update the record. \n";
 						}
 						
-						echo "</td>";
+						//echo "</td>";
 					}
 				}
 			}
-			
-			/*
-			if( ($notification->countallresources+$notification->countallurl+$notification->countallpost+$notification->emarkingid) > 0 ){
-				$data = array(
-						"link" => "",
-						"message" => "",
-						"template" => "Tienes nuevas notificaciones de WebCursos."
-				);
-				
-				$fb->setDefaultAccessToken($appid.'|'.$secretid);
-				$response = $fb->post('/'.$user->facebookid.'/notifications', $data);
-				$return = $response->getDecodedBody();
-				
-				if($return['success'] == TRUE){
-					// Echo that tells to who notifications were sent, ordered by id
-					echo $counttosend." ".$user->facebookid." ok\n";
-					$counttosend++;
-				}else{
-					echo $userfacebookid->facebookid." fail\n";
-				}
-			}*/
-			
-			echo "</tr>";
-		}else{
-			// When the current user isn't enroled in any course (debugging)
-			echo "<br><b>Chupalo no tienes cursos</b><br>";
 		}
 	}
-	echo "</table>";
 	
 	// Check how many notifications were sent
-	echo $sent." notifications sent.<br>";
+	echo $sent." notifications sent. \n";
 	
 	// Displays the time required to complete the process
 	$finaltime = time();
 	$executiontime = $finaltime - $initialtime;
 	
-	echo "Execution time: ".$executiontime." seconds.";
+	echo "Execution time: ".$executiontime." seconds. \n";
 }
-
 
 exit(0);

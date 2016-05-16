@@ -163,17 +163,13 @@ if ($userfacebookinfo != false) {
 	
 	echo "<div class='col-md-9 col-sm-9 col-xs-12'>";
 	echo "<div class='advert'><div style='position: relative;'><img src='images/jpg_an_1.jpg'style='margin-top:10%; margin-left:8%; width:35%'><img src='images/jpg_an_2.jpg' style='margin-top:10%; margin-left:5%; width:35%'></div></div>";
-	echo "<div id='loadinggif' align='center' style='margin-top: 10%; text-align: center; display:none;'><img src='https://webcursos-d.uai.cl/local/facebook/app/images/ajaxloader.gif'></div>";
+	echo "<div id='loadinggif' align='center' style='margin-top: 10%; text-align: center; display:none;'><img src='https://webcursos.uai.cl/local/facebook/app/images/ajaxloader.gif'></div>";
 	echo "<div id='table-body'></div>";
 	
 	// Define the modal
-	echo "<div class='modal fade' id='modal' tabindex='-1' role='dialog' aria-labelledby='modal'>
+	echo "<div class='modal fade' id='forum-modal' tabindex='-1' role='dialog' aria-labelledby='modal'>
 			<div class='modal-dialog' role='document'>
-				<div class='modal-content'>
-					<div class='modal-body' id='modal-body'></div>
-					<div class='modal-footer'>
-						<button type='button' class='btn btn-default' data-dismiss='modal' component='close-modal' modalid='modal'>Close</button>
-					</div>
+				<div class='modal-content' id='modal-content'>
 				</div>
 			</div>
 		</div>";
