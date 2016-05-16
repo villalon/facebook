@@ -5,7 +5,7 @@ $('.btn-default').click(function () {
 	}
 });
 
-$('#close')click( function () {
+$('#close').click( function () {
 	alert('close');
 	$('#forum-modal').modal('hide');
 });
