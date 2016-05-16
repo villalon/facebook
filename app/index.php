@@ -198,4 +198,3 @@ if ($userfacebookinfo != false) {
 	?>
 	<script type="text/javascript" src="js/onclick.js"></script>
 	<script type="text/javascript" src="js/search.js"></script>
-	<script type='text/javascript' src='js/modalclose.js'></script>

@@ -297,12 +297,13 @@ else if ($action == 'get_discussion') {
 	$htmlmodal .= "</div>
 		   		<div class='modal-footer'>
 				   	<a class='btn btn-primary' href='".$moodlelink."' role='button' target='_blank'>".get_string('viewforum', 'local_facebook')."</a>
-					<button type='button' class='btn btn-default' data-dismiss='modal' component='close-modal' modalid='forum-modal'>".get_string('close', 'local_facebook')."</button>
-				</div>";
+					<button id='close' type='button' class='btn btn-default' data-dismiss='modal' component='close-modal' modalid='forum-modal'>".get_string('close', 'local_facebook')."</button>
+				</div>
+				<script type='text/javascript' src='js/modalclose.js'></script>";
 		
 	echo $htmlmodal;
 } 
-
+/*
 else if ($action == 'get_emarking') {
 	
 	$emarkingsql = "SELECT s.id AS id,
@@ -364,4 +365,4 @@ else if ($action == 'get_emarking') {
 	}
   	
   	echo $htmlmodal;
-}
+}*/

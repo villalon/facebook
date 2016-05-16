@@ -4,3 +4,7 @@ $('.btn-default').click(function () {
 		$('#' + modalId).modal('hide');		
 	}
 });
+
+$('#close')click( function () {
+	$('#forum-modal').modal('hide');
+});
