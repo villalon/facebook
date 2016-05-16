@@ -22,7 +22,7 @@ $(document).ready(function () {
 			
 			// Ajax fix
 			jQuery.ajax({
-				url : "https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_course_data&moodleid=" + moodleId + "&courseid=" + courseId + "&lastvisit=" + lastVisit,
+				url : "https://webcursos.uai.cl/local/facebook/app/request.php?action=get_course_data&moodleid=" + moodleId + "&courseid=" + courseId + "&lastvisit=" + lastVisit,
 				async : true,
 				data : {},
 				beforeSend: function(){

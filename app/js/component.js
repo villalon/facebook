@@ -6,7 +6,7 @@ $('a').click(function () {
 		moduleId = $(this).attr('moduleid');
 
 		jQuery.ajax({
-			url : 'https://webcursos-d.uai.cl/local/facebook/app/request.php?action=get_discussion&discussionid=' + discussionId + '&moduleid=' + moduleId,
+			url : 'https://webcursos.uai.cl/local/facebook/app/request.php?action=get_discussion&discussionid=' + discussionId + '&moduleid=' + moduleId,
 			async : true,
 			data : {},
 			success : function (response) {
