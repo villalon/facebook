@@ -83,6 +83,7 @@ $connecturl = new moodle_url ( '/local/facebook/connect.php' );
 // gets the UAI left side bar of the app
 include 'htmltoinclude/sidebar.html';
 
+$sqluser = "SELECT";
 // search for the user facebook information
 $userfacebookinfo = $DB->get_record ( 'facebook_user', array (
 		'facebookid' => $facebook_id,

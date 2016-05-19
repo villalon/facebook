@@ -30,7 +30,6 @@
 require_once (dirname(dirname(dirname(__FILE__)))."/config.php");
 require_once ($CFG->dirroot."/local/facebook/locallib.php");
 require_once ($CFG->dirroot."/local/facebook/forms.php");
-include "app/config.php";
 use Facebook\FacebookResponse;
 use Facebook\FacebookRedirectLoginHelper;
 use Facebook\FacebookRequire;
@@ -53,6 +52,14 @@ $PAGE->set_title(get_string("connecttitle", "local_facebook"));
 $PAGE->navbar->add(get_string("facebook", "local_facebook"));
 echo $OUTPUT->header ();
 
+// gets all facebook information needed
+$appid = $CFG->fbkAppID;
+$secretid = $CFG->fbkScrID;
+$config = array (
+		"app_id" => $appid,
+		"app_secret" => $secretid,
+		"default_graph_version" => "v2.5"
+);
 $facebook = new Facebook\Facebook($config);
 
 $helper = $facebook->getRedirectLoginHelper();
