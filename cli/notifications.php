@@ -21,7 +21,7 @@
  * @subpackage cli
  * @copyright  2010 Jorge Villalon (http://villalon.cl)
  * @copyright  2015 Mihail Pozarski (mipozarski@alumnos.uai.cl)
- * @copyright  2015 Hans Jeria (hansjeria@gmail.com)
+ * @copyright  2015 - 2016 Hans Jeria (hansjeria@gmail.com)
  * @copyright  2016 Mark Michaelsen (mmichaelsen678@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -49,7 +49,7 @@ if($unrecognized) {
     cli_error(get_string('cliunknowoption', 'admin', $unrecognized));
 }
 // Text to the facebook console
-if($options['help']) {
+if(isset($options['help'])) {
     $help =
 // Todo: localize - to be translated later when everything is finished
 "Send facebook notifications when a course have some news.
@@ -58,7 +58,7 @@ Options:
 Example:
 \$sudo /usr/bin/php /local/facebook/cli/notifications.php";
 echo $help;
-die;
+die();
 }
 
 
@@ -76,7 +76,12 @@ define('MODULE_ASSIGN', 1);
 $initialtime = time();
 
 // Sql that brings the facebook user id
-$sqlusers = "SELECT  u.id AS id, f.facebookid AS facebookid, u.lastaccess, CONCAT(u.firstname,' ',u.lastname) AS name, f.lasttimechecked
+$sqlusers = "SELECT  u.id AS id, 
+		f.facebookid, 
+		u.lastaccess, 
+		CONCAT(u.firstname,' ',u.lastname) AS name, 
+		f.lasttimechecked, 
+		u.email
 	FROM {facebook_user} AS f  RIGHT JOIN {user} AS u ON (u.id = f.moodleid AND f.status = ?)
 	WHERE f.facebookid IS NOT NULL
 	GROUP BY f.facebookid, u.id";
@@ -85,8 +90,8 @@ $appid = $CFG->fbkAppID;
 $secretid = $CFG->fbkScrID;
 
 // Table made for debugging purposes
-echo "<table border=1>";
-echo "<tr><th>User id</th> <th>User name</th> <th> last access</th> <th>total Resources</th> <th>Total Urls</th> <th>Total posts</th> <th>total emarking</th> <th>Total Assings</th> <th>Notification sent</th> </tr> ";
+//echo "<table border=1>";
+//echo "<tr><th>User id</th> <th>User name</th> <th> last access</th> <th>total Resources</th> <th>Total Urls</th> <th>Total posts</th> <th>total emarking</th> <th>Total Assings</th> <th>Notification sent</th> </tr> ";
 
 // Counts every notification sent
 $sent = 0;
@@ -114,8 +119,7 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(FACEBOOK_LINKED)) ){
 			// Use the last time in web or app
 			if($user->lastaccess < $user->lasttimechecked){
 				$user->lastaccess = $user->lasttimechecked; 
-			}
-			
+			}			
 			
 			// get_in_or_equal used in the IN ('') clause of multiple querys
 			list($sqlincourses, $paramcourses) = $DB->get_in_or_equal($courseidarray);
@@ -215,52 +219,55 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(FACEBOOK_LINKED)) ){
 					    GROUP BY a.id)
 			        AS data";
 			
+			/*
 			echo "<tr>";
 			echo "<td>".$user->id."</td>";
 			echo "<td>".$user->name."</td>";
 			echo "<td>".$user->lastaccess." - ".date("H:i / d-m-Y",$user->lastaccess)."</td>";
+			*/
+			
 			// Count total notifications for the current user
 			$notifications = 0;
 			
 			// Print the obtained information in the table (debugging)
 			if($resources = $DB->get_record_sql($dataresourcesql, $paramsresource)){
-				echo "<td>".$resources->count."</td>";
+				//echo "<td>".$resources->count."</td>";
 				$notifications += $resources->count;
 			}else{
-				echo "<td>0</td>";
+				//echo "<td>0</td>";
 			}
 			
 			if($urls = $DB->get_record_sql($datalinksql, $paramslink)){
-				echo "<td>".$urls->count."</td>";
+				//echo "<td>".$urls->count."</td>";
 				$notifications += $urls->count;
 			} else {
- 				echo "<td>0</td>";
+ 				//echo "<td>0</td>";
   			}
 			
 			if($posts = $DB->get_record_sql($datapostsql, $paramspost)){
-				echo "<td>".$posts->count."</td>";
+				//echo "<td>".$posts->count."</td>";
 				$notifications += $posts->count;
 			}else{
-				echo "<td>0</td>";
+				//echo "<td>0</td>";
 			}
 			
 			if($emarkings = $DB->get_record_sql($dataemarkingsql, $paramsemarking)){
-				echo "<td>".$emarkings->count."</td>";
+				//echo "<td>".$emarkings->count."</td>";
 				$notifications += $emarkings->count;
 			}else{
-				echo "<td>0</td>";
+				//echo "<td>0</td>";
 			}
 			
 			if($assigns = $DB->get_record_sql($dataassignmentsql, $paramsassignment)){
-				echo "<td>".$assigns->count."</td>";
+				//echo "<td>".$assigns->count."</td>";
 				$notifications += $assigns->count;
 			}else{
-				echo "<td>0</td>";
+				//echo "<td>0</td>";
 			}
 			
 			if ($notifications == 0) {
-								echo "<td>No notifications found</td>";
-				} else
+				//echo "<td>No notifications found</td>";
+			} else
 			
 			// Check if there are notifications to send
 			if ($user->facebookid != null && $notifications != 0) {
@@ -282,6 +289,7 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(FACEBOOK_LINKED)) ){
 				try {
 					$response = $fb->post('/'.$user->facebookid.'/notifications', $data);
 					$return = $response->getDecodedBody();
+					echo "Send notification to ".$user->name." - ".$user->email."\n";
 				} catch (Exception $e) {
 					$exception = $e->getMessage();
 					echo "Exception found: $exception \n";
@@ -310,7 +318,7 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(FACEBOOK_LINKED)) ){
 			}
 		}
 	}
-	echo "</table>";
+	//echo "</table>";
 	// Check how many notifications were sent
 	echo $sent." notifications sent. \n";
 	
