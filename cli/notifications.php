@@ -29,13 +29,13 @@
 //define('CLI_SCRIPT', true);
 
 require_once(dirname(dirname(dirname(dirname(__FILE__)))).'/config.php');
-require_once($CFG->dirroot."/local/facebook/app/Facebook/autoload.php");
 require_once($CFG->libdir.'/clilib.php');
 require_once($CFG->libdir.'/moodlelib.php');
 require_once($CFG->libdir.'/datalib.php');
 require_once($CFG->libdir.'/accesslib.php');
 require_once($CFG->dirroot.'/course/lib.php');
 require_once($CFG->dirroot.'/enrol/guest/lib.php');
+require_once($CFG->dirroot."/local/facebook/app/Facebook/autoload.php");
 require_once($CFG->dirroot."/local/facebook/app/Facebook/FacebookRequest.php");
 include $CFG->dirroot."/local/facebook/app/Facebook/Facebook.php";
 use Facebook\FacebookResponse;
@@ -44,30 +44,28 @@ use Facebook\FacebookRequire;
 use Facebook\Facebook;
 use Facebook\Request;
 
-// now get cli options
-list($options, $unrecognized) = cli_get_params(array(
-		'help' => false), array(
-				'h' => 'help'));
-	
-if ($unrecognized) {
+// Now get cli options
+list($options, $unrecognized) = cli_get_params(
+		array('help'=>false),
+        array('h'=>'help')
+		);
+if($unrecognized) {
     $unrecognized = implode("\n  ", $unrecognized);
     cli_error(get_string('cliunknowoption', 'admin', $unrecognized));
 }
-
-if ($options['help']) {
+// Text to the facebook console
+if($options['help']) {
     $help =
+// Todo: localize - to be translated later when everything is finished
 "Send facebook notifications when a course have some news.
-
 Options:
 -h, --help            Print out this help
-
 Example:
-\$sudo /usr/bin/php /local/facebook/cli/notifications.php
-"; //TODO: localize - to be translated later when everything is finished
-
-    echo $help;
-    die();
+\$sudo /usr/bin/php /local/facebook/cli/notifications.php";
+echo $help;
+die;
 }
+
 
 cli_heading('Facebook notifications'); // TODO: localize
 
@@ -84,7 +82,7 @@ $initialtime = time();
 
 // Sql that brings the facebook user id
 $sqlusers = "SELECT  u.id AS id, f.facebookid AS facebookid, u.lastaccess, CONCAT(u.firstname,' ',u.lastname) AS name, f.lasttimechecked
-	FROM {facebook_user} AS f  INNER JOIN {user} AS u ON (u.id = f.moodleid AND f.status = ?)
+	FROM {facebook_user} AS f  RIGHT JOIN {user} AS u ON (u.id = f.moodleid AND f.status = ?)
 	WHERE f.facebookid IS NOT NULL
 	GROUP BY f.facebookid, u.id";
 
@@ -93,7 +91,7 @@ $secretid = $CFG->fbkScrID;
 
 // Table made for debugging purposes
 echo "<table border=1>";
-echo "<tr><th>User id</th> <th>User name</th> <th>total Resources</th> <th>Total Urls</th> <th>Total posts</th> <th>total emarking</th> <th>Total Assings</th> <th>Notification sent</th> </tr> ";
+echo "<tr><th>User id</th> <th>User name</th> <th> last access</th> <th>total Resources</th> <th>Total Urls</th> <th>Total posts</th> <th>total emarking</th> <th>Total Assings</th> <th>Notification sent</th> </tr> ";
 
 // Counts every notification sent
 $sent = 0;
@@ -122,6 +120,7 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(FACEBOOK_LINKED)) ){
 			if($user->lastaccess < $user->lasttimechecked){
 				$user->lastaccess = $user->lasttimechecked; 
 			}
+			
 			
 			// get_in_or_equal used in the IN ('') clause of multiple querys
 			list($sqlincourses, $paramcourses) = $DB->get_in_or_equal($courseidarray);
@@ -224,6 +223,7 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(FACEBOOK_LINKED)) ){
 			echo "<tr>";
 			echo "<td>".$user->id."</td>";
 			echo "<td>".$user->name."</td>";
+			echo "<td>".$user->lastaccess." -".date("d-m-Y",$user->lastaccess)."</td>";
 			// Count total notifications for the current user
 			$notifications = 0;
 			
@@ -311,6 +311,7 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(FACEBOOK_LINKED)) ){
 						//echo "</td>";
 					}
 				}
+				$sent += $notifications;
 			}
 		}
 	}
