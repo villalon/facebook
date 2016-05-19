@@ -289,7 +289,7 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(FACEBOOK_LINKED)) ){
 				try {
 					$response = $fb->post('/'.$user->facebookid.'/notifications', $data);
 					$return = $response->getDecodedBody();
-					echo "Send notification to ".$user->name." - ".$user->email."\n";
+					echo "Send ".$notifications." notification to ".$user->name." - ".$user->email." |  \n";
 				} catch (Exception $e) {
 					$exception = $e->getMessage();
 					echo "Exception found: $exception \n";
