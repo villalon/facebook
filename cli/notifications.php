@@ -49,7 +49,7 @@ if($unrecognized) {
     cli_error(get_string('cliunknowoption', 'admin', $unrecognized));
 }
 // Text to the facebook console
-if(isset($options['help'])) {
+if($options['help']) {
     $help =
 // Todo: localize - to be translated later when everything is finished
 "Send facebook notifications when a course have some news.
