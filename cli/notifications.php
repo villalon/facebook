@@ -29,12 +29,7 @@
 //define('CLI_SCRIPT', true);
 
 require_once(dirname(dirname(dirname(dirname(__FILE__)))).'/config.php');
-require_once($CFG->libdir.'/clilib.php');
-require_once($CFG->libdir.'/moodlelib.php');
-require_once($CFG->libdir.'/datalib.php');
-require_once($CFG->libdir.'/accesslib.php');
-require_once($CFG->dirroot.'/course/lib.php');
-require_once($CFG->dirroot.'/enrol/guest/lib.php');
+require_once ($CFG->libdir . '/clilib.php'); 
 require_once($CFG->dirroot."/local/facebook/app/Facebook/autoload.php");
 require_once($CFG->dirroot."/local/facebook/app/Facebook/FacebookRequest.php");
 include $CFG->dirroot."/local/facebook/app/Facebook/Facebook.php";
@@ -223,7 +218,7 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(FACEBOOK_LINKED)) ){
 			echo "<tr>";
 			echo "<td>".$user->id."</td>";
 			echo "<td>".$user->name."</td>";
-			echo "<td>".$user->lastaccess." -".date("d-m-Y",$user->lastaccess)."</td>";
+			echo "<td>".$user->lastaccess." - ".date("H:i / d-m-Y",$user->lastaccess)."</td>";
 			// Count total notifications for the current user
 			$notifications = 0;
 			
