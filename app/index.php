@@ -31,7 +31,6 @@ require_once (dirname ( dirname ( dirname ( dirname ( __FILE__ ) ) ) ) . '/confi
 require_once ($CFG->dirroot . '/local/facebook/locallib.php');
 require_once ($CFG->dirroot . "/local/facebook/app/Facebook/autoload.php");
 global $DB, $USER, $CFG, $OUTPUT;
-require_once ("config.php");
 use Facebook\FacebookResponse;
 use Facebook\FacebookRedirectLoginHelper;
 use Facebook\FacebookRequire;
