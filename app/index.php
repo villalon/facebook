@@ -94,9 +94,14 @@ $userfacebookinfo = $DB->get_record ( 'facebook_user', array (
 if ($userfacebookinfo != false) {
 	$moodleid = $userfacebookinfo->moodleid;
 	$lastvisit = $userfacebookinfo->lasttimechecked;
-	$user_info = $DB->get_record ( 'user', array (
+	$userinfo = $DB->get_record ( 'user', array (
 			'id' => $moodleid 
 	) );
+	
+	if($userinfo->lastaccess > $lastvisit){
+		$lastvisit = $userinfo->lastaccess;
+	}
+	
 	$usercourse = enrol_get_users_courses ( $moodleid );
 	
 	// generates an array with all the users courses
