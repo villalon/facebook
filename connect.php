@@ -30,6 +30,7 @@
 require_once (dirname(dirname(dirname(__FILE__)))."/config.php");
 require_once ($CFG->dirroot."/local/facebook/locallib.php");
 require_once ($CFG->dirroot."/local/facebook/forms.php");
+require_once ($CFG->dirroot . "/local/facebook/app/Facebook/autoload.php");
 use Facebook\FacebookResponse;
 use Facebook\FacebookRedirectLoginHelper;
 use Facebook\FacebookRequire;
