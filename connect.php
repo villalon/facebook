@@ -36,6 +36,8 @@ use Facebook\FacebookRedirectLoginHelper;
 use Facebook\FacebookRequire;
 global $DB, $USER, $CFG; 
 
+define('FACEBOOK_STATUS_LINKED', 1);
+
 $connect = optional_param("code", null, PARAM_RAW);
 //$connect = $_GET["code"];
 $disconnect = optional_param ("disconnect", null, PARAM_TEXT );
