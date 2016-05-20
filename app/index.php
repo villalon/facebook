@@ -31,7 +31,6 @@ require_once (dirname ( dirname ( dirname ( dirname ( __FILE__ ) ) ) ) . '/confi
 require_once ($CFG->dirroot . '/local/facebook/locallib.php');
 require_once ($CFG->dirroot . "/local/facebook/app/Facebook/autoload.php");
 global $DB, $USER, $CFG, $OUTPUT;
-require_once ("config.php");
 use Facebook\FacebookResponse;
 use Facebook\FacebookRedirectLoginHelper;
 use Facebook\FacebookRequire;
@@ -94,9 +93,14 @@ $userfacebookinfo = $DB->get_record ( 'facebook_user', array (
 if ($userfacebookinfo != false) {
 	$moodleid = $userfacebookinfo->moodleid;
 	$lastvisit = $userfacebookinfo->lasttimechecked;
-	$user_info = $DB->get_record ( 'user', array (
+	$userinfo = $DB->get_record ( 'user', array (
 			'id' => $moodleid 
 	) );
+	
+	if($userinfo->lastaccess > $lastvisit){
+		$lastvisit = $userinfo->lastaccess;
+	}
+	
 	$usercourse = enrol_get_users_courses ( $moodleid );
 	
 	// generates an array with all the users courses
