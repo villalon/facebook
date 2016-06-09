@@ -20,7 +20,8 @@
  * You can have a rather longer description of the file as well,
  * if you like, and it can span multiple lines.
  *
- * @package    mod_evapares
+ * @package    local
+ * @subpackage facebook
  * @copyright  2016 Benjamin Espinosa (beespinosa94@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -35,6 +36,7 @@ require_login();
 $url = new moodle_url("/local/facebook/invite.php");
 
 $context = context_system::instance ();
+
 $PAGE->set_url($url);
 $PAGE->set_context($context);
 $PAGE->set_pagelayout("standard");
@@ -66,8 +68,6 @@ $tableheadings = array(get_string('lastname','local_facebook'), get_string('firs
 		get_string('email','local_facebook'), get_string('linked','local_facebook')
 );
 
-//var_dump($facebookstatus);
-
 echo $OUTPUT->header ();
 
 foreach($facebookstatus AS $statusdata){
@@ -84,18 +84,12 @@ foreach($facebookstatus AS $statusdata){
 	$tabledata[] = $tablerow;
 }
 
+$backtocourse =  new moodle_url("/course/view.php",array('id' => $cid));
+echo $OUTPUT->single_button($backtocourse, get_string('invitebutton','local_facebook'));
+
 $table = new html_table();
 $table->head = $tableheadings;
 $table->data = $tabledata;
 echo html_writer::table($table);
+
 echo $OUTPUT->footer ();
-
-
-
-
-
-
-
-
-
-
