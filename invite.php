@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Prints a particular instance of evapares
+ * 
  *
  * You can have a rather longer description of the file as well,
  * if you like, and it can span multiple lines.
@@ -33,8 +33,10 @@ global $DB, $USER, $CFG;
 
 require_login();
 
+//set the URL
 $url = new moodle_url("/local/facebook/invite.php");
 
+//set the context
 $context = context_system::instance ();
 
 $PAGE->set_url($url);
@@ -43,33 +45,37 @@ $PAGE->set_pagelayout("standard");
 $PAGE->set_title(get_string("invitetitle", "local_facebook"));
 $PAGE->navbar->add(get_string("facebook", "local_facebook"));
 
+//takes the course id from the URL
 $cid = required_param('cid', PARAM_INT);
 
+//brings the students of the course and their connection status with facebook
 $facebookstatussql = 'SELECT u.lastname,
 		u.firstname,
 		u.email,
 		f.status
-		FROM mdl_course AS c
-		INNER JOIN mdl_context AS ct ON c.id = ct.instanceid
-		INNER JOIN mdl_role_assignments AS ra ON ra.contextid = ct.id
-		INNER JOIN mdl_user AS u ON u.id = ra.userid
-		INNER JOIN mdl_role AS r ON r.id = ra.roleid
-		LEFT JOIN mdl_facebook_user AS f ON u.id = f.moodleid
+		FROM {course} AS c
+		INNER JOIN {context} AS ct ON c.id = ct.instanceid
+		INNER JOIN {role_assignments} AS ra ON ra.contextid = ct.id
+		INNER JOIN {user} AS u ON u.id = ra.userid
+		INNER JOIN {role} AS r ON r.id = ra.roleid
+		LEFT JOIN {facebook_user} AS f ON u.id = f.moodleid
 		WHERE c.id = ? AND r.id = 5';
 
 $facebookstatus = $DB->get_records_sql($facebookstatussql, array($cid));
 
+//table pictures
 $check = $OUTPUT->pix_icon("i/grade_correct", get_string('linked','local_facebook'));
 $cross = $OUTPUT->pix_icon("i/grade_incorrect", get_string('unlinked','local_facebook'));
 
 $tabledata = array();
 $tablerow = array();
 $tableheadings = array(get_string('lastname','local_facebook'), get_string('firstname','local_facebook'),
-		get_string('email','local_facebook'), get_string('linked','local_facebook')
-);
+		get_string('email','local_facebook'), get_string('linked','local_facebook'));
+$emails = array();
 
 echo $OUTPUT->header ();
 
+//adds each student and their status to a table row
 foreach($facebookstatus AS $statusdata){
 	$tablerow = array();
 	
@@ -78,14 +84,25 @@ foreach($facebookstatus AS $statusdata){
 	$tablerow[] = $statusdata->email;
 	if($statusdata->status != 1){
 		$tablerow[] = $cross;
+		//stores the emails of students not connected with facebook
+		$emails[] = $statusdata->email;
 	}else{
 		$tablerow[] = $check;
 	}
 	$tabledata[] = $tablerow;
 }
+//send email function
+//echo $OUTPUT->single_button('boton', get_string('invitebutton','local_facebook'));
+$message = get_string('messagesucces','local_facebook');
+echo '<button onclick ="alert('."'".$message."'".')" type="button">'.get_string('invitebutton','local_facebook').'</button>';
+//invite_to_facebook($emails);
 
+//button to send invitation by email
+//HACER BOTON BIEN
+
+//button back to course
 $backtocourse =  new moodle_url("/course/view.php",array('id' => $cid));
-echo $OUTPUT->single_button($backtocourse, get_string('invitebutton','local_facebook'));
+echo $OUTPUT->single_button($backtocourse, get_string('backtocourse','local_facebook'));
 
 $table = new html_table();
 $table->head = $tableheadings;
