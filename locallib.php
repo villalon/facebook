@@ -497,3 +497,16 @@ function get_posts_from_discussion($discussionid) {
 function cmp($a, $b){
 	return strcmp ($b->totalnotifications, $a->totalnotifications);
 }
+
+function invite_to_facebook($mails){
+	
+	$titile = get_string('mailtitle','local_facebook');
+	$message = get_string('mailmessage','local_facebook');
+	
+	foreach($mails as $studentmail){
+		mail($studentmail, $title, $message);
+	}
+}
+
+
+
