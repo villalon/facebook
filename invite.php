@@ -91,14 +91,16 @@ foreach($facebookstatus AS $statusdata){
 	}
 	$tabledata[] = $tablerow;
 }
-//send email function
-//echo $OUTPUT->single_button('boton', get_string('invitebutton','local_facebook'));
+
+//button to send invitation by email
 $message = get_string('messagesucces','local_facebook');
 echo '<button onclick ="alert('."'".$message."'".')" type="button">'.get_string('invitebutton','local_facebook').'</button>';
 //invite_to_facebook($emails);
+// $actionicon = $OUTPUT->action_icon(
+// 		$actionurl,
+// 		new pix_icon("i/manual_item", get_string('confirm','mod_evapares')),
+// 		new confirm_action(get_string('confirmpopup','mod_evapares'))
 
-//button to send invitation by email
-//HACER BOTON BIEN
 
 //button back to course
 $backtocourse =  new moodle_url("/course/view.php",array('id' => $cid));
