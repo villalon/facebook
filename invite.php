@@ -52,6 +52,7 @@ $cid = required_param('cid', PARAM_INT);
 $facebookstatussql = 'SELECT u.lastname,
 		u.firstname,
 		u.email,
+		u.username,
 		f.status
 		FROM {course} AS c
 		INNER JOIN {context} AS ct ON c.id = ct.instanceid
@@ -86,6 +87,7 @@ foreach($facebookstatus AS $statusdata){
 		$tablerow[] = $cross;
 		//stores the emails of students not connected with facebook
 		$emails[] = $statusdata->email;
+		$users[] = $statusdata->username;
 	}else{
 		$tablerow[] = $check;
 	}
@@ -93,9 +95,7 @@ foreach($facebookstatus AS $statusdata){
 }
 
 //button to send invitation by email
-$message = get_string('messagesucces','local_facebook');
-echo '<button onclick ="alert('."'".$message."'".')" type="button">'.get_string('invitebutton','local_facebook').'</button>';
-//invite_to_facebook($emails);
+echo '<button onclick ="invite_to_facebook("'.$users.'")" type="button">'.get_string('invitebutton','local_facebook').'</button>';
 // $actionicon = $OUTPUT->action_icon(
 // 		$actionurl,
 // 		new pix_icon("i/manual_item", get_string('confirm','mod_evapares')),
