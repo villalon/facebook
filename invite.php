@@ -47,6 +47,7 @@ $PAGE->navbar->add(get_string("facebook", "local_facebook"));
 
 //takes the course id from the URL
 $cid = required_param('cid', PARAM_INT);
+$invite = optional_param('inv', '0', PARAM_INT);
 
 //brings the students of the course and their connection status with facebook
 $facebookstatussql = 'SELECT u.lastname,
@@ -72,7 +73,6 @@ $tabledata = array();
 $tablerow = array();
 $tableheadings = array(get_string('lastname','local_facebook'), get_string('firstname','local_facebook'),
 		get_string('email','local_facebook'), get_string('linked','local_facebook'));
-$emails = array();
 
 echo $OUTPUT->header ();
 
@@ -95,12 +95,8 @@ foreach($facebookstatus AS $statusdata){
 }
 
 //button to send invitation by email
-echo '<button onclick ="invite_to_facebook("'.$users.'")" type="button">'.get_string('invitebutton','local_facebook').'</button>';
-// $actionicon = $OUTPUT->action_icon(
-// 		$actionurl,
-// 		new pix_icon("i/manual_item", get_string('confirm','mod_evapares')),
-// 		new confirm_action(get_string('confirmpopup','mod_evapares'))
-
+$reload =  new moodle_url("/local/facebook/invite.php",array('cid' => $cid, 'inv' => 1));
+echo $OUTPUT->single_button($reload, get_string('invitebutton','local_facebook'));
 
 //button back to course
 $backtocourse =  new moodle_url("/course/view.php",array('id' => $cid));
@@ -110,5 +106,10 @@ $table = new html_table();
 $table->head = $tableheadings;
 $table->data = $tabledata;
 echo html_writer::table($table);
+
+//runs the invite function
+if($invite == 1){
+	invite_to_facebook($users);
+}
 
 echo $OUTPUT->footer ();

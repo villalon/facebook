@@ -518,5 +518,5 @@ function invite_to_facebook($users){
 		$eventdata->notification = 1; // this is only set to 0 for personal messages between users
 		message_send($eventdata);
 	}
-	echo 'alert("Aloha")';	
+	echo "<script type='text/javascript'>alert('$alertmessage');</script>";
 }
