@@ -442,7 +442,8 @@ function get_course_data ($moodleid, $courseid) {
 	// Returns the final array ordered by date to index.php
 	return record_sort($totaldata, 'date', 'true');
 }
-function facebook_connect_table_generator($facebook_id, $link, $first_name, $middle_name, $last_name, $appname) {
+function facebook_connect_table_generator($facebook_id, $link, $first_name, $middle_name, $last_name) {
+	global $CFG;
 	$imagetable = new html_table ();
 	$infotable = new html_table ();
 	$infotable->data [] = array (
@@ -456,7 +457,7 @@ function facebook_connect_table_generator($facebook_id, $link, $first_name, $mid
 	if ($appname != null) {
 		$infotable->data [] = array (
 				"Link a la app",
-				"<a href='http://apps.facebook.com/" . $appname . "' target=_blank>http://apps.facebook.com/" . $appname . "</a>"
+				"<a href='" . $CFG->fbk_url . "' target=_blank>" . $CFG->fbk_url . "</a>"
 		);
 	} else {
 		$infotable->data [] = array (

@@ -64,7 +64,6 @@ $config = array (
 $facebook = new Facebook\Facebook($config);
 
 $helper = $facebook->getRedirectLoginHelper();
-$appname = $CFG->fbk_appname;
 
 // Search if the user have linked with facebook
 $userinfo = $DB->get_record ( 'facebook_user', array(
@@ -124,8 +123,7 @@ if(isset($userinfo->status)){
 				$information->link,
 				$information->firstname,
 				$information->middlename,
-				$information->lastname,
-				$appname
+				$information->lastname
 		);
 
 		$button = new buttons ();
@@ -140,8 +138,7 @@ if(isset($userinfo->status)){
 			$userinfo->link,
 			$userinfo->firstname,
 			$userinfo->middlename,
-			$userinfo->lastname,
-			$appname
+			$userinfo->lastname
 		);
 		
 		$button = new buttons ();
@@ -285,8 +282,7 @@ if($connect != NULL){
 				$datauser->link,
 				$datauser->firstname,
 				$datauser->middlename,
-				$datauser->lastname,
-				$appname
+				$datauser->lastname
 		);
 		// Look if the account was already linked
 		$duplicate = $DB->get_record("facebook_user", array (

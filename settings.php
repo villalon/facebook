@@ -141,11 +141,11 @@ if ($hassiteconfig) {
 	);
 	$settings->add(
 			new admin_setting_configcheckbox(
-					'fbk_notifications',
-					'Habilitar/Deshabilitar Notificaciones',
-					'Controla el envío de notificaciones desde Webcursos a Facebook para usuarios enlazados',
-					1,
-					PARAM_BOOL
+				'fbk_notifications',
+				'Habilitar/Deshabilitar Notificaciones',
+				'Controla el envío de notificaciones desde Webcursos a Facebook para usuarios enlazados',
+				TRUE,
+				PARAM_BOOL
 			)
 	);
 	$settings->add(
@@ -153,7 +153,7 @@ if ($hassiteconfig) {
 				'fbk_emarking', 
 				'Habilitar/Deshabilitar eMarking',
 				'Esta acción afecta tanto a notificaciones como el despliegue del módulo en la interfaz de la aplicación',
-				0,
+				TRUE,
 				PARAM_BOOL
 			)
 	);
