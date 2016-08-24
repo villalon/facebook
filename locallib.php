@@ -205,7 +205,7 @@ function record_sort($records, $field, $reverse = false){
  * @return array
  */
 function get_course_data ($moodleid, $courseid) {
-	global $DB;
+	global $DB, $CFG;
 	
 	// Parameters for post query
 	$paramspost = array(
