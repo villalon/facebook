@@ -154,7 +154,7 @@ if ($userfacebookinfo != false) {
 		$shortname = $courses->shortname;
 		$totals = $courses->totalnotifications;
 		
-		echo '<div class="block" style="height: 4em;"><button type="button" class="btn btn-info btn-lg" style="white-space: normal; width: 90%; height: 90%; border: 1px solid lightgray; background: #F0F0F0;" courseid="' . $courseid . '" fullname="' . $fullname . '" component="button">';
+		echo '<div class="block" style="height: 4em;"><button type="button" class="btn btn-info btn-lg" style="white-space: normal; width: 90%; height: 90%; border: 1px solid lightgray; background: #F0F0F0;" courseid="' . $courseid . '" fullname="' . $fullname . '" moodleid="'.$moodleid.'" lastvisit="'.$lastvisit.'" component="button">';
 		echo '<p class="name" align="left" style="position: relative; height: 3em; overflow: hidden; color: black; font-weight: bold; text-decoration: none; font-size:13px; word-wrap: initial;" courseid="' . $courseid . '" moodleid="'.$moodleid.'" lastvisit="'.$lastvisit.'" component="button">
  				' . $fullname . '</p>';
 		if ($totals > 0) {
