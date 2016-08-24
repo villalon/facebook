@@ -2,7 +2,6 @@ $(document).ready(function () {
 	var courseId = null;
 	var discussionId = null;
 	var emarkingId = null;
-	var assignId = null;
 
 	$("*", document.body).click(function(event) {
 		event.stopPropagation();
