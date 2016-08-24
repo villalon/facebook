@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
  
-define("AJAX_SCRIPT", true);
+//define("AJAX_SCRIPT", true);
 //define("NO_DEBUG_DISPLAY", true);
 
 require_once (dirname ( dirname ( dirname ( dirname ( __FILE__ ) ) ) ) . '/config.php');
