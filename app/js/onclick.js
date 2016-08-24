@@ -20,10 +20,10 @@ $(document).ready(function () {
 			var moodleId = $(this).attr('moodleid');
 			var lastVisit = $(this).attr('lastvisit');
 			var url = $('#divurl').attr('url');
-			alert(url);
+			
 			// Ajax fix
 			jQuery.ajax({
-				url : "https://webcursos.uai.cl/local/facebook/app/request.php?action=get_course_data&moodleid=" + moodleId + "&courseid=" + courseId + "&lastvisit=" + lastVisit,
+				url : url+"?action=get_course_data&moodleid=" + moodleId + "&courseid=" + courseId + "&lastvisit=" + lastVisit,
 				async : true,
 				data : {},
 				beforeSend: function(){

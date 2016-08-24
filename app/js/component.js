@@ -4,10 +4,9 @@ $('a').click(function () {
 	if ($(this).attr('component') == 'forum') {
 		discussionId = $(this).attr('discussionid');
 		moduleId = $(this).attr('moduleid');
-		url = <?php echo $CFG->fbk_ajax ?>;
-		alert(url);
+		var url = $('#divurl').attr('url');
 		jQuery.ajax({
-			url : 'https://webcursos.uai.cl/local/facebook/app/request.php?action=get_discussion&discussionid=' + discussionId + '&moduleid=' + moduleId,
+			url : url+'?action=get_discussion&discussionid=' + discussionId + '&moduleid=' + moduleId,
 			async : true,
 			data : {},
 			success : function (response) {
