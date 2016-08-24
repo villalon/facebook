@@ -75,6 +75,10 @@ $app_name = $CFG->fbk_appname;
 $app_email = $CFG->fbk_email;
 $tutorial_name = $CFG->fbk_tutorialsname;
 $tutorial_link = $CFG->fbk_tutorialurl;
+echo html_writer::nonempty_tag("div", " ", array(
+			"id" => "divurl",
+			"url" => $CFG->fbk_ajax
+	));
 $messageurl = new moodle_url ( '/message/edit.php' );
 $connecturl = new moodle_url ( '/local/facebook/connect.php' );
 
