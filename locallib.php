@@ -454,17 +454,12 @@ function facebook_connect_table_generator($facebook_id, $link, $first_name, $mid
 			get_string ( "profile", "local_facebook" ),
 			"<a href='" . $link . "' target=_blank>" . $link . "</a>"
 	);
-	if ($appname != null) {
-		$infotable->data [] = array (
-				"Link a la app",
-				"<a href='" . $CFG->fbk_url . "' target=_blank>" . $CFG->fbk_url . "</a>"
-		);
-	} else {
-		$infotable->data [] = array (
-				"",
-				""
-		);
-	}
+
+	$infotable->data [] = array (
+			"Link a la app",
+			"<a href='" . $CFG->fbk_url . "' target=_blank>" . $CFG->fbk_url . "</a>"
+	);
+
 	$imagetable->data [] = array (
 			"<img src='https://graph.facebook.com/" .$facebook_id . "/picture?type=large'>",
 			html_writer::table ($infotable)
