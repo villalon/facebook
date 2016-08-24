@@ -19,7 +19,8 @@ $(document).ready(function () {
 			$('#table-body').empty();
 			var moodleId = $(this).attr('moodleid');
 			var lastVisit = $(this).attr('lastvisit');
-			
+			var url = <?php echo $CFG->fbk_ajax ?>;
+			alert(url);
 			// Ajax fix
 			jQuery.ajax({
 				url : "https://webcursos.uai.cl/local/facebook/app/request.php?action=get_course_data&moodleid=" + moodleId + "&courseid=" + courseId + "&lastvisit=" + lastVisit,

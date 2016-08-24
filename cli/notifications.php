@@ -272,9 +272,9 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(FACEBOOK_LINKED)) && 
 			// Check if there are notifications to send
 			if ($user->facebookid != null && $notifications != 0) {
 				if ($notifications == 1) {
-					$template = "Tienes $notifications notificación de WebCursos.";
+					$template = "Tienes $notifications notificación de Webcursos.";
 				} else {
-					$template = "Tienes $notifications notificaciones de WebCursos.";
+					$template = "Tienes $notifications notificaciones de Webcursos.";
 				}
 				
 				$data = array(
