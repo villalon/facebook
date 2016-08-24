@@ -99,15 +99,27 @@ try {
 } catch(Facebook\Exceptions\FacebookResponseException $e) {
 	// When Graph returns an error
 	echo 'Graph returned an error: ' . $e->getMessage();
-	exit;
+
 } catch(Facebook\Exceptions\FacebookSDKException $e) {
 	// When validation fails or other local issues
 	echo 'Facebook SDK returned an error: ' . $e->getMessage();
-	exit;
+
 }
 
-
-
+if(count($responses)>0){
+	foreach ($responses as $key => $response) {
+		if ($response->isError()) {
+			$e = $response->getThrownException();
+			echo '<p>Error! Facebook SDK Said: ' . $e->getMessage() . "\n\n";
+			echo '<p>Graph Said: ' . "\n\n";
+			var_dump($e->getResponse());
+		} else {
+			echo "<p>(" . $key . ") HTTP status code: " . $response->getHttpStatusCode() . "<br />\n";
+			echo "Response: " . $response->getBody() . "</p>\n\n";
+			echo "<hr />\n\n";
+		}
+	}
+}
 
 
 ////
@@ -207,19 +219,6 @@ if ($userfacebookinfo != false) {
 	include 'htmltoinclude/likebutton.html';
 	// include 'htmltoinclude/news.html';
 	echo "</div>";
-	
-	foreach ($responses as $key => $response) {
-		if ($response->isError()) {
-			$e = $response->getThrownException();
-			echo '<p>Error! Facebook SDK Said: ' . $e->getMessage() . "\n\n";
-			echo '<p>Graph Said: ' . "\n\n";
-			var_dump($e->getResponse());
-		} else {
-			echo "<p>(" . $key . ") HTTP status code: " . $response->getHttpStatusCode() . "<br />\n";
-			echo "Response: " . $response->getBody() . "</p>\n\n";
-			echo "<hr />\n\n";
-		}
-	}
 	
 	echo "<div class='col-md-9 col-sm-9 col-xs-12'>";
 	echo "<div class='advert'><div style='position: relative;'><img src='images/jpg_an_1.jpg'style='margin-top:10%; margin-left:8%; width:35%'><img src='images/jpg_an_2.jpg' style='margin-top:10%; margin-left:5%; width:35%'></div></div>";
