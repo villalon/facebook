@@ -19,7 +19,7 @@ $(document).ready(function () {
 			$('#table-body').empty();
 			var moodleId = $(this).attr('moodleid');
 			var lastVisit = $(this).attr('lastvisit');
-			var url = $('#id').attr('url');
+			var url = $('#divurl').attr('url');
 			alert(url);
 			// Ajax fix
 			jQuery.ajax({
