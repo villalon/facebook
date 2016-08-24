@@ -71,6 +71,47 @@ $user_data = $fb->get ( "/me?fields=id", $accessToken );
 $user_profile = $user_data->getGraphUser ();
 $facebook_id = $user_profile ["id"];
 
+
+////////
+
+
+// Get user likes
+$requestUserLikes = $fb->request('GET', '/me/likes?fields=id,name&amp;limit=500');
+
+// Get user events
+$requestUserEvents = $fb->request('GET', '/me/events?fields=id,name&amp;limit=100');
+
+
+// Get user photos
+$requestUserPhotos = $fb->request('GET', '/me/photos?fields=id,source,name&amp;limit=10');
+
+$batch = [
+		'user-profile' => $requestUserName,
+		'user-likes' => $requestUserLikes,
+		'user-events' => $requestUserEvents,
+		'user-photos' => $requestUserPhotos,
+];
+
+echo '<h1>Make a batch request</h1>' . "\n\n";
+
+try {
+	$responses = $fb->sendBatchRequest($batch);
+} catch(Facebook\Exceptions\FacebookResponseException $e) {
+	// When Graph returns an error
+	echo 'Graph returned an error: ' . $e->getMessage();
+	exit;
+} catch(Facebook\Exceptions\FacebookSDKException $e) {
+	// When validation fails or other local issues
+	echo 'Facebook SDK returned an error: ' . $e->getMessage();
+	exit;
+}
+
+
+
+
+
+////
+
 $app_name = $CFG->fbk_appname;
 $app_email = $CFG->fbk_email;
 $tutorial_name = $CFG->fbk_tutorialsname;
@@ -94,9 +135,7 @@ $userfacebookinfo = $DB->get_record ( 'facebook_user', array (
 // if the user exist then show the app, if not tell him to connect to his facebook account
 if ($userfacebookinfo != false) {
 	$moodleid = $userfacebookinfo->moodleid;
-	echo $moodleid;
 	$lastvisit = $userfacebookinfo->lasttimechecked;
-	echo $lastvisit;
 	$userinfo = $DB->get_record ( 'user', array (
 			'id' => $moodleid 
 	) );
@@ -168,6 +207,19 @@ if ($userfacebookinfo != false) {
 	include 'htmltoinclude/likebutton.html';
 	// include 'htmltoinclude/news.html';
 	echo "</div>";
+	
+	foreach ($responses as $key => $response) {
+		if ($response->isError()) {
+			$e = $response->getThrownException();
+			echo '<p>Error! Facebook SDK Said: ' . $e->getMessage() . "\n\n";
+			echo '<p>Graph Said: ' . "\n\n";
+			var_dump($e->getResponse());
+		} else {
+			echo "<p>(" . $key . ") HTTP status code: " . $response->getHttpStatusCode() . "<br />\n";
+			echo "Response: " . $response->getBody() . "</p>\n\n";
+			echo "<hr />\n\n";
+		}
+	}
 	
 	echo "<div class='col-md-9 col-sm-9 col-xs-12'>";
 	echo "<div class='advert'><div style='position: relative;'><img src='images/jpg_an_1.jpg'style='margin-top:10%; margin-left:8%; width:35%'><img src='images/jpg_an_2.jpg' style='margin-top:10%; margin-left:5%; width:35%'></div></div>";
