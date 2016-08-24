@@ -94,7 +94,9 @@ $userfacebookinfo = $DB->get_record ( 'facebook_user', array (
 // if the user exist then show the app, if not tell him to connect to his facebook account
 if ($userfacebookinfo != false) {
 	$moodleid = $userfacebookinfo->moodleid;
+	echo $moodleid;
 	$lastvisit = $userfacebookinfo->lasttimechecked;
+	echo $lastvisit;
 	$userinfo = $DB->get_record ( 'user', array (
 			'id' => $moodleid 
 	) );
