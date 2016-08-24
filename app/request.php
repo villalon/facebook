@@ -23,7 +23,7 @@
  */
  
 //define("AJAX_SCRIPT", true);
-//define("NO_DEBUG_DISPLAY", true);
+define("NO_DEBUG_DISPLAY", true);
 
 require_once (dirname ( dirname ( dirname ( dirname ( __FILE__ ) ) ) ) . '/config.php');
 require_once ($CFG->dirroot . '/local/facebook/locallib.php');
