@@ -48,7 +48,7 @@ define('MODULE_ASSIGN', 1);
  * @return 3 arrays
  */
 function get_total_notification($sqlin, $param, $lastvisit, $moodleid){
-	global  $DB;
+	global  $DB, $CFG;
 	
 	//sql that counts all the new of recently modified resources
 	$totalresourceparams = array(

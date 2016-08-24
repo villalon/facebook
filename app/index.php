@@ -74,7 +74,7 @@ $facebook_id = $user_profile ["id"];
 $app_name = $CFG->fbk_appname;
 $app_email = $CFG->fbk_email;
 $tutorial_name = $CFG->fbk_tutorialsname;
-$tutorial_link = $CFG->fbk_tutorialsurl;
+$tutorial_link = $CFG->fbk_tutorialurl;
 $messageurl = new moodle_url ( '/message/edit.php' );
 $connecturl = new moodle_url ( '/local/facebook/connect.php' );
 
