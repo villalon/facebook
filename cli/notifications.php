@@ -86,8 +86,8 @@ $sqlusers = "SELECT  u.id AS id,
 	WHERE f.facebookid IS NOT NULL
 	GROUP BY f.facebookid, u.id";
 
-$appid = $CFG->fbkAppID;
-$secretid = $CFG->fbkScrID;
+$appid = $CFG->fbk_appid;
+$secretid = $CFG->fbk_scrid;
 
 // Table made for debugging purposes
 //echo "<table border=1>";
@@ -103,7 +103,7 @@ $fb = new Facebook([
 		"default_graph_version" => "v2.5"
 ]);
 
-if( $facebookusers = $DB->get_records_sql($sqlusers, array(FACEBOOK_LINKED)) ){
+if( $facebookusers = $DB->get_records_sql($sqlusers, array(FACEBOOK_LINKED)) && $CFG->fbk_notifications ){
 	foreach($facebookusers as $user){
 		
 		$courses = enrol_get_users_courses($user->id);
@@ -251,7 +251,7 @@ if( $facebookusers = $DB->get_records_sql($sqlusers, array(FACEBOOK_LINKED)) ){
 				//echo "<td>0</td>";
 			}
 			
-			if($emarkings = $DB->get_record_sql($dataemarkingsql, $paramsemarking)){
+			if($emarkings = $DB->get_record_sql($dataemarkingsql, $paramsemarking) && $CFG->fbk_emarking ){
 				//echo "<td>".$emarkings->count."</td>";
 				$notifications += $emarkings->count;
 			}else{

@@ -24,7 +24,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 $string['messageprovider:notification'] = 'Notificaciones de recursos (pdf, excel, word, url, etc)';
-$string['pluginname'] = 'Actualización de curso';
+$string['pluginname'] = 'Facebook';
 $string['connectheading'] = 'Información de cuenta';
 $string['contact'] = "Contacto";
 $string['acountconnect'] = 'Enlace de cuenta';
@@ -84,5 +84,5 @@ $string['firstname'] = 'Nombre';
 $string['email'] = 'Email';
 $string['backtocourse'] = 'Volver al curso';
 $string['mailtitle'] = 'Enlaza tu cuenta de facebook con WebC';
-$string['mailmessage'] = 'Enlaza tu cuenta de facebook con WebC para recibir las �ltimas noticias y notificaciones sobre tus clases';
+$string['mailmessage'] = 'Enlaza tu cuenta de facebook con WebC para recibir las �ltimas noticias y notificaciones sobre tus clases';
 $string['messagesucces'] = 'Correo enviado exitosamente';

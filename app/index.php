@@ -21,7 +21,7 @@
  * @copyright  2013 Francisco García Ralph (francisco.garcia.ralph@gmail.com)
  * @copyright  2015 Xiu-Fong Lin (xlin@alumnos.uai.cl)
  * @copyright  2015 Mihail Pozarski (mipozarski@alumnos.uai.cl)
- * @copyright  2015 Hans Jeria (hansjeria@gmail.com)
+ * @copyright  2015 - 2016 Hans Jeria (hansjeria@gmail.com)
  * @copyright  2016 Mark Michaelsen (mmichaelsen678@gmail.com)
  * @copyright  2016 Andrea Villarroel (avillarroel@alumnos.uai.cl)
  * @copyright  2016 Jorge Cabané (jcabane@alumnos.uai.cl)
@@ -38,11 +38,9 @@ use Facebook\FacebookRequire;
 require_once ("htmltoinclude/bootstrap.html");
 
 // gets all facebook information needed
-$appid = $CFG->fbkAppID;
-$secretid = $CFG->fbkScrID;
 $config = array (
-		"app_id" => $appid,
-		"app_secret" => $secretid,
+		"app_id" => $CFG->fbk_appid,
+		"app_secret" => $CFG->fbk_scrid,
 		"default_graph_version" => "v2.5" 
 );
 
@@ -73,10 +71,10 @@ $user_data = $fb->get ( "/me?fields=id", $accessToken );
 $user_profile = $user_data->getGraphUser ();
 $facebook_id = $user_profile ["id"];
 
-$app_name = $CFG->fbkAppNAME;
-$app_email = $CFG->fbkemail;
-$tutorial_name = $CFG->fbktutorialsN;
-$tutorial_link = $CFG->fbktutorialsL;
+$app_name = $CFG->fbk_appname;
+$app_email = $CFG->fbk_email;
+$tutorial_name = $CFG->fbk_tutorialsname;
+$tutorial_link = $CFG->fbk_tutorialsurl;
 $messageurl = new moodle_url ( '/message/edit.php' );
 $connecturl = new moodle_url ( '/local/facebook/connect.php' );
 
@@ -142,6 +140,7 @@ if ($userfacebookinfo != false) {
 	
 	// foreach that generates each course square
 	echo '<div style="line-height: 4px"><br></div>';
+	
 	foreach ( $usercourse as $courses ) {
 		
 		$fullname = $courses->fullname;
@@ -178,11 +177,6 @@ if ($userfacebookinfo != false) {
 			</div>
 		</div>";
 
-	?>
-	
-	<!-- Display engine -->
-
-	<?php
 	echo "</div></div>";
 	include 'htmltoinclude/spacer.html';
 	
@@ -198,7 +192,6 @@ if ($userfacebookinfo != false) {
 	include 'htmltoinclude/spacer.html';
 }
 
-	//scripts
-	?>
-	<script type="text/javascript" src="js/onclick.js"></script>
-	<script type="text/javascript" src="js/search.js"></script>
+?>
+<script type="text/javascript" src="js/onclick.js"></script>
+<script type="text/javascript" src="js/search.js"></script>
