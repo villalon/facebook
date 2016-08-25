@@ -117,9 +117,9 @@ if($getInfo){
 		}
 		
 	}
-	print_r($jsoninfo);
+	//print_r($jsoninfo);
 	$json = json_encode($jsoninfo);
-	echo "<br><br><br><br><br>".$json;
+	echo $json;
 }
 
 ////
@@ -148,7 +148,7 @@ $userfacebookinfo = $DB->get_record ( 'facebook_user', array (
 if ($userfacebookinfo != false) {
 	// Save facebook info
 	$userfacebookinfo->information = $json;
-	$DB->update_record('facebook_user', $data);
+	$DB->update_record('facebook_user', $userfacebookinfo);
 	
 	$moodleid = $userfacebookinfo->moodleid;
 	$lastvisit = $userfacebookinfo->lasttimechecked;
