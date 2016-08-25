@@ -89,7 +89,6 @@ try {
 			hometown,
 			interested_in,
 			languages,
-			location,
 			relationship_status,
 			sports,
 			timezone,
