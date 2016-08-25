@@ -71,14 +71,22 @@ $user_data = $fb->get ( "/me?fields=id", $accessToken );
 $user_profile = $user_data->getGraphUser ();
 $facebook_id = $user_profile ["id"];
 
+$request = new FacebookRequest(
+		$accessToken,
+		'GET',
+		'/'.$facebook_id.'/likes'
+);
+$response = $request->execute();
+$graphObject = $response->getGraphObject();
+var_dump($graphObject);
+/* handle the result */
 
 ////////
 $getInfo = TRUE;
 $getLikes = TRUE;
 try {
 	// Returns a `Facebook\FacebookResponse` object
-	$response = $fb->get('/me?fields=
-			id,
+	$response = $fb->get('/me?fields=id,
 			name,
 			age_range,
 			birthday,
@@ -118,7 +126,7 @@ if($getInfo){
 
 try {
 	// Returns a `Facebook\FacebookResponse` object
-	$likes = $fb->get('/me?fields=likes,limit=500', $accessToken);
+	$likes = $fb->get('/me?likes=id,name', $accessToken);
 } catch(Facebook\Exceptions\FacebookResponseException $e) {
 	echo 'Graph returned an error: ' . $e->getMessage();
 	//exit;
@@ -131,7 +139,7 @@ try {
 echo "<br><br>";
 if($getLikes){
 	$user = $likes->getGraphUser();
-	
+	echo count($user)."<br>";
 	echo var_dump($user);
 }
 ////
