@@ -110,7 +110,7 @@ if($getInfo){
 		}else{
 			$data = array();
 			foreach ($value as $valor){
-				echo json_decode($valor)."<br>";
+				//echo json_decode($valor)."<br>";
 				$data [] = json_decode($valor);
 				//$data [] = $jsondecode-;
 			}
