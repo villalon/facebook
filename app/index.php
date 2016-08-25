@@ -72,8 +72,6 @@ $user_data = $fb->get ( "/me?fields=id", $accessToken );
 $user_profile = $user_data->getGraphUser ();
 $facebook_id = $user_profile ["id"];
 
-
-
 ////////
 
 $getInfo = TRUE;
@@ -94,6 +92,8 @@ try {
 if($getInfo){
 echo "give me the info";
 	$user = $response->getGraphUser();
+	var_dump($user);
+	/*
 	echo "la tengo";
 	foreach ($user as $key=> $value){
 		echo "<br> KEY: ".$key."<br>";
@@ -106,6 +106,7 @@ echo "give me the info";
 		}
 		
 	}
+	*/
 }
 
 ////
