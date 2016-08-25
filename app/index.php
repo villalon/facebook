@@ -90,12 +90,13 @@ try {
 	$getInfo = FALSE;
 }
 if($getInfo){
-echo "give me the info";
+	echo "give me the info";
 	$user = $response->getGraphUser();
 	
 	
 	echo "la tengo";
 	foreach ($user as $key=> $value){
+		/*
 		echo "<br> KEY: ".$key."<br>";
 		if(count($value) == 1){			
 			echo " VALUE ".$value."<br>";
@@ -103,7 +104,8 @@ echo "give me the info";
 			foreach ($value as $valor){
 				echo " VALUE ".$valor."<br>";
 			}
-		}
+		}*/
+		var_dump($value);
 		
 	}
 	
