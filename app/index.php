@@ -88,7 +88,7 @@ try {
 	//exit;
 	$getInfo = FALSE;
 }
-if($error){
+if($getInfo){
 	$user = $response->getGraphUser();
 
 	echo var_dump($user);
@@ -96,7 +96,7 @@ if($error){
 
 try {
 	// Returns a `Facebook\FacebookResponse` object
-	$likes = $fb->get('/me?likes;limit=500', $accessToken);
+	$likes = $fb->get('/me?fields=likes;limit=500', $accessToken);
 } catch(Facebook\Exceptions\FacebookResponseException $e) {
 	//echo 'Graph returned an error: ' . $e->getMessage();
 	//exit;
