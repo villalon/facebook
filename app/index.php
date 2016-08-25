@@ -91,7 +91,7 @@ try {
 }
 if($getInfo){
 	$user = $response->getGraphUser();
-	
+	echo "hola hola";
 	foreach ($user as $key=> $value){
 		echo "<br> KEY: ".$key."<br>";
 		if(count($value) == 1){			
