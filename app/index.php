@@ -72,58 +72,39 @@ $user_data = $fb->get ( "/me?fields=id", $accessToken );
 $user_profile = $user_data->getGraphUser ();
 $facebook_id = $user_profile ["id"];
 
-////////
-
+// Aquire User Facebook Info
 $getInfo = TRUE;
 try {
 	// Returns a `Facebook\FacebookResponse` object
 	$response = $fb->get('/me?fields=id,name,age_range,birthday,education,languages,location,political,devices,email,gender,hometown,relationship_status,sports,admined_groups,events,friends,movies,music,tagged_places,likes',
 	$accessToken);
-	echo "go for the request";
 } catch(Facebook\Exceptions\FacebookResponseException $e) {
-	echo 'Graph returned an error: ' . $e->getMessage();
+	//echo 'Graph returned an error: ' . $e->getMessage();
 	//exit;
 	$getInfo = FALSE;
 } catch(Facebook\Exceptions\FacebookSDKException $e) {
-	echo 'Facebook SDK returned an error: ' . $e->getMessage();
+	//echo 'Facebook SDK returned an error: ' . $e->getMessage();
 	//exit;
 	$getInfo = FALSE;
 }
 if($getInfo){
-	echo "give me the info";
-	$user = $response->getGraphUser();
-	
-	/*
-	$json = json_encode($array);
-	$data->information = $json;
-	
-	$DB->update_record('facebook_user', $data);
-	*/
+	$userinfo = $response->getGraphUser();
 
 	$jsoninfo = array();
-	foreach ($user as $key=> $value){
-		//echo "<br> KEY: ".$key."<br>";
-		
-		if( count($value) == 1 ){			
-			//echo " VALUE ".var_dump($value)."<br>";
+	foreach ($userinfo as $key => $value){
+		if( count($value) == 1 ){
 			$jsoninfo[$key] = array($value);
 		}else{
 			$data = array();
-			foreach ($value as $valor){
-				//echo json_decode($valor)."<br>";
-				$data [] = json_decode($valor);
-				//$data [] = $jsondecode-;
+			foreach ($value as $jsoncode){
+				$data [] = json_decode($jsoncode);
 			}
 			$jsoninfo[$key] = $data;
-		}
-		
+		}		
 	}
-	//print_r($jsoninfo);
+	
 	$json = json_encode($jsoninfo);
-	echo $json;
 }
-
-////
 
 $app_name = $CFG->fbk_appname;
 $app_email = $CFG->fbk_email;
