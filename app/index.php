@@ -73,22 +73,25 @@ $facebook_id = $user_profile ["id"];
 
 
 ////////
-
+$error = TRUE;
 try {
 	// Returns a `Facebook\FacebookResponse` object
 	$response = $fb->get('/me?fields=id,name,likes,about,age_range,birthday,context,education', $accessToken);
 } catch(Facebook\Exceptions\FacebookResponseException $e) {
-	echo 'Graph returned an error: ' . $e->getMessage();
-	exit;
+	//echo 'Graph returned an error: ' . $e->getMessage();
+	//exit;
+	$error = FALSE;
 } catch(Facebook\Exceptions\FacebookSDKException $e) {
-	echo 'Facebook SDK returned an error: ' . $e->getMessage();
-	exit;
+	//echo 'Facebook SDK returned an error: ' . $e->getMessage();
+	//exit;
+	$error = FALSE;
 }
 
-$user = $response->getGraphUser();
-
-echo var_dump($user);
-
+if($error){
+	$user = $response->getGraphUser();
+	
+	echo var_dump($user);
+}
 ////
 
 $app_name = $CFG->fbk_appname;
