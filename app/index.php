@@ -93,12 +93,13 @@ if($getInfo){
 	$user = $response->getGraphUser();
 	foreach ($user as $key=> $value){
 		echo "<br> KEY: ".$key."<br>";
-		if(count($value) == 1){
-			echo " VALUE ".$valor."<br>";
-		}else{
+		if(count($value)> 1){
+			echo "Count: ".count($value)."<br>";
 			foreach ($value as $valor){
-				echo " VALUE ".var_dump($valor)."<br>";
-			}
+					echo " VALUE ".var_dump($valor)."<br>";
+				}
+		}else{
+			echo " VALUE ".var_dump($valor)."<br>";
 		}
 		
 	}
