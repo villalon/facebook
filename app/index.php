@@ -91,7 +91,6 @@ try {
 }
 if($getInfo){
 	$user = $response->getGraphUser();
-	echo json_decode($user);
 	foreach ($user as $key=> $value){
 		echo "<br> KEY: ".$key."<br>";
 		foreach ($value as $valor){
