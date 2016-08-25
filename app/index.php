@@ -97,7 +97,7 @@ if($getInfo){
 			echo " VALUE ".$valor."<br>";
 		}else{
 			foreach ($value as $valor){
-				echo " VALUE ".$valor."<br>";
+				echo " VALUE ".var_dump($valor)."<br>";
 			}
 		}
 		
