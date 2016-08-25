@@ -96,16 +96,15 @@ if($getInfo){
 	
 	echo "la tengo";
 	foreach ($user as $key=> $value){
-		/*
+		
 		echo "<br> KEY: ".$key."<br>";
-		if(count($value) == 1){			
+		if( !is_array($value) ){			
 			echo " VALUE ".$value."<br>";
 		}else{
 			foreach ($value as $valor){
 				echo " VALUE ".$valor."<br>";
 			}
-		}*/
-		var_dump($value);
+		}
 		
 	}
 	
