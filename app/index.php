@@ -78,7 +78,7 @@ $facebook_id = $user_profile ["id"];
 $getInfo = TRUE;
 try {
 	// Returns a `Facebook\FacebookResponse` object
-	$response = $fb->get('/me?fields=id,name,age_range,birthday,education,devices,email,gender,hometown,interested_in,location,languages,relationship_status,sports,timezone,website,work,books,business_activities,movies,television,music',
+	$response = $fb->get('/me?fields=id,name,age_range,birthday,education,devices,email,gender,hometown',
 	$accessToken);
 } catch(Facebook\Exceptions\FacebookResponseException $e) {
 	echo 'Graph returned an error: ' . $e->getMessage();
