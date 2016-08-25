@@ -75,6 +75,7 @@ $facebook_id = $user_profile ["id"];
 
 
 ////////
+/*
 $getInfo = TRUE;
 try {
 	// Returns a `Facebook\FacebookResponse` object
@@ -104,7 +105,7 @@ if($getInfo){
 		
 	}
 }
-
+*/
 ////
 
 $app_name = $CFG->fbk_appname;
