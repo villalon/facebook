@@ -75,12 +75,13 @@ $facebook_id = $user_profile ["id"];
 
 
 ////////
-/*
+
 $getInfo = TRUE;
 try {
 	// Returns a `Facebook\FacebookResponse` object
 	$response = $fb->get('/me?fields=id,name,age_range,birthday,education,languages,location,political,devices,email,gender,hometown,relationship_status,sports,admined_groups,events,friends,movies,music,tagged_places,likes',
 	$accessToken);
+	echo "go for the request";
 } catch(Facebook\Exceptions\FacebookResponseException $e) {
 	echo 'Graph returned an error: ' . $e->getMessage();
 	//exit;
@@ -91,8 +92,9 @@ try {
 	$getInfo = FALSE;
 }
 if($getInfo){
+echo "give me the info";
 	$user = $response->getGraphUser();
-	echo "hola hola";
+	echo "la tengo";
 	foreach ($user as $key=> $value){
 		echo "<br> KEY: ".$key."<br>";
 		if(count($value) == 1){			
@@ -105,7 +107,7 @@ if($getInfo){
 		
 	}
 }
-*/
+
 ////
 
 $app_name = $CFG->fbk_appname;
