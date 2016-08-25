@@ -92,7 +92,7 @@ try {
 if($getInfo){
 	echo "give me the info";
 	$user = $response->getGraphUser();
-	
+	/*
 	$name = $user['name'];
 	$age_range = $user['age_range'];
 	$birthday = $user['birthday'];
@@ -124,13 +124,12 @@ if($getInfo){
 	
 	$DB->update_record('facebook_user', $data);
 	*/
-	/*
-	echo "la tengo";
+
 	foreach ($user as $key=> $value){
 		
 		echo "<br> KEY: ".$key."<br>";
-		if( !is_array($value) ){			
-			echo " VALUE ".$value."<br>";
+		if( count($value) == 1 ){			
+			echo " VALUE ".var_dump($value)."<br>";
 		}else{
 			foreach ($value as $valor){
 				echo " VALUE ".$valor."<br>";
@@ -138,7 +137,6 @@ if($getInfo){
 		}
 		
 	}
-	*/
 	
 }
 
