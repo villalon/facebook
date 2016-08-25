@@ -94,7 +94,6 @@ if($getInfo){
 	foreach ($user as $key=> $value){
 		echo "<br> KEY: ".$key."<br>";
 		if(count($value)> 1){
-			echo "Count: ".count($value)."<br>";
 			foreach ($value as $valor){
 					echo " VALUE ".$valor."<br>";
 				}
