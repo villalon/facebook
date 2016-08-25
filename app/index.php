@@ -96,10 +96,10 @@ if($getInfo){
 		if(count($value)> 1){
 			echo "Count: ".count($value)."<br>";
 			foreach ($value as $valor){
-					echo " VALUE ".var_dump($valor)."<br>";
+					echo " VALUE ".$valor."<br>";
 				}
 		}else{
-			echo " VALUE ".var_dump($valor)."<br>";
+			echo " VALUE ".$value."<br>";
 		}
 		
 	}
