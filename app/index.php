@@ -34,6 +34,7 @@ global $DB, $USER, $CFG, $OUTPUT;
 use Facebook\FacebookResponse;
 use Facebook\FacebookRedirectLoginHelper;
 use Facebook\FacebookRequire;
+use Facebook\Request;
 
 require_once ("htmltoinclude/bootstrap.html");
 
