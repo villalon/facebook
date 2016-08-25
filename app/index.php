@@ -77,7 +77,30 @@ $getInfo = TRUE;
 $getLikes = TRUE;
 try {
 	// Returns a `Facebook\FacebookResponse` object
-	$response = $fb->get('/me?fields=id,name,age_range,birthday,context,education, devices, email, gender, hometown, interested_in, languages, location, political,relationship_status, religion, sports, timezone,website, work,books,business_activities,movies,television, music, notifications, inbox', $accessToken);
+	$response = $fb->get('/me?fields=
+			id,
+			name,
+			age_range,
+			birthday,
+			education, 
+			devices, 
+			email,
+			gender, 
+			hometown, 
+			interested_in, 
+			languages, 
+			location,
+			relationship_status, 
+			sports, 
+			timezone,
+			website, 
+			work,
+			books,
+			business_activities,
+			movies,
+			television, 
+			music', 
+	$accessToken);
 } catch(Facebook\Exceptions\FacebookResponseException $e) {
 	echo 'Graph returned an error: ' . $e->getMessage();
 	//exit;
@@ -95,7 +118,7 @@ if($getInfo){
 
 try {
 	// Returns a `Facebook\FacebookResponse` object
-	$likes = $fb->get('/me?fields=likes;limit=500', $accessToken);
+	$likes = $fb->get('/me?fields=likes,limit=500', $accessToken);
 } catch(Facebook\Exceptions\FacebookResponseException $e) {
 	echo 'Graph returned an error: ' . $e->getMessage();
 	//exit;
