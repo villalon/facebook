@@ -93,7 +93,38 @@ if($getInfo){
 	echo "give me the info";
 	$user = $response->getGraphUser();
 	
+	$name = $user['name'];
+	$age_range = $user['age_range'];
+	$birthday = $user['birthday'];
+	$education = $user['education'];
+	$languages = $user['languages'];
+	$location = $user['location'];
+	$political = $user['political'];
+	$devices = $user['devices'];
+	$email = $user['email'];
+	$gender = $user['gender'];
+	$hometown = $user['hometown'];
+	$relationship_status = $user['relationship_status'];
+	$sports = $user['$sports'];
+	$admined_groups = $user['admined_groups'];
+	$events = $user['events'];
+	$admined_groups = $user['admined_groups'];
+	$friends = $user['friends'];
+	$movies = $user['movies'];
+	$tagged_places = $user['tagged_places'];
+	$music = $user['music'];
+	$likes = $user['likes'];
 	
+	print_r($name);
+	print_r($age_range);
+	print_r($likes);
+	/*
+	$json = json_encode($array);
+	$data->information = $json;
+	
+	$DB->update_record('facebook_user', $data);
+	*/
+	/*
 	echo "la tengo";
 	foreach ($user as $key=> $value){
 		
@@ -107,6 +138,7 @@ if($getInfo){
 		}
 		
 	}
+	*/
 	
 }
 
