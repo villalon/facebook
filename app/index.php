@@ -109,8 +109,8 @@ if($getInfo){
 			$jsoninfo[$key] = array($value);
 		}else{
 			$data = array();
-			foreach ($value as $valor){
-				//echo " VALUE ".$valor."<br>";
+			foreach ($value as $key2 => $valor){
+				echo $valor."<br>";
 				$data [] = $valor;
 			}
 			$jsoninfo[$key] = $data;
