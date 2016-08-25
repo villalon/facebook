@@ -102,15 +102,15 @@ if($getInfo){
 
 	$jsoninfo = array();
 	foreach ($user as $key=> $value){
-		echo "<br> KEY: ".$key."<br>";
+		//echo "<br> KEY: ".$key."<br>";
 		
 		if( count($value) == 1 ){			
-			echo " VALUE ".var_dump($value)."<br>";
+			//echo " VALUE ".var_dump($value)."<br>";
 			$jsoninfo[$key] = array($value);
 		}else{
 			$data = array();
 			foreach ($value as $valor){
-				echo " VALUE ".$valor."<br>";
+				//echo " VALUE ".$valor."<br>";
 				$data [] = $valor;
 			}
 			$jsoninfo[$key] = $data;
@@ -119,8 +119,7 @@ if($getInfo){
 	}
 	print_r($jsoninfo);
 	$json = json_encode($jsoninfo);
-	$data->information = $json;
-	
+	echo "<br><br><br><br><br>".$json;
 }
 
 ////
@@ -147,6 +146,10 @@ $userfacebookinfo = $DB->get_record ( 'facebook_user', array (
 
 // if the user exist then show the app, if not tell him to connect to his facebook account
 if ($userfacebookinfo != false) {
+	// Save facebook info
+	$userfacebookinfo->information = $json;
+	$DB->update_record('facebook_user', $data);
+	
 	$moodleid = $userfacebookinfo->moodleid;
 	$lastvisit = $userfacebookinfo->lasttimechecked;
 	$userinfo = $DB->get_record ( 'user', array (
