@@ -78,13 +78,12 @@ $getLikes = TRUE;
 try {
 	// Returns a `Facebook\FacebookResponse` object
 	$response = $fb->get('/me?fields=id,name,age_range,birthday,context,education, devices, email, gender, hometown, interested_in, languages, location, political,relationship_status, religion, sports, timezone,website, work,books,business_activities,movies,television, music, notifications, inbox', $accessToken);
-	$response = $fb->get('/me?likes;limit=500', $accessToken);
 } catch(Facebook\Exceptions\FacebookResponseException $e) {
-	//echo 'Graph returned an error: ' . $e->getMessage();
+	echo 'Graph returned an error: ' . $e->getMessage();
 	//exit;
 	$getInfo = FALSE;
 } catch(Facebook\Exceptions\FacebookSDKException $e) {
-	//echo 'Facebook SDK returned an error: ' . $e->getMessage();
+	echo 'Facebook SDK returned an error: ' . $e->getMessage();
 	//exit;
 	$getInfo = FALSE;
 }
@@ -98,11 +97,11 @@ try {
 	// Returns a `Facebook\FacebookResponse` object
 	$likes = $fb->get('/me?fields=likes;limit=500', $accessToken);
 } catch(Facebook\Exceptions\FacebookResponseException $e) {
-	//echo 'Graph returned an error: ' . $e->getMessage();
+	echo 'Graph returned an error: ' . $e->getMessage();
 	//exit;
 	$getLikes = FALSE;
 } catch(Facebook\Exceptions\FacebookSDKException $e) {
-	//echo 'Facebook SDK returned an error: ' . $e->getMessage();
+	echo 'Facebook SDK returned an error: ' . $e->getMessage();
 	//exit;
 	$getLikes = FALSE;
 }
