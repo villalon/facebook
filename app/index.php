@@ -92,9 +92,9 @@ try {
 if($getInfo){
 	$user = $response->getGraphUser();
 
-	var_dump($user->name);
-	echo "<br><br><br>";
-	var_dump($user->likes);
+	foreach ($user as $key=> $value){
+		echo "<br> KEY: ".$key." - VALUE ".var_dump($value)."<br>";
+	}
 }
 
 ////
