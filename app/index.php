@@ -72,19 +72,10 @@ $user_data = $fb->get ( "/me?fields=id", $accessToken );
 $user_profile = $user_data->getGraphUser ();
 $facebook_id = $user_profile ["id"];
 
-$request = new FacebookRequest(
-		$accessToken,
-		'GET',
-		'/'.$facebook_id.'/likes'
-);
-$response = $request->execute();
-$graphObject = $response->getGraphObject();
-var_dump($graphObject);
-/* handle the result */
+
 
 ////////
 $getInfo = TRUE;
-$getLikes = TRUE;
 try {
 	// Returns a `Facebook\FacebookResponse` object
 	$response = $fb->get('/me?fields=id,
@@ -122,27 +113,11 @@ try {
 if($getInfo){
 	$user = $response->getGraphUser();
 
-	echo var_dump($user);
+	var_dump($user->name);
+	echo "<br><br><br>";
+	var_dump($user->likes);
 }
 
-try {
-	// Returns a `Facebook\FacebookResponse` object
-	$likes = $fb->get('/me?likes=id,name', $accessToken);
-} catch(Facebook\Exceptions\FacebookResponseException $e) {
-	echo 'Graph returned an error: ' . $e->getMessage();
-	//exit;
-	$getLikes = FALSE;
-} catch(Facebook\Exceptions\FacebookSDKException $e) {
-	echo 'Facebook SDK returned an error: ' . $e->getMessage();
-	//exit;
-	$getLikes = FALSE;
-}
-echo "<br><br>";
-if($getLikes){
-	$user = $likes->getGraphUser();
-	echo count($user)."<br>";
-	echo var_dump($user);
-}
 ////
 
 $app_name = $CFG->fbk_appname;
