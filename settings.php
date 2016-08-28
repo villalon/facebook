@@ -81,7 +81,7 @@ if ($hassiteconfig) {
 			new admin_setting_configtext(
 					'fbk_frontimage',
 					'URL de imagen',
-					'Link de tutoriales de moodle, si no tiene página con tutoriales dejar en blanco',
+					'Link la imagen que se desea agregar como front de la aplicación. Esto se mostrará cada vez que el usuario ingresa desde Facebook.',
 					'',
 					PARAM_TEXT
 			)
