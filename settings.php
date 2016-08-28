@@ -41,6 +41,7 @@ if ($hassiteconfig) {
     		Type value - example PARAM_TEXT
     ));
 	 */
+	
 	// Basic Settings
 	$settings->add(
 			new admin_setting_heading(
@@ -74,6 +75,15 @@ if ($hassiteconfig) {
 				'Link de tutoriales de moodle, si no tiene página con tutoriales dejar en blanco',
 				'http://webcursos.uai.cl/local/tutoriales/',
 				PARAM_TEXT
+			)
+	);
+	$settings->add(
+			new admin_setting_configtext(
+					'fbk_frontimage',
+					'URL de imagen',
+					'Link de tutoriales de moodle, si no tiene página con tutoriales dejar en blanco',
+					'',
+					PARAM_TEXT
 			)
 	);
 	

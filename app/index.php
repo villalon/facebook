@@ -206,8 +206,10 @@ if ($userfacebookinfo != false) {
 	// include 'htmltoinclude/news.html';
 	echo "</div>";
 	
+	// Front images
+	$image = $CFG->fbk_frontimage;
 	echo "<div class='col-md-9 col-sm-9 col-xs-12'>";
-	echo "<div class='advert'><div style='position: relative;'><img src='images/jpg_an_1.jpg'style='margin-top:10%; margin-left:8%; width:35%'><img src='images/jpg_an_2.jpg' style='margin-top:10%; margin-left:5%; width:35%'></div></div>";
+	echo "<div class='advert'><div style='position: relative;'> <img src='".$image."'style='margin-top:10%; margin-left:8%; width:70%'> </div></div>";
 	echo "<div id='loadinggif' align='center' style='margin-top: 10%; text-align: center; display:none;'><img src='https://webcursos.uai.cl/local/facebook/app/images/ajaxloader.gif'></div>";
 	echo "<div id='table-body'></div>";
 	

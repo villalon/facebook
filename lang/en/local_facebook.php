@@ -83,6 +83,4 @@ $string['lastname'] = 'Lastname';
 $string['firstname'] = 'Firstname';
 $string['email'] = 'Email';
 $string['backtocourse'] = 'Back to course';
-$string['mailtitle'] = 'Link your facebook account with WebC';
-$string['mailmessage'] = 'Link your facebook account with WebC to receive the latest news and notifications about your classes';
-$string['messagesucces'] = 'Mail sent successfully';
+$string['privacypolicies'] = 'Privacy policies';
