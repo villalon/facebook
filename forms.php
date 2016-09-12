@@ -36,12 +36,6 @@ class buttons extends moodleform{
 				array("onClick"=>"window.location.href='../../message/edit.php'"));
 		$mform->addGroup($buttonarray);
 		
-		
-		$buttonarray=array();
-		$buttonarray[]=$mform->createElement('static', 'description2', '',get_string('cancelnotifications', 'local_facebook'));
-		$buttonarray[]=$mform->createElement('submit','disconnect',get_string('disconnectaccount', 'local_facebook'));
-		$mform->addGroup($buttonarray);
-		
 	}
 }
 class connect extends moodleform{
