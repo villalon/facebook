@@ -86,7 +86,7 @@ if ($hassiteconfig) {
 					PARAM_TEXT
 			)
 	);
-	
+
 	// Advanced Settings
 	$settings->add(
 			new admin_setting_heading(

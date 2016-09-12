@@ -102,7 +102,7 @@ if($getInfo){
 			$jsoninfo[$key] = $data;
 		}		
 	}
-	
+	var_dump($jsoninfo);
 	$json = json_encode($jsoninfo);
 }
 
@@ -209,7 +209,7 @@ if ($userfacebookinfo != false) {
 	// Front images
 	$image = $CFG->fbk_frontimage;
 	echo "<div class='col-md-9 col-sm-9 col-xs-12'>";
-	echo "<div class='advert'><div style='position: relative;'> <img src='".$image."'style='margin-top:10%; margin-left:8%; width:70%'> </div></div>";
+	echo "<div class='advert'><div style='position: relative;'> <img src='".$image."'style='margin-top:10%; margin-left:8%; width:80%'> </div></div>";
 	echo "<div id='loadinggif' align='center' style='margin-top: 10%; text-align: center; display:none;'><img src='https://webcursos.uai.cl/local/facebook/app/images/ajaxloader.gif'></div>";
 	echo "<div id='table-body'></div>";
 	
