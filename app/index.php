@@ -89,7 +89,7 @@ try {
 }
 if($getInfo){
 	$userinfo = $response->getGraphUser();
-
+	var_dump($userinfo);
 	$jsoninfo = array();
 	foreach ($userinfo as $key => $value){
 		if( count($value) == 1 ){
@@ -102,7 +102,7 @@ if($getInfo){
 			$jsoninfo[$key] = $data;
 		}		
 	}
-	var_dump($jsoninfo);
+	//var_dump($jsoninfo);
 	$json = json_encode($jsoninfo);
 }
 
