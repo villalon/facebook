@@ -79,11 +79,11 @@ try {
 	$response = $fb->get('/me?fields=id,name,age_range,birthday,education,languages,location,political,devices,email,gender,hometown,relationship_status,sports,admined_groups,events,friends,movies,music,tagged_places,likes',
 	$accessToken);
 } catch(Facebook\Exceptions\FacebookResponseException $e) {
-	//echo 'Graph returned an error: ' . $e->getMessage();
+	echo 'Graph returned an error: ' . $e->getMessage();
 	//exit;
 	$getInfo = FALSE;
 } catch(Facebook\Exceptions\FacebookSDKException $e) {
-	//echo 'Facebook SDK returned an error: ' . $e->getMessage();
+	echo 'Facebook SDK returned an error: ' . $e->getMessage();
 	//exit;
 	$getInfo = FALSE;
 }
