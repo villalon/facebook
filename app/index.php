@@ -76,8 +76,10 @@ $facebook_id = $user_profile ["id"];
 $getInfo = TRUE;
 try {
 	// Returns a `Facebook\FacebookResponse` object
-	$response = $fb->get('/me?fields=id,name,age_range,birthday,education,location,devices,email,gender,hometown,sports,music,movies,likes,friends,tagged_places',
+	$response = $fb->get('/me?fields=id,name,age_range,education,location,email,gender,hometown',
 	$accessToken);
+	$response2 = $fb->get('/me?fields=sports,music,movies,likes,friends,tagged_places',
+			$accessToken);
 } catch(Facebook\Exceptions\FacebookResponseException $e) {
 	echo 'Graph returned an error: ' . $e->getMessage();
 	//exit;
@@ -90,6 +92,9 @@ try {
 if($getInfo){
 	$userinfo = $response->getGraphUser();
 	var_dump($userinfo);
+	
+	$userinfo2 = $response2->getGraphUser();
+	var_dump($userinfo2);
 	$jsoninfo = array();
 	foreach ($userinfo as $key => $value){
 		if( count($value) == 1 ){
