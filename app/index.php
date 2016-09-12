@@ -90,11 +90,12 @@ try {
 	$getInfo = FALSE;
 }
 if($getInfo){
-	$userinfo = $response->getGraphUser();
+	$userinfo = $response->getDecodedBody();
 	var_dump($userinfo);
 	
-	$userinfo2 = $response2->getGraphUser();
+	$userinfo2 = $response2->getDecodedBody();
 	var_dump($userinfo2);
+	
 	$jsoninfo = array();
 	foreach ($userinfo as $key => $value){
 		if( count($value) == 1 ){
