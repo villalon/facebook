@@ -54,6 +54,10 @@ echo $OUTPUT->tabtree($toprow, "Facebook Analysis");
 
 if($USER->id == 10644 || $USER->id == 2){
 	
+	echo $OUTPUT->heading("Analisis de datos obtenidos desde facebook");
+	echo $OUTPUT->heading("En los siguientes cursos es posible generar grupos de alumnos analizando información de redes sociales y el historial académico.",5);
+	
+	
 	if($type == 0){
 		$courses = new html_table();
 		$courses->head = array(
@@ -105,7 +109,7 @@ if($USER->id == 10644 || $USER->id == 2){
 				"Sistemas de la información Sec. 3 Stgo 2do sem 2016",
 				$cross,
 				$empty,
-				"<a href='http://webcursos.uai.cl/course/view.php?id=32806'>Ver grupos</a>"
+				"<a href='".$CFG->wwwroot."/local/facebook/facebookalgorithm.php?process=1"."'>Ver grupos</a>"
 		
 		);
 		
@@ -172,15 +176,13 @@ if($USER->id == 10644 || $USER->id == 2){
 				"Sistemas de la información Sec. 3 Stgo 2do sem 2016",
 				$ticket,
 				$progressbar,
-				"<a href='http://webcursos.uai.cl/course/view.php?id=32806'>Ver grupos</a>"
+				"Grupos ya creados"
 		
 		);
+		echo "<hr>Se enviaron correos a los alumnos del curso <b>Sistemas de la información Sec. 3 Stgo 2do sem 2016</b> con sus grupos formados por el analisis de la información de redes sociales e historial académico.<hr> ";
+		
 	}
 	
-	echo $OUTPUT->heading("Analisis de datos obtenidos desde facebook");
-	echo $OUTPUT->heading("En los siguientes cursos es posible generar grupos de alumnos analizando información de redes sociales y el historial académico.",5);
-	
-	echo "<hr>Se enviaron correos a los alumnos del curso <b>Sistemas de la información Sec. 3 Stgo 2do sem 2016</b> con sus grupos formados por el analisis de la información de redes sociales e historial académico.<hr> ";
 	echo html_writer::table($courses);
 	
 }else if($USER->id == 40214  || $USER->id == 381 || $USER->id == 60246){
