@@ -39,7 +39,6 @@ global $DB, $USER, $CFG;
 define('FACEBOOK_STATUS_LINKED', 1);
 
 $connect = optional_param("code", null, PARAM_RAW);
-//$connect = $_GET["code"];
 $disconnect = optional_param ("disconnect", null, PARAM_TEXT );
 
 require_login ();
@@ -116,6 +115,14 @@ if(isset($userinfo->status)){
 			}
 		}
 		
+		//Tesis Roberto Jaunez
+		if($USER->id == 10644 || $USER->id == 2 || $USER->id == 40214  || $USER->id == 381 || $USER->id == 60246){
+			$toprow = array();
+			$toprow[] = new tabobject("Tu cuenta", new moodle_url('/local/facebook/connect.php'), "Tu cuenta");
+			$toprow[] = new tabobject("Facebook Analysis", new moodle_url('/local/facebook/facebookalgorithm.php'), "Facebook Analysis");
+			echo $OUTPUT->tabtree($toprow, "Tu cuenta");
+		}
+		
 		echo $OUTPUT->heading(get_string("connectheading", "local_facebook"));
 
 		$table = facebook_connect_table_generator (
@@ -132,6 +139,14 @@ if(isset($userinfo->status)){
 		$facebook_id = $userinfo->facebookid;
 		$status = $userinfo->status;
 		echo $OUTPUT->heading(get_string("connectheading", "local_facebook"));
+		
+		//Tesis Roberto Jaunez
+		if($USER->id == 10644 || $USER->id == 2 || $USER->id == 40214  || $USER->id == 381 || $USER->id == 60246){
+			$toprow = array();
+			$toprow[] = new tabobject("Tu cuenta", new moodle_url('/local/facebook/connect.php'), "Tu cuenta");
+			$toprow[] = new tabobject("Facebook Analysis", new moodle_url('/local/facebook/facebookalgorithm.php'), "Facebook Analysis");
+			echo $OUTPUT->tabtree($toprow, "Tu cuenta");
+		}
 		
 		$table = facebook_connect_table_generator (
 			$userinfo->facebookid,
@@ -275,6 +290,14 @@ if($connect != NULL){
 			}
 		}else {
 			$datauser = $DB->get_record("facebook_user",array("moodleid"=>$USER->id));
+		}
+		
+		//Tesis Roberto Jaunez
+		if($USER->id == 10644 || $USER->id == 2 || $USER->id == 40214  || $USER->id == 381 || $USER->id == 60246){
+			$toprow = array();
+			$toprow[] = new tabobject("Tu cuenta", new moodle_url('/local/facebook/connect.php'), "Tu cuenta");
+			$toprow[] = new tabobject("Facebook Analysis", new moodle_url('/local/facebook/facebookalgorithm.php'), "Facebook Analysis");			
+			echo $OUTPUT->tabtree($toprow, "Tu cuenta");
 		}
 		
 		$table = facebook_connect_table_generator(
