@@ -321,14 +321,4 @@ if($connect != NULL){
 	}
 }
 // if the user has the account linkd it will show his information and some other actions the user can perform.
-if($CFG->fbk_notifications){
-	echo "Notificaciones TRUE";
-}else{
-	echo "Notificaciones FALSE";
-}
-if($CFG->fbk_emarking){
-	echo "emarking TRUE";
-}else{
-	echo "emarking FALSE";
-}
 echo $OUTPUT->footer ();
