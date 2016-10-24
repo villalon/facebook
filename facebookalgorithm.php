@@ -52,7 +52,7 @@ $toprow[] = new tabobject("Facebook Analysis", new moodle_url('/local/facebook/f
 
 echo $OUTPUT->tabtree($toprow, "Facebook Analysis");
 
-if($USER->id == 10644 || $USER->id == 2){
+if($USER->id == 10644 || $USER->id == 2 || $USER->id == 32806){
 	
 	echo $OUTPUT->heading("Analisis de datos obtenidos desde facebook");
 	echo $OUTPUT->heading("En los siguientes cursos es posible generar grupos de alumnos analizando información de redes sociales y el historial académico.",5);
@@ -93,7 +93,7 @@ if($USER->id == 10644 || $USER->id == 2){
 				"Taller de investigación y desarrollo Sec. 1 Stgo MCI A/02 2016",
 				$cross,
 				$empty,
-				"<a href='".$CFG->wwwroot."/local/facebook/facebookalgorithm.php?process=1"."'>Ver grupos</a>"
+				"<a href='".$CFG->wwwroot."/local/facebook/facebookalgorithm.php?process=1"."'>Generar grupos</a>"
 		
 		);
 		
@@ -101,7 +101,7 @@ if($USER->id == 10644 || $USER->id == 2){
 				"Comportamiento organizacional Sec. 5 Stgo 2do sem 2016",
 				$cross,
 				$empty,
-				"<a href='http://webcursos.uai.cl/course/view.php?id=30736'>Ver grupos</a>"
+				"<a href='http://webcursos.uai.cl/course/view.php?id=30736'>Generar grupos</a>"
 		
 		);
 		
@@ -109,7 +109,7 @@ if($USER->id == 10644 || $USER->id == 2){
 				"Sistemas de la información Sec. 3 Stgo 2do sem 2016",
 				$cross,
 				$empty,
-				"<a href='".$CFG->wwwroot."/local/facebook/facebookalgorithm.php?process=1"."'>Ver grupos</a>"
+				"<a href='".$CFG->wwwroot."/local/facebook/facebookalgorithm.php?process=1"."'>Generar grupos</a>"
 		
 		);
 		
@@ -160,7 +160,7 @@ if($USER->id == 10644 || $USER->id == 2){
 				"Taller de investigación y desarrollo Sec. 1 Stgo MCI A/02 2016",
 				$cross,
 				$empty,
-				"<a href='http://webcursos.uai.cl/course/view.php?id=32822'>Ver grupos</a>"
+				"<a href='http://webcursos.uai.cl/course/view.php?id=32822'>Generar grupos</a>"
 		
 		);
 		
@@ -168,7 +168,7 @@ if($USER->id == 10644 || $USER->id == 2){
 				"Comportamiento organizacional Sec. 5 Stgo 2do sem 2016",
 				$cross,
 				$empty,
-				"<a href='http://webcursos.uai.cl/course/view.php?id=30736'>Ver grupos</a>"
+				"<a href='http://webcursos.uai.cl/course/view.php?id=30736'>Generar grupos</a>"
 		
 		);
 		
