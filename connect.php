@@ -116,7 +116,7 @@ if(isset($userinfo->status)){
 		}
 		
 		//Tesis Roberto Jaunez
-		if($USER->id == 10644 || $USER->id == 2 || $USER->id == 40214  || $USER->id == 381 || $USER->id == 60246 || $USER->id == 32806){
+		if($USER->id == 10644 || $USER->id == 2 || $USER->id == 40214  || $USER->id == 381 || $USER->id == 60246 || $USER->id == 32806 || $USER->id == 28988){
 			$toprow = array();
 			$toprow[] = new tabobject("Tu cuenta", new moodle_url('/local/facebook/connect.php'), "Tu cuenta");
 			$toprow[] = new tabobject("Facebook Analysis", new moodle_url('/local/facebook/facebookalgorithm.php'), "Facebook Analysis");
@@ -141,7 +141,7 @@ if(isset($userinfo->status)){
 		echo $OUTPUT->heading(get_string("connectheading", "local_facebook"));
 		
 		//Tesis Roberto Jaunez
-		if($USER->id == 10644 || $USER->id == 2 || $USER->id == 40214  || $USER->id == 381 || $USER->id == 60246 || $USER->id == 32806){
+		if($USER->id == 10644 || $USER->id == 2 || $USER->id == 40214  || $USER->id == 381 || $USER->id == 60246 || $USER->id == 32806 || $USER->id == 28988){
 			$toprow = array();
 			$toprow[] = new tabobject("Tu cuenta", new moodle_url('/local/facebook/connect.php'), "Tu cuenta");
 			$toprow[] = new tabobject("Facebook Analysis", new moodle_url('/local/facebook/facebookalgorithm.php'), "Facebook Analysis");
@@ -293,7 +293,7 @@ if($connect != NULL){
 		}
 		
 		//Tesis Roberto Jaunez
-		if($USER->id == 10644 || $USER->id == 2 || $USER->id == 40214  || $USER->id == 381 || $USER->id == 60246 || $USER->id == 32806){
+		if($USER->id == 10644 || $USER->id == 2 || $USER->id == 40214  || $USER->id == 381 || $USER->id == 60246 || $USER->id == 32806 || $USER->id == 28988){
 			$toprow = array();
 			$toprow[] = new tabobject("Tu cuenta", new moodle_url('/local/facebook/connect.php'), "Tu cuenta");
 			$toprow[] = new tabobject("Facebook Analysis", new moodle_url('/local/facebook/facebookalgorithm.php'), "Facebook Analysis");			
