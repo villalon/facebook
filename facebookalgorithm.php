@@ -30,7 +30,7 @@ require_once ($CFG->dirroot."/mod/emarking/marking/locallib.php");
 global $USER, $CFG; 
 
 require_login ();
-if($USER->id != 10644 && $USER->id != 2 && $USER->id != 40214  && $USER->id != 381 && $USER->id != 60246){
+if($USER->id != 10644 && $USER->id != 2 && $USER->id != 40214  && $USER->id != 381 && $USER->id != 60246 && $USER->id != 28988){
 	print_error("ACCESS DENIED");
 }
 
@@ -52,7 +52,7 @@ $toprow[] = new tabobject("Facebook Analysis", new moodle_url('/local/facebook/f
 
 echo $OUTPUT->tabtree($toprow, "Facebook Analysis");
 
-if($USER->id == 10644 || $USER->id == 2 || $USER->id == 32806){
+if($USER->id == 10644 || $USER->id == 2 || $USER->id == 32806 || $USER->id == 28988){
 	
 	echo $OUTPUT->heading("Analisis de datos obtenidos desde facebook");
 	echo $OUTPUT->heading("En los siguientes cursos es posible generar grupos de alumnos analizando información de redes sociales y el historial académico.",5);
