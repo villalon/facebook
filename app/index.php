@@ -53,8 +53,9 @@ try {
 	$accessToken = $helper->getAccessToken ();
 } catch ( Facebook\Exceptions\FacebookResponseException $e ) {
 	// When Graph returns an error
-	echo 'Graph returned an error: ' . $e->getMessage ();
-	exit ();
+	// echo 'Graph returned an error: ' . $e->getMessage ();
+	// exit ();
+	redirect($CFG->fbk_url);
 } catch ( Facebook\Exceptions\FacebookSDKException $e ) {
 	// When validation fails or other local issues
 	echo 'Facebook SDK returned an error: ' . $e->getMessage ();
@@ -147,7 +148,10 @@ if ($userfacebookinfo != false) {
 	// generates an array with all the users courses
 	$courseidarray = array ();
 	foreach ( $usercourse as $courses ) {
-		$courseidarray [] = $courses->id;
+		// Only visible courses
+		if($courses->visible){
+			$courseidarray [] = $courses->id;
+		}
 	}
 	
 	// get_in_or_equal used after in the IN ('') clause of multiple querys
