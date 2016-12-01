@@ -64,8 +64,9 @@ try {
 }
 
 if (! isset ( $accessToken )) {
-	echo 'No OAuth data could be obtained from the signed request. User has not authorized your app yet.';
-	exit ();
+	// echo 'No OAuth data could be obtained from the signed request. User has not authorized your app yet.';
+	// exit ();
+	redirect($CFG->fbk_url);
 }
 
 $facebookdata = $helper->getSignedRequest ();
