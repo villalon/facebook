@@ -153,6 +153,9 @@ if ($userfacebookinfo != false) {
 		// Only visible courses
 		if($courses->visible){
 			$courseidarray [] = $courses->id;
+		}else{
+			// Remove invisible courses
+			unset($usercourse[$key]);
 		}
 	}
 	
