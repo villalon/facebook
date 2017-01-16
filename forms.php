@@ -31,19 +31,13 @@ class buttons extends moodleform{
 		$mform =& $this->_form;
 		
 		$buttonarray=array();
-		$buttonarray[]=$mform->createElement('static', 'description1', '',get_string('notificationsettingstext', 'local_facebook'));
-		$buttonarray[]=$mform->createElement('button','link',get_string('notificationsettings', 'local_facebook'),
-				array("onClick"=>"window.location.href='../../message/edit.php'"));
-		$mform->addGroup($buttonarray);
-		
-		
-		$buttonarray=array();
 		$buttonarray[]=$mform->createElement('static', 'description2', '',get_string('cancelnotifications', 'local_facebook'));
 		$buttonarray[]=$mform->createElement('submit','disconnect',get_string('disconnectaccount', 'local_facebook'));
 		$mform->addGroup($buttonarray);
 		
 	}
 }
+
 class connect extends moodleform{
 	function definition() {
 

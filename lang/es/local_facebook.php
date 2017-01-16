@@ -24,7 +24,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 $string['messageprovider:notification'] = 'Notificaciones de recursos (pdf, excel, word, url, etc)';
-$string['pluginname'] = 'Actualización de curso';
+$string['pluginname'] = 'Facebook';
 $string['connectheading'] = 'Información de cuenta';
 $string['contact'] = "Contacto";
 $string['acountconnect'] = 'Enlace de cuenta';
@@ -36,6 +36,7 @@ $string['back'] = 'volver';
 $string['accused'] = 'Esta cuenta de facebook ya se encuentra enlazada por otro usuario. ';
 $string['connectquestion'] = '¿Deseas enlazar esta cuenta?';
 $string['connectbutton'] = 'Enlazar cuenta';
+$string['invitebutton'] = 'Invitar';
 $string['facebook'] = 'Facebook';
 $string['succesfullconnect'] = 'Su cuenta ha sido desenlazada exitosamente!';
 $string['notificationsettings'] = 'Ajuste de notificaciones';
@@ -55,6 +56,7 @@ $string['courses'] = 'Mis cursos';
 $string['help'] = 'Ayuda';
 $string['email'] = 'webcursos@uai.cl';
 $string["connecttitle"] = "Conexión a facebook";
+$string['invitetitle'] = 'Invitar alumnos a conectar WebC con facebook';
 $string["search"] = "Buscar...";
 $string["name"] = "Nombres / Apellidos";
 $string["grade"] = "Calificación";
@@ -75,3 +77,10 @@ $string["notsubmitted"] = "No enviada";
 $string["facebooklogin"] = "Conectarse con otra cuenta de facebook";
 $string["viewforum"] = "Ver en foro";
 $string["close"] = "Cerrar";
+$string['linked'] = 'Enlazado';
+$string['unlinked'] = 'No Enlazado';
+$string['lastname'] = 'Apellido';
+$string['firstname'] = 'Nombre';
+$string['email'] = 'Email';
+$string['backtocourse'] = 'Volver al curso';
+$string['privacypolicies'] = 'Politicas de privacidad';

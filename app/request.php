@@ -18,6 +18,7 @@
  * @subpackage facebook
  * @copyright  2016 Jorge Cabané (jcabane@alumnos.uai.cl)
  * @copyright  2016 Mark Michaelsen (mmichaelsen678@gmail.com)
+ * @copyright  2016 Hans Jeria (hansjeria@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
  
@@ -33,7 +34,6 @@ $action       = required_param ('action', PARAM_ALPHAEXT);
 $moodleid     = optional_param ('moodleid', null , PARAM_RAW_TRIMMED);
 $courseid     = optional_param ('courseid', null , PARAM_RAW_TRIMMED);
 $discussionid = optional_param ('discussionid', null, PARAM_RAW_TRIMMED);
-$emarkingid   = optional_param ('emarkingid', null, PARAM_RAW_TRIMMED);
 $lastvisit    = optional_param ('lastvisit', null , PARAM_RAW_TRIMMED);
 $moduleid     = optional_param ('moduleid', null, PARAM_RAW_TRIMMED);
 
@@ -224,9 +224,9 @@ if ($action == 'get_course_data') {
 	 				if ($(this).attr('component') == 'forum') {
 	 					discussionId = $(this).attr('discussionid');
 						moduleId = $(this).attr('moduleid');
-		
+						var url = $('#divurl').attr('url');
 	 					jQuery.ajax({
-	 	 					url : 'https://webcursos.uai.cl/local/facebook/app/request.php?action=get_discussion&discussionid=' + discussionId + '&moduleid=' + moduleId,
+	 	 					url : url+'?action=get_discussion&discussionid=' + discussionId + '&moduleid=' + moduleId,
 	 	 					async : true,
 	 	 					data : {},
 	 	 					success : function (response) {
@@ -303,66 +303,3 @@ else if ($action == 'get_discussion') {
 		
 	echo $htmlmodal;
 } 
-/*
-else if ($action == 'get_emarking') {
-	
-	$emarkingsql = "SELECT s.id AS id,
-			s.grade AS grade,
-			s.status AS status,
-			cm.id as moduleid,
-			CONCAT(u.firstname,' ',u.lastname) AS user
-			FROM {emarking_submission} AS s
-			INNER JOIN {user} AS u ON (u.id = s.student AND u.id = ?)
-			INNER JOIN {course_modules} AS cm ON (cm.instance = s.emarking AND s.emarking = ?)";
-	
-	$paramsemarking = array(
-			$moodleid,
-			$emarkingid
-	);
-	
-	$emarkingdata = $DB->get_records_sql($emarkingsql, $paramsemarking);
-	$htmlmodal = '';
-	
-	foreach ($emarkingdata as $emarking) {
-		$emarkingurl = new moodle_url('/mod/emarking/view.php', array(
-				'id' => $emarking->moduleid
-		));
-		
-		$htmlmodal .= "<div class='row'>
-						<div class='col-md-4'>
-	  						<b>".get_string('name', 'local_facebook')."</b>
-		  					<br>".$emarking->user."
-		  				</div>
-		  				<div class='col-md-2'>
-		  					<b>".get_string('grade', 'local_facebook')."</b>
-		  					<br>";
-		
-	  	if($emarking->status >= 20) {
-	  		$htmlmodal .= $emarking->grade;
-	 	} else {
-	 		$htmlmodal .= "-";
-	  	}
-		
-	  	$htmlmodal .= "</div>
-		  				<div class='col-md-3'>
-		  					<b>".get_string('status', 'local_facebook')."</b>
-		  					<br>";
-		  					
-	  	if($emarking->status >= 20) {
-	  		$htmlmodal .= get_string('published', 'local_facebook');
-	  	} else if($emarking->status >= 10) {
-	  		$htmlmodal .= get_string('submitted', 'local_facebook');
-	  	} else {
-	  		$htmlmodal .= get_string('absent', 'local_facebook');
-	  	}
-	  	
-	  	$htmlmodal .= "</div>
-		  				<div class='col-md-3'>
-		  					<br>
-		  						<a href='".$emarkingurl."' target='_blank'>".get_string('viewexam', 'local_facebook')."</a>
-		  				</div>
-		  			</div>";
-	}
-  	
-  	echo $htmlmodal;
-}*/

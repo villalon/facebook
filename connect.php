@@ -22,7 +22,7 @@
 * @subpackage facebook
 * @copyright  2013 Francisco García Ralph (francisco.garcia.ralph@gmail.com)
 * @copyright  2015 Mihail Pozarski (mipozarski@alumnos.uai.cl)
-* @copyright  2015 Hans Jeria (hansjeria@gmail.com)
+* @copyright  2015-2016 Hans Jeria (hansjeria@gmail.com)
 * @copyright  2016 Mark Michaelsen (mmichaelsen678@gmail.com)
 * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
@@ -39,7 +39,6 @@ global $DB, $USER, $CFG;
 define('FACEBOOK_STATUS_LINKED', 1);
 
 $connect = optional_param("code", null, PARAM_RAW);
-//$connect = $_GET["code"];
 $disconnect = optional_param ("disconnect", null, PARAM_TEXT );
 
 require_login ();
@@ -56,26 +55,20 @@ $PAGE->navbar->add(get_string("facebook", "local_facebook"));
 echo $OUTPUT->header ();
 
 // gets all facebook information needed
-$appid = $CFG->fbkAppID;
-$secretid = $CFG->fbkScrID;
 $config = array (
-		"app_id" => $appid,
-		"app_secret" => $secretid,
+		"app_id" => $CFG->fbk_appid,
+		"app_secret" => $CFG->fbk_scrid,
 		"default_graph_version" => "v2.5"
 );
 $facebook = new Facebook\Facebook($config);
 
 $helper = $facebook->getRedirectLoginHelper();
-$appname = $CFG->fbkAppNAME;
-$apptoken = $CFG->fbkTkn;
-$appid = $CFG->fbkAppID;
-$secretid = $CFG->fbkScrID;
 
 // Search if the user have linked with facebook
-$userinfo = $DB->get_record ( 'facebook_user', array (
+$userinfo = $DB->get_record ( 'facebook_user', array(
 		'moodleid' => $USER->id,
 		'status' => FACEBOOK_STATUS_LINKED
-) );
+));
 
 $time = time ();
 // Look if the user has accepted the permissions
@@ -102,8 +95,12 @@ if(isset($userinfo->status)){
 
 	}else if($userinfo->firstname == "NULL"){
 		
-		$sqlfilteruser = "SELECT fu.facebookid, u.firstname, u.lastname, fu.link, fu.middlename
-				FROM {facebook_user} AS fu JOIN {user} AS u ON (fu.moodleid = u.id)
+		$sqlfilteruser = "SELECT fu.facebookid,
+				u.firstname,
+				u.lastname,
+				fu.link,
+				fu.middlename
+				FROM {facebook_user} AS fu INNER JOIN {user} AS u ON (fu.moodleid = u.id)
 				WHERE fu.moodleid = ?";
 		
 		$information = new stdClass();
@@ -118,6 +115,14 @@ if(isset($userinfo->status)){
 			}
 		}
 		
+		//Tesis Roberto Jaunez
+		if($USER->id == 10644 || $USER->id == 2 || $USER->id == 40214  || $USER->id == 381 || $USER->id == 60246 || $USER->id == 32806 || $USER->id == 28988){
+			$toprow = array();
+			$toprow[] = new tabobject("Tu cuenta", new moodle_url('/local/facebook/connect.php'), "Tu cuenta");
+			$toprow[] = new tabobject("Facebook Analysis", new moodle_url('/local/facebook/facebookalgorithm.php'), "Facebook Analysis");
+			echo $OUTPUT->tabtree($toprow, "Tu cuenta");
+		}
+		
 		echo $OUTPUT->heading(get_string("connectheading", "local_facebook"));
 
 		$table = facebook_connect_table_generator (
@@ -125,8 +130,7 @@ if(isset($userinfo->status)){
 				$information->link,
 				$information->firstname,
 				$information->middlename,
-				$information->lastname,
-				$appname
+				$information->lastname
 		);
 
 		$button = new buttons ();
@@ -136,13 +140,20 @@ if(isset($userinfo->status)){
 		$status = $userinfo->status;
 		echo $OUTPUT->heading(get_string("connectheading", "local_facebook"));
 		
+		//Tesis Roberto Jaunez
+		if($USER->id == 10644 || $USER->id == 2 || $USER->id == 40214  || $USER->id == 381 || $USER->id == 60246 || $USER->id == 32806 || $USER->id == 28988){
+			$toprow = array();
+			$toprow[] = new tabobject("Tu cuenta", new moodle_url('/local/facebook/connect.php'), "Tu cuenta");
+			$toprow[] = new tabobject("Facebook Analysis", new moodle_url('/local/facebook/facebookalgorithm.php'), "Facebook Analysis");
+			echo $OUTPUT->tabtree($toprow, "Tu cuenta");
+		}
+		
 		$table = facebook_connect_table_generator (
-		$userinfo->facebookid,
-		$userinfo->link,
-		$userinfo->firstname,
-		$userinfo->middlename,
-		$userinfo->lastname,
-		$appname
+			$userinfo->facebookid,
+			$userinfo->link,
+			$userinfo->firstname,
+			$userinfo->middlename,
+			$userinfo->lastname
 		);
 		
 		$button = new buttons ();
@@ -183,7 +194,7 @@ if($connect != NULL){
 
 				// Logged in!
 				
-				$user_data = $facebook->get ("/me?fields=link,first_name,middle_name,last_name",$accessToken);
+				$user_data = $facebook->get ("/me?fields=link,first_name,middle_name,last_name", $accessToken);
 					
 				$user_profile = $user_data->getGraphUser();
 				$link = $user_profile["link"];
@@ -195,7 +206,6 @@ if($connect != NULL){
 				}
 
 				$last_name = $user_profile ["last_name"];
-
 				
 				$record = new stdClass ();
 				$record->moodleid  = $USER->id;
@@ -261,9 +271,11 @@ if($connect != NULL){
 		echo $OUTPUT->heading(get_string("connectwith", "local_facebook"), 5);
 
 		if($userinfo->firstname == NULL){
-			$sqlfilteruser = "SELECT fu.facebookid, u.firstname, u.lastname, fu.link, fu.middlename
-				FROM {facebook_user} AS fu JOIN {user} AS u ON (fu.moodleid = u.id)
-				WHERE fu.moodleid = ?";
+			$sqlfilteruser = "SELECT fu.facebookid,
+					u.firstname, u.lastname,
+					fu.link, fu.middlename
+					FROM {facebook_user} AS fu INNER JOIN {user} AS u ON (fu.moodleid = u.id)
+					WHERE fu.moodleid = ?";
 			
 			$datauser = new stdClass();
 			
@@ -280,13 +292,20 @@ if($connect != NULL){
 			$datauser = $DB->get_record("facebook_user",array("moodleid"=>$USER->id));
 		}
 		
+		//Tesis Roberto Jaunez
+		if($USER->id == 10644 || $USER->id == 2 || $USER->id == 40214  || $USER->id == 381 || $USER->id == 60246 || $USER->id == 32806 || $USER->id == 28988){
+			$toprow = array();
+			$toprow[] = new tabobject("Tu cuenta", new moodle_url('/local/facebook/connect.php'), "Tu cuenta");
+			$toprow[] = new tabobject("Facebook Analysis", new moodle_url('/local/facebook/facebookalgorithm.php'), "Facebook Analysis");			
+			echo $OUTPUT->tabtree($toprow, "Tu cuenta");
+		}
+		
 		$table = facebook_connect_table_generator(
 				$datauser->facebookid,
 				$datauser->link,
 				$datauser->firstname,
 				$datauser->middlename,
-				$datauser->lastname,
-				$appname
+				$datauser->lastname
 		);
 		// Look if the account was already linked
 		$duplicate = $DB->get_record("facebook_user", array (

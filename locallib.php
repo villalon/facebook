@@ -18,7 +18,7 @@
  * @subpackage facebook
  * @copyright  2015 Xiu-Fong Lin (xlin@alumnos.uai.cl)
  * @copyright  2015 Mihail Pozarski (mipozarski@alumnos.uai.cl)
- * @copyright  2015 Hans Jeria (hansjeria@gmail.com)
+ * @copyright  2015-2016 Hans Jeria (hansjeria@gmail.com)
  * @copyright  2016 Mark Michaelsen (mmichaelsen678@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -48,7 +48,7 @@ define('MODULE_ASSIGN', 1);
  * @return 3 arrays
  */
 function get_total_notification($sqlin, $param, $lastvisit, $moodleid){
-	global  $DB;
+	global  $DB, $CFG;
 	
 	//sql that counts all the new of recently modified resources
 	$totalresourceparams = array(
@@ -144,34 +144,34 @@ function get_total_notification($sqlin, $param, $lastvisit, $moodleid){
 		}
 	}
 	
-	$dataemarkingsql= "SELECT CONCAT(s.id,e.id,s.grade) AS ids,
-		COUNT(s.id) AS total,
-		e.id AS emarkingid,
-		e.course AS course,
-		e.name AS testname,
-		d.grade AS grade,
-		d.status AS status,
-		d.timemodified AS date,
-		s.teacher AS teacher,
-		cm.id as moduleid,
-		CONCAT(u.firstname,' ',u.lastname) AS user
-		FROM {emarking_draft} AS d JOIN {emarking} AS e ON (e.id = d.emarkingid AND e.course $sqlin AND e.type in (1,5,0))
-		JOIN {emarking_submission} AS s ON (d.submissionid = s.id AND d.status IN (20,30,35,40) AND s.student = ?)
-		JOIN {user} AS u ON (u.id = s.student)
-		JOIN {course_modules} AS cm ON (cm.instance = e.id AND cm.course  $sqlin)
-		JOIN {modules} AS m ON (cm.module = m.id AND m.name = 'emarking')
-		WHERE d.timemodified >= ?";
-	
-	$emarkingparams = array_merge($param,array($moodleid),$param, array($lastvisit));
-	
 	$totalemarkingperstudent = array();
-	
-	if($totalemarking = $DB->get_records_sql($dataemarkingsql, $emarkingparams)){
-		foreach($totalemarking as $objects){
-			$totalemarkingperstudent[$objects->course] = $objects->total;
+	if($CFG->fbk_emarking){
+		$dataemarkingsql= "SELECT CONCAT(s.id,e.id,s.grade) AS ids,
+			COUNT(s.id) AS total,
+			e.id AS emarkingid,
+			e.course AS course,
+			e.name AS testname,
+			d.grade AS grade,
+			d.status AS status,
+			d.timemodified AS date,
+			s.teacher AS teacher,
+			cm.id as moduleid,
+			CONCAT(u.firstname,' ',u.lastname) AS user
+			FROM {emarking_draft} AS d INNER JOIN {emarking} AS e ON (e.id = d.emarkingid AND e.course $sqlin AND e.type in (1,5,0))
+			INNER JOIN {emarking_submission} AS s ON (d.submissionid = s.id AND d.status IN (20,30,35,40) AND s.student = ?)
+			INNER JOIN {user} AS u ON (u.id = s.student)
+			INNER JOIN {course_modules} AS cm ON (cm.instance = e.id AND cm.course  $sqlin)
+			INNER JOIN {modules} AS m ON (cm.module = m.id AND m.name = 'emarking')
+			WHERE d.timemodified >= ?";
+		
+		$emarkingparams = array_merge($param,array($moodleid),$param, array($lastvisit));
+		
+		if($totalemarking = $DB->get_records_sql($dataemarkingsql, $emarkingparams)){
+			foreach($totalemarking as $objects){
+				$totalemarkingperstudent[$objects->course] = $objects->total;
+			}
 		}
 	}
-	
 	
 	return array($resourcepercourse, $urlpercourse, $totalpostpercourse, $totalemarkingperstudent);
 }
@@ -205,7 +205,7 @@ function record_sort($records, $field, $reverse = false){
  * @return array
  */
 function get_course_data ($moodleid, $courseid) {
-	global $DB;
+	global $DB, $CFG;
 	
 	// Parameters for post query
 	$paramspost = array(
@@ -286,9 +286,9 @@ function get_course_data ($moodleid, $courseid) {
 			$courseid
 	);
 	
-	// Get the data from the query
-	$dataemarking = $DB->get_records_sql($dataemarkingsql, $paramsemarking);
-	
+	if($CFG->fbk_emarking){
+		$dataemarking = $DB->get_records_sql($dataemarkingsql, $paramsemarking);
+	}
 	
 	$dataassignmentsql = "SELECT a.id AS id,
 			s.status AS status,
@@ -370,23 +370,25 @@ function get_course_data ($moodleid, $courseid) {
 		}
 	}
 	
-	foreach($dataemarking as $emarking){
-		$emarkingurl = new moodle_url('/mod/emarking/view.php', array(
-				'id' => $emarking->moduleid
-		));
-		
-		$totaldata[] = array(
-				'image'=>FACEBOOK_IMAGE_EMARKING,
-				'link'=>$emarkingurl,
-				'title'=>$emarking->testname,
-				'from'=>$emarking->user,
-				'date'=>$emarking->date,
-				'course'=>$emarking->course,
-				'id'=>$emarking->id,
-				'grade'=>$emarking->grade,
-				'status'=>$emarking->status,
-				'teacherid'=>$emarking->teacher
-		);
+	if($CFG->fbk_emarking){
+		foreach($dataemarking as $emarking){
+			$emarkingurl = new moodle_url('/mod/emarking/view.php', array(
+					'id' => $emarking->moduleid
+			));
+			
+			$totaldata[] = array(
+					'image'=>FACEBOOK_IMAGE_EMARKING,
+					'link'=>$emarkingurl,
+					'title'=>$emarking->testname,
+					'from'=>$emarking->user,
+					'date'=>$emarking->date,
+					'course'=>$emarking->course,
+					'id'=>$emarking->id,
+					'grade'=>$emarking->grade,
+					'status'=>$emarking->status,
+					'teacherid'=>$emarking->teacher
+			);
+		}
 	}
 	
 	foreach($dataassign as $assign){
@@ -440,7 +442,8 @@ function get_course_data ($moodleid, $courseid) {
 	// Returns the final array ordered by date to index.php
 	return record_sort($totaldata, 'date', 'true');
 }
-function facebook_connect_table_generator($facebook_id, $link, $first_name, $middle_name, $last_name, $appname) {
+function facebook_connect_table_generator($facebook_id, $link, $first_name, $middle_name, $last_name) {
+	global $CFG;
 	$imagetable = new html_table ();
 	$infotable = new html_table ();
 	$infotable->data [] = array (
@@ -451,17 +454,12 @@ function facebook_connect_table_generator($facebook_id, $link, $first_name, $mid
 			get_string ( "profile", "local_facebook" ),
 			"<a href='" . $link . "' target=_blank>" . $link . "</a>"
 	);
-	if ($appname != null) {
-		$infotable->data [] = array (
-				"Link a la app",
-				"<a href='http://apps.facebook.com/" . $appname . "' target=_blank>http://apps.facebook.com/" . $appname . "</a>"
-		);
-	} else {
-		$infotable->data [] = array (
-				"",
-				""
-		);
-	}
+
+	$infotable->data [] = array (
+			"Link a la app",
+			"<a href='" . $CFG->fbk_url . "' target=_blank>" . $CFG->fbk_url . "</a>"
+	);
+
 	$imagetable->data [] = array (
 			"<img src='https://graph.facebook.com/" .$facebook_id . "/picture?type=large'>",
 			html_writer::table ($infotable)
@@ -471,10 +469,13 @@ function facebook_connect_table_generator($facebook_id, $link, $first_name, $mid
 function get_posts_from_discussion($discussionid) {
 	global $DB;
 	
-	$sql = "SELECT fp.id AS id, fp.subject AS subject, fp.message AS message, fp.created AS date, fp.parent AS parent, 
+	$sql = "SELECT fp.id AS id,
+			fp.subject AS subject,
+			fp.message AS message,
+			fp.created AS date,
+			fp.parent AS parent, 
 			CONCAT(u.firstname, ' ', u.lastname) AS user 
-			FROM {forum_posts} AS fp 
-			INNER JOIN {user} AS u ON (fp.userid = u.id)
+			FROM {forum_posts} AS fp INNER JOIN {user} AS u ON (fp.userid = u.id)
 			WHERE fp.discussion = ? 
 			GROUP BY fp.id";
 	

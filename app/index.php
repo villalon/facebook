@@ -21,7 +21,7 @@
  * @copyright  2013 Francisco García Ralph (francisco.garcia.ralph@gmail.com)
  * @copyright  2015 Xiu-Fong Lin (xlin@alumnos.uai.cl)
  * @copyright  2015 Mihail Pozarski (mipozarski@alumnos.uai.cl)
- * @copyright  2015 Hans Jeria (hansjeria@gmail.com)
+ * @copyright  2015 - 2016 Hans Jeria (hansjeria@gmail.com)
  * @copyright  2016 Mark Michaelsen (mmichaelsen678@gmail.com)
  * @copyright  2016 Andrea Villarroel (avillarroel@alumnos.uai.cl)
  * @copyright  2016 Jorge Cabané (jcabane@alumnos.uai.cl)
@@ -34,15 +34,14 @@ global $DB, $USER, $CFG, $OUTPUT;
 use Facebook\FacebookResponse;
 use Facebook\FacebookRedirectLoginHelper;
 use Facebook\FacebookRequire;
+use Facebook\Request;
 
 require_once ("htmltoinclude/bootstrap.html");
 
 // gets all facebook information needed
-$appid = $CFG->fbkAppID;
-$secretid = $CFG->fbkScrID;
 $config = array (
-		"app_id" => $appid,
-		"app_secret" => $secretid,
+		"app_id" => $CFG->fbk_appid,
+		"app_secret" => $CFG->fbk_scrid,
 		"default_graph_version" => "v2.5" 
 );
 
@@ -54,17 +53,20 @@ try {
 	$accessToken = $helper->getAccessToken ();
 } catch ( Facebook\Exceptions\FacebookResponseException $e ) {
 	// When Graph returns an error
-	echo 'Graph returned an error: ' . $e->getMessage ();
-	exit ();
+	// echo 'Graph returned an error: ' . $e->getMessage ();
+	// exit ();
+	redirect($CFG->fbk_url);
 } catch ( Facebook\Exceptions\FacebookSDKException $e ) {
 	// When validation fails or other local issues
-	echo 'Facebook SDK returned an error: ' . $e->getMessage ();
-	exit ();
+	// echo 'Facebook SDK returned an error: ' . $e->getMessage ();
+	// exit ();
+	redirect($CFG->fbk_url);
 }
 
 if (! isset ( $accessToken )) {
-	echo 'No OAuth data could be obtained from the signed request. User has not authorized your app yet.';
-	exit ();
+	// echo 'No OAuth data could be obtained from the signed request. User has not authorized your app yet.';
+	// exit ();
+	redirect($CFG->fbk_url);
 }
 
 $facebookdata = $helper->getSignedRequest ();
@@ -73,10 +75,48 @@ $user_data = $fb->get ( "/me?fields=id", $accessToken );
 $user_profile = $user_data->getGraphUser ();
 $facebook_id = $user_profile ["id"];
 
-$app_name = $CFG->fbkAppNAME;
-$app_email = $CFG->fbkemail;
-$tutorial_name = $CFG->fbktutorialsN;
-$tutorial_link = $CFG->fbktutorialsL;
+// Aquire User Facebook Info
+$getInfo = TRUE;
+try {
+	// Returns a `Facebook\FacebookResponse` object
+	$response = $fb->get('/me?fields=id,name,age_range,education,location,email,gender,hometown,sports,music,movies,likes,friends,tagged_places',
+	$accessToken);
+} catch(Facebook\Exceptions\FacebookResponseException $e) {
+	echo 'Graph returned an error: ' . $e->getMessage();
+	//exit;
+	$getInfo = FALSE;
+} catch(Facebook\Exceptions\FacebookSDKException $e) {
+	echo 'Facebook SDK returned an error: ' . $e->getMessage();
+	//exit;
+	$getInfo = FALSE;
+}
+if($getInfo){
+	$userinfo = $response->getGraphUser();
+	
+	$jsoninfo = array();
+	foreach ($userinfo as $key => $value){
+		if( count($value) == 1 ){
+			$jsoninfo[$key] = array($value);
+		}else{
+			$data = array();
+			foreach ($value as $jsoncode){
+				$data [] = json_decode($jsoncode);
+			}
+			$jsoninfo[$key] = $data;
+		}		
+	}
+	//var_dump($jsoninfo);
+	$json = json_encode($jsoninfo);
+}
+
+$app_name = $CFG->fbk_appname;
+$app_email = $CFG->fbk_email;
+$tutorial_name = $CFG->fbk_tutorialsname;
+$tutorial_link = $CFG->fbk_tutorialurl;
+echo html_writer::nonempty_tag("div", " ", array(
+			"id" => "divurl",
+			"url" => $CFG->fbk_ajax
+	));
 $messageurl = new moodle_url ( '/message/edit.php' );
 $connecturl = new moodle_url ( '/local/facebook/connect.php' );
 
@@ -91,6 +131,10 @@ $userfacebookinfo = $DB->get_record ( 'facebook_user', array (
 
 // if the user exist then show the app, if not tell him to connect to his facebook account
 if ($userfacebookinfo != false) {
+	// Save facebook info
+	$userfacebookinfo->information = $json;
+	$DB->update_record('facebook_user', $userfacebookinfo);
+	
 	$moodleid = $userfacebookinfo->moodleid;
 	$lastvisit = $userfacebookinfo->lasttimechecked;
 	$userinfo = $DB->get_record ( 'user', array (
@@ -106,7 +150,13 @@ if ($userfacebookinfo != false) {
 	// generates an array with all the users courses
 	$courseidarray = array ();
 	foreach ( $usercourse as $courses ) {
-		$courseidarray [] = $courses->id;
+		// Only visible courses
+		if($courses->visible){
+			$courseidarray [] = $courses->id;
+		}else{
+			// Remove invisible courses
+			unset($usercourse[$key]);
+		}
 	}
 	
 	// get_in_or_equal used after in the IN ('') clause of multiple querys
@@ -142,6 +192,7 @@ if ($userfacebookinfo != false) {
 	
 	// foreach that generates each course square
 	echo '<div style="line-height: 4px"><br></div>';
+	
 	foreach ( $usercourse as $courses ) {
 		
 		$fullname = $courses->fullname;
@@ -149,14 +200,13 @@ if ($userfacebookinfo != false) {
 		$shortname = $courses->shortname;
 		$totals = $courses->totalnotifications;
 		
-		echo '<div class="block" style="height: 4em;"><button type="button" class="btn btn-info btn-lg" style="white-space: normal; width: 90%; height: 90%; border: 1px solid lightgray; background: #F0F0F0;" courseid="' . $courseid . '" fullname="' . $fullname . '" component="button">';
-		
+		echo '<div class="block" style="height: 4em;"><button type="button" class="btn btn-info btn-lg" style="white-space: normal; width: 90%; height: 90%; border: 1px solid lightgray; background: #F0F0F0;" courseid="' . $courseid . '" fullname="' . $fullname . '" moodleid="'.$moodleid.'" lastvisit="'.$lastvisit.'" component="button">';
+		echo '<p class="name" align="left" style="position: relative; height: 3em; overflow: hidden; color: black; font-weight: bold; text-decoration: none; font-size:13px; word-wrap: initial;" courseid="' . $courseid . '" moodleid="'.$moodleid.'" lastvisit="'.$lastvisit.'" component="button">
+ 				' . $fullname . '</p>';
 		if ($totals > 0) {
-			echo '<p class="name" align="left" style="position: relative; height: 3em; overflow: hidden; color: black; font-weight: bold; text-decoration: none; font-size:13px; word-wrap: initial;" courseid="'.$courseid.'" moodleid="'.$moodleid.'" lastvisit="'.$lastvisit.'" component="button">
- 				' . $fullname . '</p><span class="badge" style="color: white; background-color: red; position: relative; right: -58%; top: -64px; margin-right:9%;" courseid="' . $courseid . '" component="button">' . $totals . '</span></button></div>';
+			echo '<span class="badge" style="color: white; background-color: red; position: relative; right: -58%; top: -64px; margin-right:9%;" courseid="' . $courseid . '" component="button">' . $totals . '</span></button></div>';
 		} else {
-			echo '<p class="name" align="left" style="position: relative; height: 3em; overflow: hidden; color: black; font-weight: bold; text-decoration: none; font-size:13px; word-wrap: initial;" courseid="' . $courseid . '" moodleid="'.$moodleid.'" lastvisit="'.$lastvisit.'" component="button">
- 				' . $fullname . '</p></button></div>';
+			echo '</button></div>';
 		}
 	}
 	echo "<p></p>";
@@ -165,8 +215,10 @@ if ($userfacebookinfo != false) {
 	// include 'htmltoinclude/news.html';
 	echo "</div>";
 	
+	// Front images
+	$image = $CFG->fbk_frontimage;
 	echo "<div class='col-md-9 col-sm-9 col-xs-12'>";
-	echo "<div class='advert'><div style='position: relative;'><img src='images/jpg_an_1.jpg'style='margin-top:10%; margin-left:8%; width:35%'><img src='images/jpg_an_2.jpg' style='margin-top:10%; margin-left:5%; width:35%'></div></div>";
+	echo "<div class='advert'><div style='position: relative;'> <img src='".$image."'style='margin-top:10%; margin-left:8%; width:80%'> </div></div>";
 	echo "<div id='loadinggif' align='center' style='margin-top: 10%; text-align: center; display:none;'><img src='https://webcursos.uai.cl/local/facebook/app/images/ajaxloader.gif'></div>";
 	echo "<div id='table-body'></div>";
 	
@@ -178,11 +230,6 @@ if ($userfacebookinfo != false) {
 			</div>
 		</div>";
 
-	?>
-	
-	<!-- Display engine -->
-
-	<?php
 	echo "</div></div>";
 	include 'htmltoinclude/spacer.html';
 	
@@ -198,7 +245,6 @@ if ($userfacebookinfo != false) {
 	include 'htmltoinclude/spacer.html';
 }
 
-	//scripts
-	?>
-	<script type="text/javascript" src="js/onclick.js"></script>
-	<script type="text/javascript" src="js/search.js"></script>
+?>
+<script type="text/javascript" src="js/onclick.js"></script>
+<script type="text/javascript" src="js/search.js"></script>
